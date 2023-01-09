@@ -1,5 +1,7 @@
 package academy.pocu.comp3500.assignment1.pba;
 
+import java.util.Objects;
+
 public final class Player {
     private String name;
     private int pointsPerGame;
@@ -59,5 +61,29 @@ public final class Player {
 
     public void setShootingPercentage(int shootingPercentage) {
         this.shootingPercentage = shootingPercentage;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                ", pointsPerGame=" + pointsPerGame +
+                ", assistsPerGame=" + assistsPerGame +
+                ", passesPerGame=" + passesPerGame +
+                ", shootingPercentage=" + shootingPercentage +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return pointsPerGame == player.pointsPerGame && assistsPerGame == player.assistsPerGame && passesPerGame == player.passesPerGame && shootingPercentage == player.shootingPercentage && name.equals(player.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, pointsPerGame, assistsPerGame, passesPerGame, shootingPercentage);
     }
 }
