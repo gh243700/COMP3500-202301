@@ -7,6 +7,16 @@ public class Program {
 
     public static void main(String[] args) {
         {
+
+            {
+
+                Player[] players = new Player[] {
+                        new Player("Player 4", 10, 10, 15, 25),};
+
+                Player player = PocuBasketballAssociation.findPlayerPointsPerGame(players, 70);
+                assert (player.equals(players[0]));
+
+            }
             {
                 Player[] players = new Player[] {
                         new Player("Player 4", 10, 10, 15, 25),
@@ -572,6 +582,22 @@ public class Program {
             {
                 assert(PocuBasketballAssociation.findPlayerPointsPerGame(players, i).equals(expect[i]));
             }
+
+        }
+
+
+        {
+            Player[] players = new Player[] {
+                    new Player("Player 4", 10, 10, 15, 25),
+            };
+
+            Player player = PocuBasketballAssociation.findPlayerShootingPercentage(players, 28); // player: Player 2
+            assert (player.equals(players[0]));
+            player = PocuBasketballAssociation.findPlayerShootingPercentage(players, 58); // player: Player 1
+            player = PocuBasketballAssociation.findPlayerShootingPercentage(players, 72); // player: Player 7
+
+
+
 
         }
     }

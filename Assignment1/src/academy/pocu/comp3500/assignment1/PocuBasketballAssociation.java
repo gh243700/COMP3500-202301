@@ -84,7 +84,7 @@ public final class PocuBasketballAssociation {
 
     public static int findPlayerCloseToPoint(final Player[] players, final int front, final int back, final int target) {
         if (front >= back) {
-            return front;
+            return back;
         }
 
         int mid = (front + back) / 2;
@@ -124,21 +124,21 @@ public final class PocuBasketballAssociation {
 
     public static int findPlayerCloseToShootingPercentage(final Player[] players, final int front, final int back, final int shootingPercentage) {
         if (front >= back) {
-            return front;
+            return back;
         }
 
         final int mid = (front + back) / 2;
-
-        if (mid - 1 < 0) {
-            return Math.abs(shootingPercentage - players[mid].getShootingPercentage())
-                    > Math.abs(shootingPercentage - players[mid + 1].getShootingPercentage())
-                    ? mid + 1 : mid;
-        }
 
         if (mid + 1 >= players.length) {
             return Math.abs(shootingPercentage - players[mid].getShootingPercentage()) >
                     Math.abs(shootingPercentage - players[mid - 1].getShootingPercentage())
                     ? mid - 1 : mid;
+        }
+
+        if (mid - 1 < 0) {
+            return Math.abs(shootingPercentage - players[mid].getShootingPercentage())
+                    > Math.abs(shootingPercentage - players[mid + 1].getShootingPercentage())
+                    ? mid + 1 : mid;
         }
 
         final int leftAbs = Math.abs(shootingPercentage - players[mid - 1].getShootingPercentage());
@@ -163,7 +163,7 @@ public final class PocuBasketballAssociation {
 
     public static Player findPlayerShootingPercentage(final Player[] players, int targetShootingPercentage) {
 
-        final int result = findPlayerCloseToShootingPercentage(players, 0, players.length, targetShootingPercentage);
+        final int result = findPlayerCloseToShootingPercentage(players, 0, players.length - 1, targetShootingPercentage);
 
         return players[result];
     }
