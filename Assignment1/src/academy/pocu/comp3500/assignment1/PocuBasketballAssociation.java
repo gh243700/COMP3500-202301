@@ -6,18 +6,16 @@ import academy.pocu.comp3500.assignment1.pba.GameStat;
 public final class PocuBasketballAssociation {
     private PocuBasketballAssociation() {
     }
+
     public static void quickSortGameStat(final GameStat[] gameStat, final int leftIndex, final int rightIndex) {
-        if (leftIndex >= rightIndex)
-        {
+        if (leftIndex >= rightIndex) {
             return;
         }
 
         int p = (leftIndex - 1);
         final int pivotHash = gameStat[rightIndex].getPlayerName().hashCode();
-        for (int i = leftIndex; i < rightIndex; ++i)
-        {
-            if (gameStat[i].getPlayerName().hashCode() < pivotHash)
-            {
+        for (int i = leftIndex; i < rightIndex; ++i) {
+            if (gameStat[i].getPlayerName().hashCode() < pivotHash) {
                 ++p;
                 GameStat temp = gameStat[p];
                 gameStat[p] = gameStat[i];
@@ -33,6 +31,7 @@ public final class PocuBasketballAssociation {
         quickSortGameStat(gameStat, leftIndex, p - 1);
         quickSortGameStat(gameStat, p + 1, rightIndex);
     }
+
     public static void processGameStats(final GameStat[] gameStats, final Player[] outPlayers) {
 
         quickSortGameStat(gameStats, 0, gameStats.length - 1);
@@ -48,19 +47,16 @@ public final class PocuBasketballAssociation {
         int goal = gameStats[0].getGoals();
 
         int gamesPlayed = 1;
-        for (int i = 1; i < gameStats.length + 1; ++i)
-        {
-            if (i >= gameStats.length || previousHash != gameStats[i].getPlayerName().hashCode())
-            {
+        for (int i = 1; i < gameStats.length + 1; ++i) {
+            if (i >= gameStats.length || previousHash != gameStats[i].getPlayerName().hashCode()) {
                 Player player = outPlayers[outPlayersIndex];
                 player.setName(gameStats[i - 1].getPlayerName());
                 player.setPointsPerGame(points / gamesPlayed);
                 player.setAssistsPerGame(assists / gamesPlayed);
                 player.setPassesPerGame(passes / gamesPlayed);
-                player.setShootingPercentage((int)(100.0 * goal / goalAttempts));
+                player.setShootingPercentage((int) (100.0 * goal / goalAttempts));
 
-                if (i >= gameStats.length)
-                {
+                if (i >= gameStats.length) {
                     break;
                 }
 
@@ -85,22 +81,19 @@ public final class PocuBasketballAssociation {
             gamesPlayed++;
         }
     }
-    public static int findPlayerCloseToPoint(final Player[] players, final int front, final int back, final int target)
-    {
-        if (front >= back)
-        {
+
+    public static int findPlayerCloseToPoint(final Player[] players, final int front, final int back, final int target) {
+        if (front >= back) {
             return front;
         }
 
         int mid = (front + back) / 2;
 
-        if (mid + 1 >= players.length)
-        {
+        if (mid + 1 >= players.length) {
             return Math.abs(players[mid - 1].getPointsPerGame() - target) > Math.abs(players[mid].getPointsPerGame() - target) ? mid : mid - 1;
         }
 
-        if (mid - 1 < 0)
-        {
+        if (mid - 1 < 0) {
             return Math.abs(players[mid + 1].getPointsPerGame() - target) > Math.abs(players[mid].getPointsPerGame() - target) ? mid : mid + 1;
         }
 
@@ -108,44 +101,41 @@ public final class PocuBasketballAssociation {
         int absRight = Math.abs(target - players[mid + 1].getPointsPerGame());
         int absMid = Math.abs(target - players[mid].getPointsPerGame());
 
-        if (absMid <= absLeft && absMid <= absRight)
-        {
-            if (absMid == absRight)
-            {
+        if (absMid <= absLeft && absMid <= absRight
+                && players[mid].getPointsPerGame() != players[mid + 1].getPointsPerGame()
+                && players[mid].getPointsPerGame() != players[mid - 1].getPointsPerGame()) {
+            if (absMid == absRight) {
                 return mid + 1;
             }
 
             return mid;
         }
 
-        if (players[mid].getPointsPerGame() > target)
-        {
+        if (players[mid].getPointsPerGame() > target) {
             return findPlayerCloseToPoint(players, front, mid - 1, target);
         }
         return findPlayerCloseToPoint(players, mid + 1, back, target);
     }
+
     public static Player findPlayerPointsPerGame(final Player[] players, int targetPoints) {
         final int index = findPlayerCloseToPoint(players, 0, players.length - 1, targetPoints);
         return players[index];
     }
-    public static int findPlayerCloseToShootingPercentage(final Player[] players, final int front, final int back, final int shootingPercentage)
-    {
-        if (front >= back)
-        {
+
+    public static int findPlayerCloseToShootingPercentage(final Player[] players, final int front, final int back, final int shootingPercentage) {
+        if (front >= back) {
             return front;
         }
 
         final int mid = (front + back) / 2;
 
-        if (mid - 1 < 0)
-        {
-           return Math.abs(shootingPercentage - players[mid].getShootingPercentage())
-                   > Math.abs(shootingPercentage - players[mid + 1].getShootingPercentage())
-                   ? mid + 1 : mid;
+        if (mid - 1 < 0) {
+            return Math.abs(shootingPercentage - players[mid].getShootingPercentage())
+                    > Math.abs(shootingPercentage - players[mid + 1].getShootingPercentage())
+                    ? mid + 1 : mid;
         }
 
-        if (mid + 1 >= players.length)
-        {
+        if (mid + 1 >= players.length) {
             return Math.abs(shootingPercentage - players[mid].getShootingPercentage()) >
                     Math.abs(shootingPercentage - players[mid - 1].getShootingPercentage())
                     ? mid - 1 : mid;
@@ -155,40 +145,37 @@ public final class PocuBasketballAssociation {
         final int rightAbs = Math.abs(shootingPercentage - players[mid + 1].getShootingPercentage());
         final int midAbs = Math.abs(shootingPercentage - players[mid].getShootingPercentage());
 
-        if (leftAbs >= midAbs && rightAbs >= midAbs)
-        {
-            if (midAbs == rightAbs)
-            {
+        if (leftAbs >= midAbs && rightAbs >= midAbs
+                && players[mid].getShootingPercentage() != players[mid + 1].getShootingPercentage()
+                && players[mid].getShootingPercentage() != players[mid - 1].getShootingPercentage()) {
+            if (midAbs == rightAbs) {
                 return mid + 1;
             }
             return mid;
         }
 
-        if (shootingPercentage < players[mid].getShootingPercentage())
-        {
+        if (shootingPercentage < players[mid].getShootingPercentage()) {
             return findPlayerCloseToShootingPercentage(players, front, mid - 1, shootingPercentage);
         }
 
         return findPlayerCloseToShootingPercentage(players, mid + 1, back, shootingPercentage);
     }
+
     public static Player findPlayerShootingPercentage(final Player[] players, int targetShootingPercentage) {
 
-        final int result = findPlayerCloseToShootingPercentage(players,0, players.length, targetShootingPercentage);
+        final int result = findPlayerCloseToShootingPercentage(players, 0, players.length, targetShootingPercentage);
 
         return players[result];
     }
-    public static void sortPlayersByPassPerGame(final Player[] players, final int front, final int back)
-    {
-        if (front >= back)
-        {
+
+    public static void sortPlayersByPassPerGame(final Player[] players, final int front, final int back) {
+        if (front >= back) {
             return;
         }
 
         int left = (front - 1);
-        for (int i = front; i < back; ++i)
-        {
-            if (players[i].getPassesPerGame() > players[back].getPassesPerGame())
-            {
+        for (int i = front; i < back; ++i) {
+            if (players[i].getPassesPerGame() > players[back].getPassesPerGame()) {
                 ++left;
                 Player temp = players[i];
                 players[i] = players[left];
@@ -204,6 +191,7 @@ public final class PocuBasketballAssociation {
         sortPlayersByPassPerGame(players, front, left - 1);
         sortPlayersByPassPerGame(players, left + 1, back);
     }
+
     public static long find3ManDreamTeam(final Player[] players, final Player[] outPlayers, final Player[] scratch) {
         sortPlayersByPassPerGame(players, 0, players.length - 1);
 
@@ -212,15 +200,13 @@ public final class PocuBasketballAssociation {
 
         long maxTeamwork = 0;
 
-        for (int i = 2; i < players.length; ++i)
-        {
+        for (int i = 2; i < players.length; ++i) {
             long passSum = scratch[0].getPassesPerGame() + scratch[1].getPassesPerGame() + players[i].getPassesPerGame();
             long minAssist = scratch[0].getAssistsPerGame() < scratch[1].getAssistsPerGame() ?
                     scratch[0].getAssistsPerGame() : scratch[1].getAssistsPerGame();
             minAssist = minAssist < players[i].getAssistsPerGame() ? minAssist : players[i].getAssistsPerGame();
             long result = passSum * minAssist;
-            if (maxTeamwork < result)
-            {
+            if (maxTeamwork < result) {
                 maxTeamwork = result;
                 scratch[2] = players[i];
             }
@@ -232,30 +218,27 @@ public final class PocuBasketballAssociation {
 
         return maxTeamwork;
     }
+
     public static long findDreamTeam(final Player[] players, int k, final Player[] outPlayers, final Player[] scratch) {
         sortPlayersByPassPerGame(players, 0, players.length - 1);
         long passSum = 0;
         long minAssist = players[0].getAssistsPerGame();
-        for (int i = 0; i < k - 1; ++i)
-        {
+        for (int i = 0; i < k - 1; ++i) {
             scratch[i] = players[i];
             outPlayers[i] = players[i];
             passSum += scratch[i].getPassesPerGame();
-            if (minAssist > players[i].getAssistsPerGame())
-            {
+            if (minAssist > players[i].getAssistsPerGame()) {
                 minAssist = players[i].getAssistsPerGame();
             }
         }
 
         long maxTeamwork = 0;
 
-        for (int i = scratch.length - 1; i < players.length; ++i)
-        {
+        for (int i = scratch.length - 1; i < players.length; ++i) {
             long tempSum = passSum + players[i].getPassesPerGame();
             long tempMin = minAssist < players[i].getAssistsPerGame() ? minAssist : players[i].getAssistsPerGame();
             long result = tempSum * tempMin;
-            if (maxTeamwork < result)
-            {
+            if (maxTeamwork < result) {
                 maxTeamwork = result;
                 scratch[k - 1] = players[i];
             }
@@ -268,19 +251,15 @@ public final class PocuBasketballAssociation {
 
     public static int findDreamTeamSize(final Player[] players, final Player[] scratch) {
 
-        if (players.length <= 1)
-        {
+        if (players.length <= 1) {
             return players.length;
         }
 
         long sumOfPassPoints = 0;
 
-        for (int i = 0; i < players.length; ++i)
-        {
-            for (int k = 0; k < players.length - 1; ++k)
-            {
-                if (players[players.length - k - 1].getPassesPerGame() > players[players.length - k - 2].getPassesPerGame())
-                {
+        for (int i = 0; i < players.length; ++i) {
+            for (int k = 0; k < players.length - 1; ++k) {
+                if (players[players.length - k - 1].getPassesPerGame() > players[players.length - k - 2].getPassesPerGame()) {
                     Player temp = players[players.length - k - 2];
                     players[players.length - k - 2] = players[players.length - k - 1];
                     players[players.length - k - 1] = temp;
@@ -293,10 +272,8 @@ public final class PocuBasketballAssociation {
 
         int maxLoop = 0;
 
-        for (int i = 0; i < players.length; ++i)
-        {
-            if (players[i].getPassesPerGame() - averageOfSumPoints >= 0)
-            {
+        for (int i = 0; i < players.length; ++i) {
+            if (players[i].getPassesPerGame() - averageOfSumPoints >= 0) {
                 ++maxLoop;
                 scratch[i] = players[i];
             }
@@ -307,25 +284,20 @@ public final class PocuBasketballAssociation {
         int minAssist = Integer.MAX_VALUE;
         int bestTeamNumber = -1;
 
-        for (int i = 0; i < maxLoop; ++i)
-        {
+        for (int i = 0; i < maxLoop; ++i) {
             long tempMaxTeamWork = maxTeamwork;
-            for (int k = 0; k < i - 1; ++k)
-            {
+            for (int k = 0; k < i - 1; ++k) {
                 sumOfPassPoints += players[k].getPassesPerGame();
 
-                if (players[k].getAssistsPerGame() < minAssist)
-                {
+                if (players[k].getAssistsPerGame() < minAssist) {
                     minAssist = players[k].getAssistsPerGame();
                 }
             }
 
-            for (int k = i; k < players.length; ++k)
-            {
+            for (int k = i; k < players.length; ++k) {
                 int tempMinAssist = minAssist;
 
-                if (players[k].getAssistsPerGame() < tempMinAssist)
-                {
+                if (players[k].getAssistsPerGame() < tempMinAssist) {
                     tempMinAssist = players[k].getAssistsPerGame();
                 }
 
@@ -333,14 +305,12 @@ public final class PocuBasketballAssociation {
 
                 long teamWork = tempPassSum * tempMinAssist;
 
-                if (tempMaxTeamWork < teamWork)
-                {
+                if (tempMaxTeamWork < teamWork) {
                     tempMaxTeamWork = teamWork;
                 }
             }
 
-            if (maxTeamwork < tempMaxTeamWork)
-            {
+            if (maxTeamwork < tempMaxTeamWork) {
                 maxTeamwork = tempMaxTeamWork;
                 bestTeamNumber = i;
             }
