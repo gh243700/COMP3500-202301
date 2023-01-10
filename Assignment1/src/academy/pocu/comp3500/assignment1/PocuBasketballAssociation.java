@@ -84,17 +84,14 @@ public final class PocuBasketballAssociation {
 
     public static int findPlayerCloseToPoint(final Player[] players, final int front, final int back, final int target) {
 
-        if (front >= back)
-        {
+        if (front >= back) {
             int index = front;
 
-            if (index - 1 >= 0 && Math.abs(players[index - 1].getPointsPerGame() - target) < Math.abs(players[index].getPointsPerGame() - target))
-            {
+            if (index - 1 >= 0 && Math.abs(players[index - 1].getPointsPerGame() - target) < Math.abs(players[index].getPointsPerGame() - target)) {
                 return index - 1;
             }
 
-            while (index + 1 < players.length && players[index].getPointsPerGame() == players[index + 1].getPointsPerGame())
-            {
+            while (index + 1 < players.length && players[index].getPointsPerGame() == players[index + 1].getPointsPerGame()) {
                 ++index;
             }
 
@@ -104,10 +101,8 @@ public final class PocuBasketballAssociation {
         int mid = (front + back) / 2;
 
         long midPoint = players[mid].getPointsPerGame();
-        long backPoint = players[back].getPointsPerGame();
 
-        if (target > midPoint && target <= backPoint)
-        {
+        if (target > midPoint) {
             return findPlayerCloseToPoint(players, mid + 1, back, target);
         }
 
@@ -121,41 +116,26 @@ public final class PocuBasketballAssociation {
 
     public static int findPlayerCloseToShootingPercentage(final Player[] players, final int front, final int back, final int shootingPercentage) {
         if (front >= back) {
+            int index = front;
 
+            if (index - 1 >= 0 && Math.abs(players[index - 1].getShootingPercentage() - shootingPercentage) < Math.abs(players[index].getShootingPercentage() - shootingPercentage)) {
+                return index - 1;
+            }
+
+            while (index + 1 < players.length && players[index].getShootingPercentage() == players[index + 1].getShootingPercentage()) {
+                ++index;
+            }
+
+            return index;
         }
 
         final int mid = (front + back) / 2;
 
-        if (mid + 1 >= players.length) {
-            return Math.abs(shootingPercentage - players[mid].getShootingPercentage()) >
-                    Math.abs(shootingPercentage - players[mid - 1].getShootingPercentage())
-                    ? mid - 1 : mid;
+        if (shootingPercentage > players[mid].getShootingPercentage()) {
+            return findPlayerCloseToShootingPercentage(players, mid + 1, back, shootingPercentage);
         }
 
-        if (mid - 1 < 0) {
-            return Math.abs(shootingPercentage - players[mid].getShootingPercentage())
-                    > Math.abs(shootingPercentage - players[mid + 1].getShootingPercentage())
-                    ? mid + 1 : mid;
-        }
-
-        final int leftAbs = Math.abs(shootingPercentage - players[mid - 1].getShootingPercentage());
-        final int rightAbs = Math.abs(shootingPercentage - players[mid + 1].getShootingPercentage());
-        final int midAbs = Math.abs(shootingPercentage - players[mid].getShootingPercentage());
-
-        if (leftAbs >= midAbs && rightAbs >= midAbs
-                && players[mid].getShootingPercentage() != players[mid + 1].getShootingPercentage()
-                && players[mid].getShootingPercentage() != players[mid - 1].getShootingPercentage()) {
-            if (midAbs == rightAbs) {
-                return mid + 1;
-            }
-            return mid;
-        }
-
-        if (shootingPercentage < players[mid].getShootingPercentage()) {
-            return findPlayerCloseToShootingPercentage(players, front, mid - 1, shootingPercentage);
-        }
-
-        return findPlayerCloseToShootingPercentage(players, mid + 1, back, shootingPercentage);
+        return findPlayerCloseToShootingPercentage(players, front, mid, shootingPercentage);
     }
 
     public static Player findPlayerShootingPercentage(final Player[] players, int targetShootingPercentage) {

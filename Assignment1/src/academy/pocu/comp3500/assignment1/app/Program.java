@@ -21,6 +21,26 @@ public class Program {
                     new Player("Player 10", 50, 5, 1, 0),
             };
 
+
+            Player player = PocuBasketballAssociation.findPlayerPointsPerGame(players, 100);
+            assert (player.equals(players[9]));
+
+        }
+
+        {
+            Player[] players = new Player[] {
+                    new Player("Player 1", 1, 5, 1, 0),
+                    new Player("Player 2", 1, 5, 1, 0),
+                    new Player("Player 3", 5, 5, 1, 0),
+                    new Player("Player 4", 10, 5, 1, 0),
+                    new Player("Player 5", 15, 5, 1, 0),
+                    new Player("Player 6", 30, 5, 1, 0),
+                    new Player("Player 7", 30, 5, 1, 0),
+                    new Player("Player 8", 30, 5, 1, 0),
+                    new Player("Player 9", 41, 5, 1, 0),
+                    new Player("Player 10", 50, 5, 1, 0),
+            };
+
             for (int i = 0; i < 50; ++i)
             {
                 Player player = PocuBasketballAssociation.findPlayerPointsPerGame(players, i);
@@ -43,6 +63,9 @@ public class Program {
                 } else if (i <= 45)
                 {
                     assert (player.equals(players[8]));
+                } else
+                {
+                    assert (player.equals(players[9]));
                 }
 
             }
