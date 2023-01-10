@@ -145,14 +145,14 @@ public final class PocuBasketballAssociation {
         return players[result];
     }
 
-    public static void sortPlayersByPassPerGame(final Player[] players, final int front, final int back) {
+    public static void sortPlayersByAssistsPerGame(final Player[] players, final int front, final int back) {
         if (front >= back) {
             return;
         }
 
         int left = (front - 1);
         for (int i = front; i < back; ++i) {
-            if (players[i].getPassesPerGame() > players[back].getPassesPerGame()) {
+            if (players[i].getAssistsPerGame() > players[back].getAssistsPerGame()) {
                 ++left;
                 Player temp = players[i];
                 players[i] = players[left];
@@ -165,64 +165,55 @@ public final class PocuBasketballAssociation {
         players[left] = players[back];
         players[back] = temp;
 
-        sortPlayersByPassPerGame(players, front, left - 1);
-        sortPlayersByPassPerGame(players, left + 1, back);
+        sortPlayersByAssistsPerGame(players, front, left - 1);
+        sortPlayersByAssistsPerGame(players, left + 1, back);
     }
 
     public static long find3ManDreamTeam(final Player[] players, final Player[] outPlayers, final Player[] scratch) {
-        sortPlayersByPassPerGame(players, 0, players.length - 1);
+        sortPlayersByAssistsPerGame(players, 0, players.length - 1);
 
-        scratch[0] = players[0];
-        scratch[1] = players[1];
-
-        long maxTeamwork = 0;
-
-        for (int i = 2; i < players.length; ++i) {
-            long passSum = scratch[0].getPassesPerGame() + scratch[1].getPassesPerGame() + players[i].getPassesPerGame();
-            long minAssist = scratch[0].getAssistsPerGame() < scratch[1].getAssistsPerGame() ?
-                    scratch[0].getAssistsPerGame() : scratch[1].getAssistsPerGame();
-            minAssist = minAssist < players[i].getAssistsPerGame() ? minAssist : players[i].getAssistsPerGame();
-            long result = passSum * minAssist;
-            if (maxTeamwork < result) {
-                maxTeamwork = result;
-                scratch[2] = players[i];
-            }
+        if (players[0].getPassesPerGame() > players[1].getPassesPerGame())
+        {
+            scratch[0] = players[0];
+            scratch[1] = players[1];
+        } else
+        {
+            scratch[0] = players[1];
+            scratch[1] = players[0];
         }
+
+        scratch[2] = players[2];
 
         outPlayers[0] = scratch[0];
         outPlayers[1] = scratch[1];
         outPlayers[2] = scratch[2];
 
+        long maxTeamwork = (scratch[0].getPassesPerGame() + scratch[1].getPassesPerGame() + scratch[2].getPassesPerGame()) * scratch[2].getAssistsPerGame();
+
+        for (int k = 3; k < players.length; ++k) {
+            scratch[2] = players[k];
+            if (scratch[0].getPassesPerGame() < players[k - 1].getPassesPerGame()) {
+                scratch[1] = scratch[0];
+                scratch[0] = players[k - 1];
+            } else if (scratch[1].getPassesPerGame() < players[k - 1].getPassesPerGame()) {
+                scratch[1] = players[k - 1];
+            }
+
+            long tempTeamWork = (scratch[0].getPassesPerGame() + scratch[1].getPassesPerGame() + scratch[2].getPassesPerGame()) * scratch[2].getAssistsPerGame();
+
+            if (tempTeamWork > maxTeamwork) {
+                maxTeamwork = tempTeamWork;
+
+                outPlayers[0] = scratch[0];
+                outPlayers[1] = scratch[1];
+                outPlayers[2] = scratch[2];
+            }
+        }
         return maxTeamwork;
     }
 
     public static long findDreamTeam(final Player[] players, int k, final Player[] outPlayers, final Player[] scratch) {
-        sortPlayersByPassPerGame(players, 0, players.length - 1);
-        long passSum = 0;
-        long minAssist = players[0].getAssistsPerGame();
-        for (int i = 0; i < k - 1; ++i) {
-            scratch[i] = players[i];
-            outPlayers[i] = players[i];
-            passSum += scratch[i].getPassesPerGame();
-            if (minAssist > players[i].getAssistsPerGame()) {
-                minAssist = players[i].getAssistsPerGame();
-            }
-        }
-
         long maxTeamwork = 0;
-
-        for (int i = scratch.length - 1; i < players.length; ++i) {
-            long tempSum = passSum + players[i].getPassesPerGame();
-            long tempMin = minAssist < players[i].getAssistsPerGame() ? minAssist : players[i].getAssistsPerGame();
-            long result = tempSum * tempMin;
-            if (maxTeamwork < result) {
-                maxTeamwork = result;
-                scratch[k - 1] = players[i];
-            }
-        }
-
-        outPlayers[k - 1] = scratch[k - 1];
-
         return maxTeamwork;
     }
 
