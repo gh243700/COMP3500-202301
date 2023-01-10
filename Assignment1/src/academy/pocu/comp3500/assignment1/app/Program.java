@@ -104,5 +104,33 @@ public class Program {
             TestFindPlayerPointsPerGame();
             TestFind3ManDreamTeam();
         }
+
+        {
+            Player[] players = new Player[] {
+                    new Player("Player 2", 5, 5, 17, 50),
+                    new Player("Player 6", 15, 4, 10, 40),
+                    new Player("Player 5", 11, 3, 25, 54),
+                    new Player("Player 4", 10, 9, 1, 88),
+                    new Player("Player 7", 16, 7, 5, 77),
+                    new Player("Player 1", 1, 2, 8, 22),
+                    new Player("Player 9", 42, 15, 4, 56),
+                    new Player("Player 8", 33, 11, 3, 72),
+            };
+
+            int k = 4;
+            Player[] outPlayers = new Player[4];
+            Player[] scratch = new Player[k];
+
+            long maxTeamwork = PocuBasketballAssociation.findDreamTeam(players, k, outPlayers, scratch);
+            System.out.println("-------------------------------------------------------------");
+            for (int i = 0; i < outPlayers.length; ++i)
+            {
+                System.out.println(players[i]);
+            }
+
+            assert (maxTeamwork == 171);
+
+
+        }
     }
 }
