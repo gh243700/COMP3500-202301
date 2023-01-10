@@ -83,38 +83,35 @@ public final class PocuBasketballAssociation {
     }
 
     public static int findPlayerCloseToPoint(final Player[] players, final int front, final int back, final int target) {
-        if (front >= back) {
-            return back;
+
+        if (front >= back)
+        {
+            int index = front;
+
+            if (index - 1 >= 0 && Math.abs(players[index - 1].getPointsPerGame() - target) < Math.abs(players[index].getPointsPerGame() - target))
+            {
+                return index - 1;
+            }
+
+            while (index + 1 < players.length && players[index].getPointsPerGame() == players[index + 1].getPointsPerGame())
+            {
+                ++index;
+            }
+
+            return index;
         }
 
         int mid = (front + back) / 2;
 
-        if (mid + 1 >= players.length) {
-            return Math.abs(players[mid - 1].getPointsPerGame() - target) > Math.abs(players[mid].getPointsPerGame() - target) ? mid : mid - 1;
+        long midPoint = players[mid].getPointsPerGame();
+        long backPoint = players[back].getPointsPerGame();
+
+        if (target > midPoint && target <= backPoint)
+        {
+            return findPlayerCloseToPoint(players, mid + 1, back, target);
         }
 
-        if (mid - 1 < 0) {
-            return Math.abs(players[mid + 1].getPointsPerGame() - target) > Math.abs(players[mid].getPointsPerGame() - target) ? mid : mid + 1;
-        }
-
-        int absLeft = Math.abs(target - players[mid - 1].getPointsPerGame());
-        int absRight = Math.abs(target - players[mid + 1].getPointsPerGame());
-        int absMid = Math.abs(target - players[mid].getPointsPerGame());
-
-        if (absMid <= absLeft && absMid <= absRight
-                && players[mid].getPointsPerGame() != players[mid + 1].getPointsPerGame()
-                && players[mid].getPointsPerGame() != players[mid - 1].getPointsPerGame()) {
-            if (absMid == absRight) {
-                return mid + 1;
-            }
-
-            return mid;
-        }
-
-        if (players[mid].getPointsPerGame() > target) {
-            return findPlayerCloseToPoint(players, front, mid - 1, target);
-        }
-        return findPlayerCloseToPoint(players, mid + 1, back, target);
+        return findPlayerCloseToPoint(players, front, mid, target);
     }
 
     public static Player findPlayerPointsPerGame(final Player[] players, int targetPoints) {
@@ -124,7 +121,7 @@ public final class PocuBasketballAssociation {
 
     public static int findPlayerCloseToShootingPercentage(final Player[] players, final int front, final int back, final int shootingPercentage) {
         if (front >= back) {
-            return back;
+
         }
 
         final int mid = (front + back) / 2;
