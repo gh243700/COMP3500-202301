@@ -172,12 +172,10 @@ public final class PocuBasketballAssociation {
     public static long find3ManDreamTeam(final Player[] players, final Player[] outPlayers, final Player[] scratch) {
         sortPlayersByAssistsPerGame(players, 0, players.length - 1);
 
-        if (players[0].getPassesPerGame() > players[1].getPassesPerGame())
-        {
+        if (players[0].getPassesPerGame() > players[1].getPassesPerGame()) {
             scratch[0] = players[0];
             scratch[1] = players[1];
-        } else
-        {
+        } else {
             scratch[0] = players[1];
             scratch[1] = players[0];
         }
