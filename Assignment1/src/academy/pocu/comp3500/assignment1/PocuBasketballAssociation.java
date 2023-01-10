@@ -182,10 +182,6 @@ public final class PocuBasketballAssociation {
 
         scratch[2] = players[2];
 
-        outPlayers[0] = scratch[0];
-        outPlayers[1] = scratch[1];
-        outPlayers[2] = scratch[2];
-
         long maxTeamwork = (scratch[0].getPassesPerGame() + scratch[1].getPassesPerGame() + scratch[2].getPassesPerGame()) * scratch[2].getAssistsPerGame();
 
         for (int k = 3; k < players.length; ++k) {
@@ -207,81 +203,85 @@ public final class PocuBasketballAssociation {
                 outPlayers[2] = scratch[2];
             }
         }
+
         return maxTeamwork;
     }
 
+    public static void sortPlayersByPassPerGame(final Player[] players, final int front, final int back) {
+        if (front >= back) {
+            return;
+        }
+
+        int left = (front - 1);
+        for (int i = front; i < back; ++i) {
+            if (players[i].getPassesPerGame() > players[back].getPassesPerGame()) {
+                ++left;
+                Player temp = players[i];
+                players[i] = players[left];
+                players[left] = temp;
+            }
+        }
+
+        ++left;
+        Player temp = players[left];
+        players[left] = players[back];
+        players[back] = temp;
+
+        sortPlayersByPassPerGame(players, front, left - 1);
+        sortPlayersByPassPerGame(players, left + 1, back);
+    }
+
     public static long findDreamTeam(final Player[] players, int k, final Player[] outPlayers, final Player[] scratch) {
-        long maxTeamwork = 0;
+        sortPlayersByAssistsPerGame(players, 0, players.length - 1);
+
+        long passSum = 0;
+        for (int i = 0; i < scratch.length - 1; ++i) {
+            scratch[i] = players[i];
+            passSum += players[i].getPassesPerGame();
+        }
+
+        sortPlayersByPassPerGame(scratch, 0, scratch.length - 2);
+
+        scratch[k] = players[k];
+        passSum += scratch[k].getPassesPerGame();
+
+        long maxTeamwork = passSum * scratch[k].getAssistsPerGame();
+
+        for (int i = k; i < players.length; ++i) {
+            scratch[k] = players[i];
+            Player player = players[i - 1];
+
+            long tempPassSum = 0;
+
+            for (int j = 0; j < scratch.length - 1; ++j) {
+                if (scratch[j].getPassesPerGame() < player.getPassesPerGame()) {
+                    Player temp = scratch[j];
+                    scratch[j] = player;
+                    player = temp;
+                }
+
+                scratch[j].getPassesPerGame();
+            }
+
+            long tempTeamWork = tempPassSum * scratch[k - 1].getAssistsPerGame();
+
+            if (tempTeamWork > maxTeamwork) {
+                maxTeamwork = tempTeamWork;
+
+                for (int j = 0; j < scratch.length; ++i) {
+                    outPlayers[j] = scratch[j];
+                }
+            }
+        }
+
         return maxTeamwork;
     }
 
     public static int findDreamTeamSize(final Player[] players, final Player[] scratch) {
+        int bestTeamNumber = 0;
 
         if (players.length <= 1) {
             return players.length;
-        }
-
-        long sumOfPassPoints = 0;
-
-        for (int i = 0; i < players.length; ++i) {
-            for (int k = 0; k < players.length - 1; ++k) {
-                if (players[players.length - k - 1].getPassesPerGame() > players[players.length - k - 2].getPassesPerGame()) {
-                    Player temp = players[players.length - k - 2];
-                    players[players.length - k - 2] = players[players.length - k - 1];
-                    players[players.length - k - 1] = temp;
-                }
-            }
-            sumOfPassPoints += players[i].getPassesPerGame();
-        }
-
-        long averageOfSumPoints = sumOfPassPoints / players.length;
-
-        int maxLoop = 0;
-
-        for (int i = 0; i < players.length; ++i) {
-            if (players[i].getPassesPerGame() - averageOfSumPoints >= 0) {
-                ++maxLoop;
-                scratch[i] = players[i];
-            }
-        }
-
-        long maxTeamwork = 0;
-        sumOfPassPoints = 0;
-        int minAssist = Integer.MAX_VALUE;
-        int bestTeamNumber = -1;
-
-        for (int i = 0; i < maxLoop; ++i) {
-            long tempMaxTeamWork = maxTeamwork;
-            for (int k = 0; k < i - 1; ++k) {
-                sumOfPassPoints += players[k].getPassesPerGame();
-
-                if (players[k].getAssistsPerGame() < minAssist) {
-                    minAssist = players[k].getAssistsPerGame();
-                }
-            }
-
-            for (int k = i; k < players.length; ++k) {
-                int tempMinAssist = minAssist;
-
-                if (players[k].getAssistsPerGame() < tempMinAssist) {
-                    tempMinAssist = players[k].getAssistsPerGame();
-                }
-
-                long tempPassSum = players[k].getPassesPerGame() + sumOfPassPoints;
-
-                long teamWork = tempPassSum * tempMinAssist;
-
-                if (tempMaxTeamWork < teamWork) {
-                    tempMaxTeamWork = teamWork;
-                }
-            }
-
-            if (maxTeamwork < tempMaxTeamWork) {
-                maxTeamwork = tempMaxTeamWork;
-                bestTeamNumber = i;
-            }
-
-            minAssist = Integer.MAX_VALUE;
         }
 
         return bestTeamNumber + 1;
