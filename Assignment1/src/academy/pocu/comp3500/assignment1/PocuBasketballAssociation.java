@@ -329,7 +329,7 @@ public final class PocuBasketballAssociation {
                 }
             }
 
-            if (fail) {
+            if (fail || playersNeeded > 0) {
                 continue;
             }
 
