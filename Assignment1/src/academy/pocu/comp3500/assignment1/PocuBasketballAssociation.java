@@ -302,25 +302,24 @@ public final class PocuBasketballAssociation {
 
         sortPlayersByPassPerGame(scratch, 0, scratch.length - 1);
 
-
         for (int i = 0; i < players.length; ++i) {
             int size = 0;
 
             int index = 0;
             int sum = 0;
 
-            Player forAssist = players[i];
+            Player forAssistValue = players[i];
 
             while (index < scratch.length) {
 
-                if (scratch[index].getAssistsPerGame() >= forAssist.getAssistsPerGame()) {
-                    if (scratch[index] != forAssist) {
+                if (scratch[index].getAssistsPerGame() >= forAssistValue.getAssistsPerGame()) {
+                    if (scratch[index] != forAssistValue) {
                         sum += scratch[index].getPassesPerGame();
                     }
 
                     ++size;
 
-                    long tempTeamwork = (sum + forAssist.getPassesPerGame()) * forAssist.getAssistsPerGame();
+                    long tempTeamwork = (sum + forAssistValue.getPassesPerGame()) * forAssistValue.getAssistsPerGame();
 
                     if (maxTeamwork < tempTeamwork) {
                         maxTeamwork = tempTeamwork;
