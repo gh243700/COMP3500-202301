@@ -41,7 +41,7 @@ public class Program {
                     new Player("Player 10", 50, 5, 1, 0),
             };
 
-            for (int i = 0; i < 50; ++i)
+            for (int i = 0; i < 100; ++i)
             {
                 Player player = PocuBasketballAssociation.findPlayerPointsPerGame(players, i);
                 if (i < 3) // player 1
@@ -70,7 +70,7 @@ public class Program {
 
             }
 
-
+            System.out.println("sssss");
         }
     }
 

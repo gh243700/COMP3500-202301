@@ -293,34 +293,43 @@ public final class PocuBasketballAssociation {
 
         sortPlayersByAssistsPerGame(players, 0, players.length - 1);
 
-        long sumOfPasses = 0;
-        long maxTeamwork;
-        int bestTeamSize = players.length;
 
-        for (int i = 0; i < scratch.length - 1; ++i) {
-            sumOfPasses += players[i].getPassesPerGame();
+        long maxTeamwork = 0;
+        int bestTeamSize = 0;
+
+        for (int i = 0; i < scratch.length; ++i) {
+            scratch[i] = players[i];
         }
 
-        maxTeamwork = sumOfPasses * players[bestTeamSize - 1].getAssistsPerGame();
+        sortPlayersByPassPerGame(scratch, 0, scratch.length - 1);
 
-        for (int i = bestTeamSize - 2; i >= 0; --i) {
-            int minPass = Integer.MAX_VALUE;
+        maxTeamwork = 0;
 
-            for (int k = 0; k < i; ++k) {
-                if (minPass > players[k].getPassesPerGame()) {
-                    minPass = players[k].getPassesPerGame();
+        for (int i = 0; i < players.length; ++i)
+        {
+            Player useOfAssist = players[i];
+            long sumOfPasses = 0;
+            int playersNeeded = i;
+            int scratchIndex = 0;
+            while (playersNeeded > 0 && scratchIndex < scratch.length)
+            {
+                if(players[i] != scratch[scratchIndex] && scratch[scratchIndex].getAssistsPerGame() > useOfAssist.getAssistsPerGame())
+                {
+                    sumOfPasses += scratch[scratchIndex].getPassesPerGame();
+                    --playersNeeded;
                 }
+
+                ++scratchIndex;
             }
+            sumOfPasses += useOfAssist.getPassesPerGame();
 
-            sumOfPasses -= minPass;
-            long tempTeamWork = sumOfPasses * players[i].getAssistsPerGame();
-            sumOfPasses -= players[i].getPassesPerGame();
+            long tempTeamWork = sumOfPasses * useOfAssist.getAssistsPerGame();
 
-            if (tempTeamWork > maxTeamwork) {
+            if (maxTeamwork < tempTeamWork)
+            {
                 maxTeamwork = tempTeamWork;
                 bestTeamSize = i + 1;
             }
-
         }
 
         return bestTeamSize;
