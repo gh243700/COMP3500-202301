@@ -312,16 +312,14 @@ public final class PocuBasketballAssociation {
         for (int i = 0; i < scratch.length; ++i) {
             int size = 0;
 
-            int index = 0;
             int sum = 0;
 
             boolean isAssistValueCounted = false;
             Player forAssistValue = scratch[i];
 
-            long tempTeamwork = 0;
-
             final int MAX_SIZE = i;
 
+            int index = 0;
             while (index < players.length) {
 
                 if (players[index].getAssistsPerGame() >= forAssistValue.getAssistsPerGame()) {
@@ -335,7 +333,7 @@ public final class PocuBasketballAssociation {
                         ++size;
                     }
 
-                    tempTeamwork = (long) ((sum + forAssistValue.getPassesPerGame()) * (double) forAssistValue.getAssistsPerGame());
+                    long tempTeamwork = (long) ((sum + forAssistValue.getPassesPerGame()) * (double) forAssistValue.getAssistsPerGame());
 
                     if (maxTeamwork < tempTeamwork) {
                         maxTeamwork = tempTeamwork;
