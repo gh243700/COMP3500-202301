@@ -304,20 +304,26 @@ public final class PocuBasketballAssociation {
                     players[k + 1] = temp;
                 }
             }
+            scratch[i] = players[players.length - 1 - i];
         }
 
+        sortPlayersByAssistsPerGame(scratch, 0, scratch.length - 1);
 
-        for (int i = 0; i < players.length; ++i) {
+        for (int i = 0; i < scratch.length; ++i) {
             int size = 0;
 
             int index = 0;
             int sum = 0;
+
             boolean isAssistValueCounted = false;
-            Player forAssistValue = players[i];
+            Player forAssistValue = scratch[i];
 
             long tempTeamwork = 0;
 
+            final int MAX_SIZE = i;
+
             while (index < players.length) {
+
                 if (players[index].getAssistsPerGame() >= forAssistValue.getAssistsPerGame()) {
                     if (players[index] != forAssistValue) {
                         sum += players[index].getPassesPerGame();
@@ -334,6 +340,11 @@ public final class PocuBasketballAssociation {
                     if (maxTeamwork < tempTeamwork) {
                         maxTeamwork = tempTeamwork;
                         bestTeamSize = size;
+                    }
+
+                    if (MAX_SIZE < size)
+                    {
+                        break;
                     }
                 }
                 ++index;
