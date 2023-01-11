@@ -180,7 +180,6 @@ public class Program {
 
             assert (k == 6);
 
-
         }
 
 
@@ -217,5 +216,29 @@ public class Program {
 
             assert (k == 1);
         }
+
+        {
+            Player[] players = new Player[] {
+                    new Player("Player 9", 8, 0, 10000, 67),
+                    new Player("Player 10", 1, 2, 0, 29),
+                    new Player("Player 11", 2, 3, 0, 88),
+                    new Player("Player 1", 2, 4, 0, 78),
+                    new Player("Player 2", 10, 5, 0, 66),
+                    new Player("Player 3", 3, 6, 0, 22),
+                    new Player("Player 4", 1, 7, 0, 12),
+                    new Player("Player 5", 11, 8, 0, 26),
+                    new Player("Player 6", 7, 9, 50, 15),
+                    new Player("Player 7", 8, 10, 100, 11),
+                    new Player("Player 8", 5, 11, 13, 5),
+            };
+
+            Player[] scratch = new Player[players.length];
+
+            int k = PocuBasketballAssociation.findDreamTeamSize(players, scratch); // k: 6
+
+            assert (k == 3);
+        }
+
+
     }
 }

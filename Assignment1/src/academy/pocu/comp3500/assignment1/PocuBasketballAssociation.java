@@ -291,8 +291,6 @@ public final class PocuBasketballAssociation {
 
     public static int findDreamTeamSize(final Player[] players, final Player[] scratch) {
 
-        //sortPlayersByAssistsPerGame(players, 0, players.length - 1);
-
         long maxTeamwork = 0;
         int bestTeamSize = 0;
 
@@ -307,19 +305,24 @@ public final class PocuBasketballAssociation {
 
             int index = 0;
             int sum = 0;
-
+            boolean isAssistValueCounted = false;
             Player forAssistValue = players[i];
 
             while (index < scratch.length) {
 
-                if (scratch[index] == forAssistValue || scratch[index].getAssistsPerGame() > forAssistValue.getAssistsPerGame()) {
+                if (scratch[index].getAssistsPerGame() >= forAssistValue.getAssistsPerGame()) {
                     if (scratch[index] != forAssistValue) {
                         sum += scratch[index].getPassesPerGame();
+                        ++size;
                     }
 
-                    ++size;
+                    if (!isAssistValueCounted)
+                    {
+                        isAssistValueCounted = true;
+                        ++size;
+                    }
 
-                    long tempTeamwork = (sum + forAssistValue.getPassesPerGame()) * forAssistValue.getAssistsPerGame();
+                    long tempTeamwork = (long)((sum + forAssistValue.getPassesPerGame()) * (double)forAssistValue.getAssistsPerGame());
 
                     if (maxTeamwork < tempTeamwork) {
                         maxTeamwork = tempTeamwork;
