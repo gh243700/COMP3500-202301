@@ -308,6 +308,9 @@ public final class PocuBasketballAssociation {
             long sumOfPasses = 0;
             int playersNeeded = i;
             int scratchIndex = 0;
+
+            boolean fail = false;
+
             while (playersNeeded > 0 && scratchIndex < scratch.length)
             {
                 if(players[i] != scratch[scratchIndex] && scratch[scratchIndex].getAssistsPerGame() > useOfAssist.getAssistsPerGame())
@@ -317,7 +320,24 @@ public final class PocuBasketballAssociation {
                 }
 
                 ++scratchIndex;
+
+                if (scratchIndex >= scratch.length && playersNeeded > 0)
+                {
+                    if (i + 1 >= players.length)
+                    {
+                        fail = true;
+                    }
+                    useOfAssist = players[i + 1];
+                    scratchIndex = 0;
+                    playersNeeded = i;
+                }
             }
+
+            if (fail)
+            {
+                continue;
+            }
+
             sumOfPasses += useOfAssist.getPassesPerGame();
 
             long tempTeamWork = sumOfPasses * useOfAssist.getAssistsPerGame();
