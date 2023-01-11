@@ -327,6 +327,7 @@ public final class PocuBasketballAssociation {
                     {
                         fail = true;
                     }
+
                     useOfAssist = players[i + 1];
                     scratchIndex = 0;
                     playersNeeded = i;
