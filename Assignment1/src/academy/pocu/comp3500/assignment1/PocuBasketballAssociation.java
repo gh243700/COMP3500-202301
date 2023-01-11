@@ -313,7 +313,7 @@ public final class PocuBasketballAssociation {
 
             while (index < scratch.length) {
 
-                if (scratch[index] == forAssist || scratch[index].getAssistsPerGame() > forAssist.getAssistsPerGame()) {
+                if (scratch[index].getAssistsPerGame() >= forAssist.getAssistsPerGame()) {
                     if (scratch[index] != forAssist) {
                         sum += scratch[index].getPassesPerGame();
                     }
