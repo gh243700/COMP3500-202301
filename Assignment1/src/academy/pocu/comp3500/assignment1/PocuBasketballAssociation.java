@@ -294,11 +294,7 @@ public final class PocuBasketballAssociation {
         long maxTeamwork = 0;
         int bestTeamSize = 0;
 
-        for (int i = 0; i < scratch.length; ++i) {
-            scratch[i] = players[i];
-        }
-
-        sortPlayersByPassPerGame(scratch, 0, scratch.length - 1);
+        sortPlayersByPassPerGame(players, 0, players.length - 1);
 
         for (int i = 0; i < players.length; ++i) {
             int size = 0;
@@ -308,28 +304,41 @@ public final class PocuBasketballAssociation {
             boolean isAssistValueCounted = false;
             Player forAssistValue = players[i];
 
-            while (index < scratch.length) {
+            long tempTeamwork = 0;
 
-                if (scratch[index].getAssistsPerGame() >= forAssistValue.getAssistsPerGame()) {
-                    if (scratch[index] != forAssistValue) {
-                        sum += scratch[index].getPassesPerGame();
+            boolean bWorthExploring = false;
+            long assessValue = -1;
+
+            while (index < players.length) {
+                if (players[index].getAssistsPerGame() >= forAssistValue.getAssistsPerGame()) {
+                    if (players[index] != forAssistValue) {
+                        sum += players[index].getPassesPerGame();
                         ++size;
                     }
 
-                    if (!isAssistValueCounted)
-                    {
+                    if (players[index] == forAssistValue && !isAssistValueCounted) {
                         isAssistValueCounted = true;
                         ++size;
                     }
 
-                    long tempTeamwork = (long)((sum + forAssistValue.getPassesPerGame()) * (double)forAssistValue.getAssistsPerGame());
+                    tempTeamwork = (long) ((sum + forAssistValue.getPassesPerGame()) * (double) forAssistValue.getAssistsPerGame());
 
                     if (maxTeamwork < tempTeamwork) {
                         maxTeamwork = tempTeamwork;
                         bestTeamSize = size;
                     }
-                }
 
+                    if (!bWorthExploring) {
+                        if (assessValue == -1) {
+                            assessValue = tempTeamwork;
+                        }
+
+                        if (tempTeamwork < assessValue) {
+                            break;
+                        }
+                        bWorthExploring = true;
+                    }
+                }
                 ++index;
             }
         }
