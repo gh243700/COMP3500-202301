@@ -293,7 +293,6 @@ public final class PocuBasketballAssociation {
 
         sortPlayersByAssistsPerGame(players, 0, players.length - 1);
 
-
         long maxTeamwork = 0;
         int bestTeamSize = 0;
 
@@ -302,8 +301,6 @@ public final class PocuBasketballAssociation {
         }
 
         sortPlayersByPassPerGame(scratch, 0, scratch.length - 1);
-
-        maxTeamwork = 0;
 
         for (int i = 0; i < players.length; ++i)
         {
