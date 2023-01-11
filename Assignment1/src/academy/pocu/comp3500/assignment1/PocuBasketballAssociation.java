@@ -302,8 +302,7 @@ public final class PocuBasketballAssociation {
 
         sortPlayersByPassPerGame(scratch, 0, scratch.length - 1);
 
-        for (int i = 0; i < players.length; ++i)
-        {
+        for (int i = 0; i < players.length; ++i) {
             Player useOfAssist = players[i];
             long sumOfPasses = 0;
             int playersNeeded = i;
@@ -311,20 +310,16 @@ public final class PocuBasketballAssociation {
 
             boolean fail = false;
 
-            while (playersNeeded > 0 && scratchIndex < scratch.length)
-            {
-                if(players[i] != scratch[scratchIndex] && scratch[scratchIndex].getAssistsPerGame() > useOfAssist.getAssistsPerGame())
-                {
+            while (playersNeeded > 0 && scratchIndex < scratch.length) {
+                if (players[i] != scratch[scratchIndex] && scratch[scratchIndex].getAssistsPerGame() > useOfAssist.getAssistsPerGame()) {
                     sumOfPasses += scratch[scratchIndex].getPassesPerGame();
                     --playersNeeded;
                 }
 
                 ++scratchIndex;
 
-                if (scratchIndex >= scratch.length && playersNeeded > 0)
-                {
-                    if (i + 1 >= players.length)
-                    {
+                if (scratchIndex >= scratch.length && playersNeeded > 0) {
+                    if (i + 1 >= players.length) {
                         fail = true;
                     }
 
@@ -334,8 +329,7 @@ public final class PocuBasketballAssociation {
                 }
             }
 
-            if (fail)
-            {
+            if (fail) {
                 continue;
             }
 
@@ -343,8 +337,7 @@ public final class PocuBasketballAssociation {
 
             long tempTeamWork = sumOfPasses * useOfAssist.getAssistsPerGame();
 
-            if (maxTeamwork < tempTeamWork)
-            {
+            if (maxTeamwork < tempTeamWork) {
                 maxTeamwork = tempTeamWork;
                 bestTeamSize = i + 1;
             }
