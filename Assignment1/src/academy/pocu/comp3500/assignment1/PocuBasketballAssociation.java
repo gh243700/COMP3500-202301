@@ -302,45 +302,33 @@ public final class PocuBasketballAssociation {
 
         sortPlayersByPassPerGame(scratch, 0, scratch.length - 1);
 
+
         for (int i = 0; i < players.length; ++i) {
-            Player useOfAssist = players[i];
-            long sumOfPasses = 0;
-            int playersNeeded = i;
-            int scratchIndex = 0;
+            int size = 1;
 
-            boolean fail = false;
+            int index = 0;
+            int sum = 0;
 
-            while (playersNeeded > 0 && scratchIndex < scratch.length) {
-                if (players[i] != scratch[scratchIndex] && scratch[scratchIndex].getAssistsPerGame() > useOfAssist.getAssistsPerGame()) {
-                    sumOfPasses += scratch[scratchIndex].getPassesPerGame();
-                    --playersNeeded;
-                }
+            Player forAssist = players[i];
 
-                ++scratchIndex;
+            while (index < scratch.length) {
 
-                if (scratchIndex >= scratch.length && playersNeeded > 0) {
-                    if (i + 1 >= players.length) {
-                        fail = true;
+                if (scratch[index].getAssistsPerGame() > forAssist.getAssistsPerGame()) {
+                    if (scratch[index] != forAssist) {
+                        sum += scratch[index].getPassesPerGame();
                     }
 
-                    sumOfPasses = 0;
-                    useOfAssist = players[i + 1];
-                    scratchIndex = 0;
-                    playersNeeded = i;
+                    ++size;
+
+                    long tempTeamwork = (sum + forAssist.getPassesPerGame()) * forAssist.getAssistsPerGame();
+
+                    if (maxTeamwork < tempTeamwork) {
+                        maxTeamwork = tempTeamwork;
+                        bestTeamSize = size;
+                    }
                 }
-            }
 
-            if (fail) {
-                continue;
-            }
-
-            sumOfPasses += useOfAssist.getPassesPerGame();
-
-            long tempTeamWork = sumOfPasses * useOfAssist.getAssistsPerGame();
-
-            if (maxTeamwork < tempTeamWork) {
-                maxTeamwork = tempTeamWork;
-                bestTeamSize = i + 1;
+                ++index;
             }
         }
 
