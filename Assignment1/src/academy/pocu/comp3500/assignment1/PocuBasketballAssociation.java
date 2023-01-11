@@ -318,13 +318,18 @@ public final class PocuBasketballAssociation {
                         ++size;
                     }
 
+                    long tempBackUp = tempTeamwork;
                     tempTeamwork = (long) ((sum + forAssistValue.getPassesPerGame()) * (double) forAssistValue.getAssistsPerGame());
+
+                    if (tempBackUp > tempTeamwork)
+                    {
+                        break;
+                    }
 
                     if (maxTeamwork < tempTeamwork) {
                         maxTeamwork = tempTeamwork;
                         bestTeamSize = size;
                     }
-
                 }
                 ++index;
             }
