@@ -306,8 +306,8 @@ public final class PocuBasketballAssociation {
 
             long tempTeamwork = 0;
 
-            boolean bWorthExploring = false;
-            long assessValue = -1;
+            //boolean bWorthExploring = false;
+            //long assessValue = -1;
 
             while (index < players.length) {
                 if (players[index].getAssistsPerGame() >= forAssistValue.getAssistsPerGame()) {
@@ -328,6 +328,7 @@ public final class PocuBasketballAssociation {
                         bestTeamSize = size;
                     }
 
+                    /*
                     if (!bWorthExploring) {
                         if (assessValue == -1) {
                             assessValue = tempTeamwork;
@@ -336,8 +337,12 @@ public final class PocuBasketballAssociation {
                         if (tempTeamwork < assessValue) {
                             break;
                         }
+
+                        assessValue = tempTeamwork;
                         bWorthExploring = true;
                     }
+
+                     */
                 }
                 ++index;
             }
