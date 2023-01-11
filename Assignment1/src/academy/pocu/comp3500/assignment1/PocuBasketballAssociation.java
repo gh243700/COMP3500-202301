@@ -294,7 +294,18 @@ public final class PocuBasketballAssociation {
         long maxTeamwork = 0;
         int bestTeamSize = 0;
 
-        sortPlayersByPassPerGame(players, 0, players.length - 1);
+        //sortPlayersByPassPerGame(players, 0, players.length - 1);
+
+        for (int i = 0; i < players.length; ++i) {
+            for (int k = 0; k < players.length - 1; ++k) {
+                if (players[k].getPassesPerGame() < players[k + 1].getPassesPerGame()) {
+                    Player temp = players[k];
+                    players[k] = players[k + 1];
+                    players[k + 1] = temp;
+                }
+            }
+        }
+
 
         for (int i = 0; i < players.length; ++i) {
             int size = 0;
@@ -318,13 +329,7 @@ public final class PocuBasketballAssociation {
                         ++size;
                     }
 
-                    long tempBackUp = tempTeamwork;
                     tempTeamwork = (long) ((sum + forAssistValue.getPassesPerGame()) * (double) forAssistValue.getAssistsPerGame());
-
-                    if (tempBackUp > tempTeamwork)
-                    {
-                        break;
-                    }
 
                     if (maxTeamwork < tempTeamwork) {
                         maxTeamwork = tempTeamwork;
