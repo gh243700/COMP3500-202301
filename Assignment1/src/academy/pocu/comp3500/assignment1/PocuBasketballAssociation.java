@@ -297,7 +297,7 @@ public final class PocuBasketballAssociation {
         //sortPlayersByPassPerGame(players, 0, players.length - 1);
 
         for (int i = 0; i < players.length; ++i) {
-            for (int k = 0; k < players.length - 1; ++k) {
+            for (int k = 0; k < players.length - 1 - i; ++k) {
                 if (players[k].getPassesPerGame() < players[k + 1].getPassesPerGame()) {
                     Player temp = players[k];
                     players[k] = players[k + 1];
