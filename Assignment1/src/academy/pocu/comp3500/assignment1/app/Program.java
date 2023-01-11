@@ -204,8 +204,18 @@ public class Program {
             int k = PocuBasketballAssociation.findDreamTeamSize(players, scratch); // k: 6
 
             assert (k == 2);
+        }
 
+        {
+            Player[] players = new Player[] {
+                    new Player("Player 9", 8, 1, 5, 67),
+            };
 
+            Player[] scratch = new Player[players.length];
+
+            int k = PocuBasketballAssociation.findDreamTeamSize(players, scratch); // k: 6
+
+            assert (k == 1);
         }
     }
 }

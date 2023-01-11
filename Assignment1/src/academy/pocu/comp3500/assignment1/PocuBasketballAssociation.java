@@ -304,7 +304,7 @@ public final class PocuBasketballAssociation {
 
 
         for (int i = 0; i < players.length; ++i) {
-            int size = 1;
+            int size = 0;
 
             int index = 0;
             int sum = 0;
@@ -313,7 +313,7 @@ public final class PocuBasketballAssociation {
 
             while (index < scratch.length) {
 
-                if (scratch[index].getAssistsPerGame() > forAssist.getAssistsPerGame()) {
+                if (scratch[index] == forAssist || scratch[index].getAssistsPerGame() > forAssist.getAssistsPerGame()) {
                     if (scratch[index] != forAssist) {
                         sum += scratch[index].getPassesPerGame();
                     }
