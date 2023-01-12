@@ -5,6 +5,69 @@ import academy.pocu.comp3500.assignment1.pba.Player;
 
 public class Program {
 
+    public static int findDreamTeamSize(final Player[] players, final Player[] scratch) {
+
+        long maxTeamwork = 0;
+        int bestTeamSize = 0;
+
+        //sortPlayersByPassPerGame(players, 0, players.length - 1);
+
+        for (int i = 0; i < players.length; ++i) {
+            for (int k = 0; k < players.length - 1 - i; ++k) {
+                if (players[k].getPassesPerGame() < players[k + 1].getPassesPerGame()) {
+                    Player temp = players[k];
+                    players[k] = players[k + 1];
+                    players[k + 1] = temp;
+                }
+            }
+            scratch[i] = players[players.length - 1 - i];
+        }
+
+        //sortPlayersByAssistsPerGame(scratch, 0, scratch.length - 1);
+
+        for (int i = 0; i < scratch.length; ++i) {
+            int size = 0;
+
+            int sum = 0;
+
+            boolean isAssistValueCounted = false;
+            Player forAssistValue = scratch[i];
+
+            final int MAX_SIZE = i;
+
+            int index = 0;
+            while (index < players.length) {
+
+                if (players[index].getAssistsPerGame() >= forAssistValue.getAssistsPerGame()) {
+                    if (players[index] != forAssistValue) {
+                        sum += players[index].getPassesPerGame();
+                        ++size;
+                    }
+
+                    if (!isAssistValueCounted) {
+                        isAssistValueCounted = true;
+                        ++size;
+                    }
+
+                    long tempTeamwork = (long) ((sum + forAssistValue.getPassesPerGame()) * (double) forAssistValue.getAssistsPerGame());
+
+                    if (maxTeamwork < tempTeamwork) {
+                        maxTeamwork = tempTeamwork;
+                        bestTeamSize = size;
+                    }
+
+                    if (MAX_SIZE < size)
+                    {
+                        break;
+                    }
+                }
+                ++index;
+            }
+        }
+
+        return bestTeamSize;
+    }
+
     public static void TestFindPlayerPointsPerGame()
     {
         {

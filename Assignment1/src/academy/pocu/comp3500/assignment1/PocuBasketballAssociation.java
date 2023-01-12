@@ -35,6 +35,7 @@ public final class PocuBasketballAssociation {
     public static void processGameStats(final GameStat[] gameStats, final Player[] outPlayers) {
 
         quickSortGameStat(gameStats, 0, gameStats.length - 1);
+
         assert (gameStats.length >= 1);
 
         int outPlayersIndex = 0;
@@ -294,61 +295,27 @@ public final class PocuBasketballAssociation {
         long maxTeamwork = 0;
         int bestTeamSize = 0;
 
-        //sortPlayersByPassPerGame(players, 0, players.length - 1);
+        int sumOfPass = 0;
+        sortPlayersByAssistsPerGame(players, 0, players.length - 1);
 
+
+        int size = 0;
         for (int i = 0; i < players.length; ++i) {
-            for (int k = 0; k < players.length - 1 - i; ++k) {
-                if (players[k].getPassesPerGame() < players[k + 1].getPassesPerGame()) {
-                    Player temp = players[k];
-                    players[k] = players[k + 1];
-                    players[k + 1] = temp;
-                }
+            if (players[i].getPassesPerGame() == 0) {
+                continue;
             }
-            scratch[i] = players[players.length - 1 - i];
-        }
+            sumOfPass += players[i].getPassesPerGame();
 
-        sortPlayersByAssistsPerGame(scratch, 0, scratch.length - 1);
-
-        for (int i = 0; i < scratch.length; ++i) {
-            int size = 0;
-
-            int sum = 0;
-
-            boolean isAssistValueCounted = false;
-            Player forAssistValue = scratch[i];
-
-            final int MAX_SIZE = i;
-
-            int index = 0;
-            while (index < players.length) {
-
-                if (players[index].getAssistsPerGame() >= forAssistValue.getAssistsPerGame()) {
-                    if (players[index] != forAssistValue) {
-                        sum += players[index].getPassesPerGame();
-                        ++size;
-                    }
-
-                    if (!isAssistValueCounted) {
-                        isAssistValueCounted = true;
-                        ++size;
-                    }
-
-                    long tempTeamwork = (long) ((sum + forAssistValue.getPassesPerGame()) * (double) forAssistValue.getAssistsPerGame());
-
-                    if (maxTeamwork < tempTeamwork) {
-                        maxTeamwork = tempTeamwork;
-                        bestTeamSize = size;
-                    }
-
-                    if (MAX_SIZE < size)
-                    {
-                        break;
-                    }
-                }
-                ++index;
+            long tempTeamwork = sumOfPass * players[i].getAssistsPerGame();
+            ++size;
+            if (maxTeamwork < tempTeamwork) {
+                bestTeamSize = size;
+                maxTeamwork = tempTeamwork;
             }
         }
 
         return bestTeamSize;
     }
+
+
 }
