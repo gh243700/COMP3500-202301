@@ -48,13 +48,13 @@ public class Program {
                 root = LinkedList.append(root, i + 1);
             }
 
-            LinkedList.testLinkedList(root, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            //LinkedList.testLinkedList(root, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         }
         {
             Node root = null;
 
             root = LinkedList.prepend(root, 10);
-            LinkedList.testLinkedList(root, new int[]{10});
+            //LinkedList.testLinkedList(root, new int[]{10});
             root = LinkedList.prepend(root, 9);
             root = LinkedList.prepend(root, 8);
             root = LinkedList.prepend(root, 7);
@@ -65,7 +65,7 @@ public class Program {
             root = LinkedList.prepend(root, 2);
             root = LinkedList.prepend(root, 1);
 
-            LinkedList.testLinkedList(root, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            //LinkedList.testLinkedList(root, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         }
 
         {//insertAt
@@ -77,7 +77,7 @@ public class Program {
                 }
             }
 
-            LinkedList.testLinkedList(root, new int[]{1, 3, 5, 7, 9});
+            //LinkedList.testLinkedList(root, new int[]{1, 3, 5, 7, 9});
 
             for (int i = 0; i < 11; ++i) {
                 if (i % 2 == 0) {
@@ -85,15 +85,15 @@ public class Program {
                 }
 
             }
-            LinkedList.testLinkedList(root, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            //LinkedList.testLinkedList(root, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
 
 
             root = LinkedList.insertAt(root, -1, 100);
-            LinkedList.testLinkedList(root, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            //LinkedList.testLinkedList(root, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
 
 
             root = LinkedList.insertAt(root, 12, 100);
-            LinkedList.testLinkedList(root, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            //LinkedList.testLinkedList(root, new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         }
 
         { //removeAt
@@ -103,27 +103,27 @@ public class Program {
                 root = LinkedList.append(root, i + 1);
             }
 
-            LinkedList.testLinkedList(root, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            //LinkedList.testLinkedList(root, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
 
             root = LinkedList.removeAt(root, 0);
-            LinkedList.testLinkedList(root, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10});
+            //LinkedList.testLinkedList(root, new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10});
 
             root = LinkedList.removeAt(root, 8);
-            LinkedList.testLinkedList(root, new int[]{2, 3, 4, 5, 6, 7, 8, 9});
+            //LinkedList.testLinkedList(root, new int[]{2, 3, 4, 5, 6, 7, 8, 9});
 
             root = LinkedList.removeAt(root, 2);
-            LinkedList.testLinkedList(root, new int[]{2, 3, 5, 6, 7, 8, 9});
+            //LinkedList.testLinkedList(root, new int[]{2, 3, 5, 6, 7, 8, 9});
 
             root = LinkedList.removeAt(root, -1);
-            LinkedList.testLinkedList(root, new int[]{2, 3, 5, 6, 7, 8, 9});
+            //LinkedList.testLinkedList(root, new int[]{2, 3, 5, 6, 7, 8, 9});
 
 
             root = LinkedList.removeAt(root, 7);
-            LinkedList.testLinkedList(root, new int[]{2, 3, 5, 6, 7, 8, 9});
+            //LinkedList.testLinkedList(root, new int[]{2, 3, 5, 6, 7, 8, 9});
 
 
             root = LinkedList.removeAt(root, 6);
-            LinkedList.testLinkedList(root, new int[]{2, 3, 5, 6, 7, 8});
+            //LinkedList.testLinkedList(root, new int[]{2, 3, 5, 6, 7, 8});
         }
 
         {//getIndexOf
@@ -165,11 +165,11 @@ public class Program {
             }
 
             root = LinkedList.reverse(root);
-            LinkedList.testLinkedList(root, new int[]{10, 9, 8, 7, 6, 5, 4, 3, 2, 1});
+            //LinkedList.testLinkedList(root, new int[]{10, 9, 8, 7, 6, 5, 4, 3, 2, 1});
 
             root = new Node(1);
             root = LinkedList.reverse(root);
-            LinkedList.testLinkedList(root, new int[]{1});
+            //LinkedList.testLinkedList(root, new int[]{1});
 
         }
 
@@ -186,11 +186,11 @@ public class Program {
                 }
             }
 
-            LinkedList.testLinkedList(node0, new int[]{1, 3, 5, 7, 9});
-            LinkedList.testLinkedList(node1, new int[]{2, 4, 6, 8, 10});
+            //LinkedList.testLinkedList(node0, new int[]{1, 3, 5, 7, 9});
+            //LinkedList.testLinkedList(node1, new int[]{2, 4, 6, 8, 10});
 
             Node n = LinkedList.interleaveOrNull(node0, node1);
-            LinkedList.testLinkedList(n, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            //LinkedList.testLinkedList(n, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         }
 
         {
@@ -223,12 +223,12 @@ public class Program {
                     node1 = LinkedList.append(node1, i + 1);
                 }
             }
-            LinkedList.testLinkedList(node0, new int[]{1, 3, 5, 7, 9, 11, 13, 15, 17, 19});
-            LinkedList.testLinkedList(node1, new int[]{2, 4, 6, 8, 10});
+            //LinkedList.testLinkedList(node0, new int[]{1, 3, 5, 7, 9, 11, 13, 15, 17, 19});
+            //LinkedList.testLinkedList(node1, new int[]{2, 4, 6, 8, 10});
 
 
             Node n = LinkedList.interleaveOrNull(node0, node1);
-            LinkedList.testLinkedList(n, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19});
+            //LinkedList.testLinkedList(n, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19});
         }
 
         {
@@ -246,12 +246,12 @@ public class Program {
                     node1 = LinkedList.append(node1, i + 1);
                 }
             }
-            LinkedList.testLinkedList(node0, new int[]{1, 3, 5, 7, 9});
-            LinkedList.testLinkedList(node1, new int[]{2, 4, 6, 8, 10, 12, 14, 16, 18, 20});
+            //LinkedList.testLinkedList(node0, new int[]{1, 3, 5, 7, 9});
+            //LinkedList.testLinkedList(node1, new int[]{2, 4, 6, 8, 10, 12, 14, 16, 18, 20});
 
 
             Node n = LinkedList.interleaveOrNull(node0, node1);
-            LinkedList.testLinkedList(n, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20});
+            //LinkedList.testLinkedList(n, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20});
         }
 
         System.out.println("------------------------------------------------------------------------");
@@ -263,6 +263,19 @@ public class Program {
         TestLinkedList();
         testStack();
         testQueue();
+
+        {
+            Node node = null;
+            node = LinkedList.append(null, 1);
+            node = LinkedList.append(node, 2);
+            node = LinkedList.append(node, 3);
+            node = LinkedList.append(node, 4);
+            node = LinkedList.append(node, 5);
+
+
+
+
+        }
 
         {
             Node root = LinkedList.append(null, 10);

@@ -5,6 +5,7 @@ import academy.pocu.comp3500.lab2.datastructure.Node;
 public final class LinkedList {
     private LinkedList() {
     }
+/*
 
     public static void testLinkedList(Node root, int[] arr) {
         Node node = root;
@@ -28,6 +29,7 @@ public final class LinkedList {
         System.out.println("\n---------------------------------------------------------------------");
 
     }
+ */
 
 
     public static Node append(final Node rootOrNull, final int data) {
@@ -56,8 +58,15 @@ public final class LinkedList {
 
     public static Node insertAt(final Node rootOrNull, final int index, final int data) {
 
-        if (index < 0 || rootOrNull == null) {
+        if (index < 0) {
             return rootOrNull;
+        }
+
+        if (rootOrNull == null) {
+            if (index == 0) {
+                return new Node(data);
+            }
+            return null;
         }
 
         if (index == 0) {
