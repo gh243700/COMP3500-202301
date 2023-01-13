@@ -6,12 +6,10 @@ public final class LinkedList {
     private LinkedList() {
     }
 
-    public static void testLinkedList(Node root, int[] arr)
-    {
+    public static void testLinkedList(Node root, int[] arr) {
         Node node = root;
         int i = 0;
-        while (node != null)
-        {
+        while (node != null) {
             assert (node.getData() == arr[i]);
             ++i;
             node = node.getNextOrNull();
@@ -20,19 +18,16 @@ public final class LinkedList {
         assert (i == arr.length);
     }
 
-    public static void printLinkedList(Node root)
-    {
+    public static void printLinkedList(Node root) {
         Node node = root;
         System.out.println("---------------------------------------------------------------------");
-        while (node != null)
-        {
+        while (node != null) {
             System.out.print(node.getData() + ", ");
             node = node.getNextOrNull();
         }
         System.out.println("\n---------------------------------------------------------------------");
 
     }
-
 
 
     public static Node append(final Node rootOrNull, final int data) {

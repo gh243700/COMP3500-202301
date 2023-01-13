@@ -1,9 +1,43 @@
 package academy.pocu.comp3500.lab2.app;
 
 import academy.pocu.comp3500.lab2.LinkedList;
+import academy.pocu.comp3500.lab2.Queue;
+import academy.pocu.comp3500.lab2.Stack;
 import academy.pocu.comp3500.lab2.datastructure.Node;
 
 public class Program {
+
+    public static void testStack() {
+        Stack stack = new Stack();
+        for (int i = 0; i < 10; ++i) {
+            stack.push(i + 1);
+            assert (stack.getSize() == i + 1);
+        }
+
+        for (int i = 0; i < 10; ++i) {
+            assert (stack.peek() == 10 - i);
+            assert (stack.getSize() == 10 - i);
+            assert (stack.pop() == 10 - i);
+            assert (stack.getSize() == 10 - i - 1);
+        }
+    }
+
+    public static void testQueue() {
+        Queue queue = new Queue();
+
+        for (int i = 0; i < 10; ++i) {
+            queue.enqueue(i + 1);
+            assert (queue.getSize() == i + 1);
+        }
+
+        for (int i = 0; i < 10; ++i) {
+            assert (queue.peek() == i + 1);
+            assert (queue.getSize() == 10 - i);
+            assert (queue.dequeue() == i + 1);
+            assert (queue.getSize() == 10 - i - 1);
+        }
+
+    }
 
     public static void TestLinkedList() {
 
@@ -147,17 +181,16 @@ public class Program {
             for (int i = 0; i < 10; ++i) {
                 if (i % 2 == 0) {
                     node0 = LinkedList.append(node0, i + 1);
-                } else
-                {
+                } else {
                     node1 = LinkedList.append(node1, i + 1);
                 }
             }
 
-            LinkedList.testLinkedList(node0, new int[] {1, 3, 5, 7, 9});
-            LinkedList.testLinkedList(node1, new int[] {2, 4, 6, 8, 10});
+            LinkedList.testLinkedList(node0, new int[]{1, 3, 5, 7, 9});
+            LinkedList.testLinkedList(node1, new int[]{2, 4, 6, 8, 10});
 
             Node n = LinkedList.interleaveOrNull(node0, node1);
-            LinkedList.testLinkedList(n, new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            LinkedList.testLinkedList(n, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         }
 
         {
@@ -168,11 +201,57 @@ public class Program {
             for (int i = 0; i < 10; ++i) {
                 if (i % 2 == 0) {
                     node0 = LinkedList.append(node0, i + 1);
-                } else
-                {
+                } else {
                     node1 = LinkedList.append(node1, i + 1);
                 }
             }
+        }
+
+        {
+            Node node0 = null;
+            Node node1 = null;
+
+            for (int i = 0; i < 20; ++i) {
+                if (i % 2 == 0) {
+                    node0 = LinkedList.append(node0, i + 1);
+                }
+
+            }
+
+            for (int i = 0; i < 10; ++i) {
+                if (i % 2 != 0) {
+                    node1 = LinkedList.append(node1, i + 1);
+                }
+            }
+            LinkedList.testLinkedList(node0, new int[]{1, 3, 5, 7, 9, 11, 13, 15, 17, 19});
+            LinkedList.testLinkedList(node1, new int[]{2, 4, 6, 8, 10});
+
+
+            Node n = LinkedList.interleaveOrNull(node0, node1);
+            LinkedList.testLinkedList(n, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19});
+        }
+
+        {
+            Node node0 = null;
+            Node node1 = null;
+
+            for (int i = 0; i < 10; ++i) {
+                if (i % 2 == 0) {
+                    node0 = LinkedList.append(node0, i + 1);
+                }
+            }
+
+            for (int i = 0; i < 20; ++i) {
+                if (i % 2 != 0) {
+                    node1 = LinkedList.append(node1, i + 1);
+                }
+            }
+            LinkedList.testLinkedList(node0, new int[]{1, 3, 5, 7, 9});
+            LinkedList.testLinkedList(node1, new int[]{2, 4, 6, 8, 10, 12, 14, 16, 18, 20});
+
+
+            Node n = LinkedList.interleaveOrNull(node0, node1);
+            LinkedList.testLinkedList(n, new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20});
         }
 
         System.out.println("------------------------------------------------------------------------");
@@ -182,7 +261,7 @@ public class Program {
     public static void main(String[] args) {
         // write your code here
         TestLinkedList();
-
-
+        testStack();
+        testQueue();
     }
 }
