@@ -298,7 +298,6 @@ public final class PocuBasketballAssociation {
         int sumOfPass = 0;
         sortPlayersByAssistsPerGame(players, 0, players.length - 1);
 
-
         int size = 0;
         for (int i = 0; i < players.length; ++i) {
             if (players[i].getPassesPerGame() == 0) {
