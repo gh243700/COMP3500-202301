@@ -6,6 +6,29 @@ import academy.pocu.comp3500.assignment1.pba.GameStat;
 public final class PocuBasketballAssociation {
     private PocuBasketballAssociation() {
     }
+    public static void sortPlayersByPassPerGame(final Player[] players, final int front, final int back) {
+        if (front >= back) {
+            return;
+        }
+
+        int left = (front - 1);
+        for (int i = front; i < back; ++i) {
+            if (players[i].getPassesPerGame() > players[back].getPassesPerGame()) {
+                ++left;
+                Player temp = players[i];
+                players[i] = players[left];
+                players[left] = temp;
+            }
+        }
+
+        ++left;
+        Player temp = players[left];
+        players[left] = players[back];
+        players[back] = temp;
+
+        sortPlayersByPassPerGame(players, front, left - 1);
+        sortPlayersByPassPerGame(players, left + 1, back);
+    }
     public static void sortPlayersByAssistsPerGame(final Player[] players, final int front, final int back) {
         if (front >= back) {
             return;
@@ -84,7 +107,6 @@ public final class PocuBasketballAssociation {
 
         return findPlayerCloseToPoint(players, front, mid, target);
     }
-
     public static void quickSortGameStat(final GameStat[] gameStat, final int leftIndex, final int rightIndex) {
         if (leftIndex >= rightIndex) {
             return;
@@ -204,29 +226,6 @@ public final class PocuBasketballAssociation {
         }
 
         return maxTeamwork;
-    }
-    public static void sortPlayersByPassPerGame(final Player[] players, final int front, final int back) {
-        if (front >= back) {
-            return;
-        }
-
-        int left = (front - 1);
-        for (int i = front; i < back; ++i) {
-            if (players[i].getPassesPerGame() > players[back].getPassesPerGame()) {
-                ++left;
-                Player temp = players[i];
-                players[i] = players[left];
-                players[left] = temp;
-            }
-        }
-
-        ++left;
-        Player temp = players[left];
-        players[left] = players[back];
-        players[back] = temp;
-
-        sortPlayersByPassPerGame(players, front, left - 1);
-        sortPlayersByPassPerGame(players, left + 1, back);
     }
     public static long findDreamTeam(final Player[] players, int k, final Player[] outPlayers, final Player[] scratch) {
         sortPlayersByAssistsPerGame(players, 0, players.length - 1);
