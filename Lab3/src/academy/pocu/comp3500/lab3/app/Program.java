@@ -10,6 +10,49 @@ public class Program {
 
     public static void main(String[] args) {
         // write your code here
+        {
+            for (int k = 0; k < 100; ++k) {
+                int[] altitude = new int[100];
+
+                for (int i = 0; i < k; ++i) {
+                    altitude[i] = i + 1;
+                }
+
+                for (int i = 0; i < 100 - k; ++i) {
+                    altitude[k + i] = k - i - 1;
+                }
+
+                for (int i = 0; i < altitude.length; ++i) {
+                    ArrayList<Integer> range = MissionControl.findAltitudeTimes(altitude, altitude[i]);
+                    ArrayList<Integer> expected = new ArrayList<>();
+
+                    Collections.sort(range);
+
+                    for (int j = 0; j < altitude.length; ++j) {
+                        if (altitude[j] == altitude[i]) {
+                            expected.add(j);
+                        }
+                    }
+
+                    Collections.sort(expected);
+                    if (i == 99) {
+                        System.out.println(i);
+                    }
+
+
+                    System.out.println(i);
+
+                    assert (expected.size() <= 2);
+                    assert (expected.size() == range.size());
+
+                    for (int j = 0; j < range.size(); ++j) {
+                        assert (range.get(j) == expected.get(j));
+                    }
+
+                }
+            }
+        }
+
 
         {
             int[] altitude = {1};
@@ -189,49 +232,7 @@ public class Program {
             assert (bounds.get(0) == 4);
         }
 
-        {
-            for (int k = 0; k < 100; ++k) {
-                int[] altitude = new int[100];
 
-                for (int i = 0; i < k; ++i) {
-                    altitude[i] = i + 1;
-                }
-
-                for (int i = 0; i < 100 - k; ++i) {
-                    altitude[k + i] = k - i - 1;
-                }
-
-                int maxIndex = 0;
-                for (int i = 0; i < altitude.length; ++i) {
-                    ArrayList<Integer> range = MissionControl.findAltitudeTimes(altitude, altitude[i]);
-                    ArrayList<Integer> expected = new ArrayList<>();
-
-                    Collections.sort(range);
-
-                    for (int j = 0; j < altitude.length; ++j) {
-                        if (altitude[j] == altitude[i]) {
-                            expected.add(j);
-                        }
-                    }
-
-                    Collections.sort(expected);
-                    if (i == 99) {
-                        System.out.println(i);
-                    }
-
-
-                    System.out.println(i);
-
-                    assert (expected.size() <= 2);
-                    assert (expected.size() == range.size());
-
-                    for (int j = 0; j < range.size(); ++j) {
-                        assert (range.get(j) == expected.get(j));
-                    }
-
-                }
-            }
-        }
 
 
     }
