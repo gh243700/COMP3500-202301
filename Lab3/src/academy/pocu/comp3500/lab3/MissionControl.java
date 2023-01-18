@@ -51,6 +51,7 @@ public final class MissionControl {
             if (altitudes[front] == targetAltitude) {
                 bounds.add(front);
             }
+
             return;
         }
 
@@ -58,7 +59,6 @@ public final class MissionControl {
             if (altitudes[front] == targetAltitude) {
                 bounds.add(front);
             }
-
             if (altitudes[back] == targetAltitude) {
                 bounds.add(back);
             }

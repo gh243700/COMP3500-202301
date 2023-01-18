@@ -9,6 +9,7 @@ import java.util.Collections;
 public class Program {
 
     public static void main(String[] args) {
+
         // write your code here
         {
             for (int k = 0; k < 100; ++k) {
@@ -35,12 +36,6 @@ public class Program {
                     }
 
                     Collections.sort(expected);
-                    if (i == 99) {
-                        System.out.println(i);
-                    }
-
-
-                    System.out.println(i);
 
                     assert (expected.size() <= 2);
                     assert (expected.size() == range.size());
@@ -231,9 +226,6 @@ public class Program {
             assert (bounds.size() == 1);
             assert (bounds.get(0) == 4);
         }
-
-
-
 
     }
 }
