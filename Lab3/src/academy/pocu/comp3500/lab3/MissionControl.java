@@ -10,10 +10,12 @@ public final class MissionControl {
         final int mid = (front + back) / 2;
 
         if (mid - 1 < 0) {
+
             return (altitudes[mid] > altitudes[mid + 1]) ? mid : mid + 1;
         }
 
         if (mid + 1 >= altitudes.length) {
+
             return (altitudes[mid] > altitudes[mid - 1]) ? mid : mid - 1;
         }
 
@@ -21,14 +23,17 @@ public final class MissionControl {
         boolean rightIsBig = altitudes[mid] < altitudes[mid + 1];
 
         if (leftIsBig && rightIsBig) {
+
             return (altitudes[front] > altitudes[back] ? front : back);
         }
 
         if (!leftIsBig && !rightIsBig) {
+
             return mid;
         }
 
         if (leftIsBig) {
+
             return findMaxAltitudeHelperRecursive(altitudes, front, mid - 1);
         }
 
@@ -37,6 +42,7 @@ public final class MissionControl {
 
     public static int findMaxAltitudeTime(final int[] altitudes) {
         if (altitudes.length == 1) {
+
             return 0;
         }
 
@@ -62,6 +68,7 @@ public final class MissionControl {
             if (altitudes[back] == targetAltitude) {
                 bounds.add(back);
             }
+
             return;
         }
 
@@ -77,20 +84,24 @@ public final class MissionControl {
         if (!isLinear) {
             findAltitudeTimesHelperRecursive(altitudes, targetAltitude, bounds, front, mid - 1);
             findAltitudeTimesHelperRecursive(altitudes, targetAltitude, bounds, mid + 1, back);
+
             return;
         }
 
         if (midMinusFront >= 0) {
             if (altitudes[mid] > targetAltitude) {
                 findAltitudeTimesHelperRecursive(altitudes, targetAltitude, bounds, front, mid - 1);
+
                 return;
             }
             findAltitudeTimesHelperRecursive(altitudes, targetAltitude, bounds, mid + 1, back);
+
             return;
         }
 
         if (altitudes[mid] < targetAltitude) {
             findAltitudeTimesHelperRecursive(altitudes, targetAltitude, bounds, front, mid - 1);
+
             return;
         }
         findAltitudeTimesHelperRecursive(altitudes, targetAltitude, bounds, mid + 1, back);
@@ -100,6 +111,7 @@ public final class MissionControl {
         ArrayList<Integer> bounds = new ArrayList<>();
 
         findAltitudeTimesHelperRecursive(altitudes, targetAltitude, bounds, 0, altitudes.length - 1);
+
         return bounds;
     }
 }
