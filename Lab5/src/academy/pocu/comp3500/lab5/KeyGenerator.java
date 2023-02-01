@@ -11,28 +11,26 @@ public class KeyGenerator {
 
     public static boolean isPrime(final BigInteger number) {
 
-        BigInteger numberCopy = number;
-
-        if (numberCopy.compareTo(ZERO) == -1) {
-            numberCopy = numberCopy.abs();
-        }
-
-        if (numberCopy.equals(TWO)) {
-            return true;
-        }
-
-        if (numberCopy.remainder(TWO).equals(ZERO) || numberCopy.equals(ONE)) {
+        if (number.compareTo(ZERO) == -1) {
             return false;
         }
 
-        BigInteger nMinusOne = numberCopy.subtract(ONE);
+        if (number.equals(TWO)) {
+            return true;
+        }
+
+        if (number.remainder(TWO).equals(ZERO) || number.equals(ONE)) {
+            return false;
+        }
+
+        BigInteger nMinusOne = number.subtract(ONE);
         int s = nMinusOne.getLowestSetBit();
-        BigInteger d = numberCopy.divide(TWO.pow(s));
+        BigInteger d = number.divide(TWO.pow(s));
 
         BigInteger minLimit = ONE;
         BigInteger bigInteger = nMinusOne.subtract(minLimit);
 
-        for (int k = 0; k < 30; ++k) {
+        for (int k = 0; k < 10; ++k) {
             Random random = new Random();
             int len = nMinusOne.bitLength();
             BigInteger randomA = new BigInteger(len, random);
@@ -48,7 +46,7 @@ public class KeyGenerator {
             boolean possiblePrime = false;
 
             for (int i = 0; i < s; ++i) {
-                if (randomA.modPow(d, numberCopy).equals(ONE) || randomA.modPow(TWO.pow(i).multiply(d), numberCopy).equals(nMinusOne)) {
+                if (randomA.modPow(d, number).equals(ONE) || randomA.modPow(TWO.pow(i).multiply(d), number).equals(nMinusOne)) {
                     possiblePrime = true;
 
                     break;
@@ -58,7 +56,6 @@ public class KeyGenerator {
             if (possiblePrime == false) {
                 return false;
             }
-
         }
 
         return true;
