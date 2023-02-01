@@ -5,9 +5,6 @@ import java.util.HashSet;
 import java.util.Random;
 
 public class KeyGenerator {
-
-    static BigInteger[] bigNumber = {new BigInteger("0"), new BigInteger("1"), new BigInteger("2")};
-
     private final static BigInteger NEGATIVE_ONE = BigInteger.valueOf(-1);
     private final static BigInteger NEGATIVE_TWO = BigInteger.valueOf(-2);
     private final static BigInteger ZERO = BigInteger.valueOf(0);
