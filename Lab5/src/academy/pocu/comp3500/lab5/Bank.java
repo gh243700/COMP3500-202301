@@ -28,7 +28,7 @@ public class Bank {
     }
 
     public boolean transfer(final byte[] from, byte[] to, final long amount, final byte[] signature) {
-        if (accounts.containsKey(from) == false || accounts.get(from) - amount < 0 || ((!accounts.containsKey(to)) ? 0 : accounts.get(to)) + amount < 0 || amount <= 0) {
+        if (accounts.containsKey(from) == false || amount <= 0 || accounts.get(from) - amount < 0 || ((!accounts.containsKey(to)) ? 0 : accounts.get(to)) + amount < 0) {
             return false;
         }
 
