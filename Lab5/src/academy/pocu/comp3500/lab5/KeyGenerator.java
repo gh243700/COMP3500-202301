@@ -10,7 +10,6 @@ public class KeyGenerator {
     private final static BigInteger ZERO = BigInteger.valueOf(0);
     private final static BigInteger ONE = BigInteger.valueOf(1);
     private final static BigInteger TWO = BigInteger.valueOf(2);
-
     public static boolean isPrime(final BigInteger number) {
 
         if (number.equals(TWO) || number.equals(NEGATIVE_TWO)) {
