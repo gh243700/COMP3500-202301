@@ -1,7 +1,6 @@
 package academy.pocu.comp3500.lab5;
 
 import java.math.BigInteger;
-import java.util.HashSet;
 import java.util.Random;
 
 public class KeyGenerator {
