@@ -5,24 +5,24 @@ import java.util.Random;
 
 public class KeyGenerator {
     private final static BigInteger NEGATIVE_ONE = BigInteger.valueOf(-1);
-    private final static BigInteger NEGATIVE_TWO = BigInteger.valueOf(-2);
     private final static BigInteger ZERO = BigInteger.valueOf(0);
     private final static BigInteger ONE = BigInteger.valueOf(1);
     private final static BigInteger TWO = BigInteger.valueOf(2);
+
     public static boolean isPrime(final BigInteger number) {
 
-        if (number.equals(TWO) || number.equals(NEGATIVE_TWO)) {
-            return true;
-        }
-
-        if (number.remainder(TWO).equals(ZERO) || number.equals(ONE) || number.equals(NEGATIVE_ONE)) {
-            return false;
-        }
-
-        BigInteger numberCopy = number;
+        BigInteger numberCopy = number.add(ZERO);
 
         if (numberCopy.compareTo(ZERO) == -1) {
             numberCopy = numberCopy.multiply(NEGATIVE_ONE);
+        }
+
+        if (numberCopy.equals(TWO)) {
+            return true;
+        }
+
+        if (numberCopy.remainder(TWO).equals(ZERO) || numberCopy.equals(ONE)) {
+            return false;
         }
 
         BigInteger nMinusOne = numberCopy.subtract(ONE);
@@ -32,7 +32,7 @@ public class KeyGenerator {
         BigInteger minLimit = ONE;
         BigInteger bigInteger = nMinusOne.subtract(minLimit);
 
-        for (int k = 0; k < 20; ++k) {
+        for (int k = 0; k < 10; ++k) {
             Random random = new Random();
             int len = nMinusOne.bitLength();
             BigInteger randomA = new BigInteger(len, random);
