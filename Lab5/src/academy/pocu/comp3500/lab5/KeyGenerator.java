@@ -4,22 +4,17 @@ import java.math.BigInteger;
 import java.util.Random;
 
 public class KeyGenerator {
-    private final static BigInteger NEGATIVE_ONE = BigInteger.valueOf(-1);
     private final static BigInteger ZERO = BigInteger.valueOf(0);
     private final static BigInteger ONE = BigInteger.valueOf(1);
     private final static BigInteger TWO = BigInteger.valueOf(2);
 
     public static boolean isPrime(final BigInteger number) {
 
-        if (number.compareTo(ZERO) == -1) {
-            return false;
-        }
-
         if (number.equals(TWO)) {
             return true;
         }
 
-        if (number.remainder(TWO).equals(ZERO) || number.equals(ONE)) {
+        if (number.compareTo(ZERO) == -1 || number.remainder(TWO).equals(ZERO) || number.equals(ONE)) {
             return false;
         }
 
