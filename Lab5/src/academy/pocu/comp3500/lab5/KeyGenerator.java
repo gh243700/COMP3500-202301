@@ -32,7 +32,7 @@ public class KeyGenerator {
         BigInteger minLimit = ONE;
         BigInteger bigInteger = nMinusOne.subtract(minLimit);
 
-        for (int k = 0; k < 10; ++k) {
+        for (int k = 0; k < 30; ++k) {
             Random random = new Random();
             int len = nMinusOne.bitLength();
             BigInteger randomA = new BigInteger(len, random);
