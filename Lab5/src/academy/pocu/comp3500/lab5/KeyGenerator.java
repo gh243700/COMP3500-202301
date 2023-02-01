@@ -11,10 +11,10 @@ public class KeyGenerator {
 
     public static boolean isPrime(final BigInteger number) {
 
-        BigInteger numberCopy = number.add(ZERO);
+        BigInteger numberCopy = number;
 
         if (numberCopy.compareTo(ZERO) == -1) {
-            numberCopy = numberCopy.multiply(NEGATIVE_ONE);
+            numberCopy = numberCopy.abs();
         }
 
         if (numberCopy.equals(TWO)) {

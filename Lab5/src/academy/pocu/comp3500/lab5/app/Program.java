@@ -100,12 +100,41 @@ public class Program {
         }
 
 
-        {
+        {/*
+
             for (int i = -9999999; i < 9999999; ++i) {
                 assert (KeyGenerator.isPrime(BigInteger.valueOf(i)) == BigInteger.valueOf(i).isProbablePrime(100));
             }
+            */
         }
-
+        smallPrimeNumberTest();
 
     }
+
+    private static void smallPrimeNumberTest() {
+        final int LIMIT = 1000000;
+        boolean[] era = new boolean[LIMIT];
+
+        // true => not prime number. Because the default value is false.
+        era[0] = true;
+        era[1] = true;
+        for (int i = 2; i < LIMIT; ++i) {
+            if (era[i] == false) {
+                for (int notPrime = i + i; notPrime < LIMIT; notPrime += i) {
+                    era[notPrime] = true;
+                }
+            }
+        }
+
+        for (int i = 0; i < LIMIT; ++i) {
+            boolean bPrime = !era[i];
+            boolean bIsPrimeResult = KeyGenerator.isPrime(BigInteger.valueOf(i));
+
+            if (bPrime != bIsPrimeResult) {
+                System.out.println(String.format("%d is %s\n", i, (bPrime ? "prime number" : "not a prime number")));
+            }
+            assert(bPrime == bIsPrimeResult);
+        }
+    }
+
 }
