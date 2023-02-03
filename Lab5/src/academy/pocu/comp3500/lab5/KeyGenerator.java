@@ -4,25 +4,21 @@ import java.math.BigInteger;
 import java.util.Random;
 
 public class KeyGenerator {
-    private final static BigInteger ZERO = BigInteger.valueOf(0);
-    private final static BigInteger ONE = BigInteger.valueOf(1);
-    private final static BigInteger TWO = BigInteger.valueOf(2);
-
     public static boolean isPrime(final BigInteger number) {
 
-        if (number.equals(TWO)) {
+        if (number.equals(BigInteger.TWO)) {
             return true;
         }
 
-        if (number.compareTo(ZERO) == -1 || number.remainder(TWO).equals(ZERO) || number.equals(ONE)) {
+        if (number.compareTo(BigInteger.ZERO) == -1 || number.remainder(BigInteger.TWO).equals(BigInteger.ZERO) || number.equals(BigInteger.ONE)) {
             return false;
         }
 
-        BigInteger nMinusOne = number.subtract(ONE);
+        BigInteger nMinusOne = number.subtract(BigInteger.ONE);
         int s = nMinusOne.getLowestSetBit();
-        BigInteger d = number.divide(TWO.pow(s));
+        BigInteger d = number.divide(BigInteger.TWO.pow(s));
 
-        BigInteger minLimit = ONE;
+        BigInteger minLimit = BigInteger.ONE;
         BigInteger bigInteger = nMinusOne.subtract(minLimit);
 
         for (int k = 0; k < 10; ++k) {
@@ -41,7 +37,7 @@ public class KeyGenerator {
             boolean possiblePrime = false;
 
             for (int i = 0; i < s; ++i) {
-                if (randomA.modPow(d, number).equals(ONE) || randomA.modPow(TWO.pow(i).multiply(d), number).equals(nMinusOne)) {
+                if (randomA.modPow(d, number).equals(BigInteger.ONE) || randomA.modPow(BigInteger.TWO.pow(i).multiply(d), number).equals(nMinusOne)) {
                     possiblePrime = true;
 
                     break;
