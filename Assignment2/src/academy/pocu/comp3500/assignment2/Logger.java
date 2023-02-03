@@ -1,0 +1,40 @@
+package academy.pocu.comp3500.assignment2;
+
+import java.io.BufferedWriter;
+
+public final class Logger {
+    private static final Indent root = new Indent();
+    private static Indent current = root;
+    public static void log(final String text) {
+        current.addSubIndent(text);
+    }
+    public static void printTo(final BufferedWriter writer) {
+        printTo(writer, null);
+    }
+    public static void printTo(final BufferedWriter writer, final String filter) {
+        root.printAll(writer, 0, filter);
+    }
+
+    public static void clear() {
+        root.discard();
+        current = root;
+    }
+    public static Indent indent() {
+        Indent lastSubIndent = current.getLastSubIndent();
+
+        if (lastSubIndent == null) {
+            lastSubIndent = current.addSubIndent(null);
+        }
+
+        current = lastSubIndent;
+
+        return current;
+    }
+    public static void unindent() {
+        if (current.getParent() == null) {
+            return;
+        }
+
+        current = current.getParent();
+    }
+}
