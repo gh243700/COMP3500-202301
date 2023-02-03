@@ -49,7 +49,7 @@ public final class Indent {
         subIndents.clear();
     }
 
-    public void printAll(final BufferedWriter writer, int level, String filter) {
+    public void printAllRecursive(final BufferedWriter writer, int level, String filter) {
         if (filter != null && level != 0 && message != null) {
             if (!message.contains(filter)) {
                 return;
@@ -67,7 +67,7 @@ public final class Indent {
             }
 
             for (Indent subIndent : subIndents) {
-                subIndent.printAll(writer, level + 1, filter);
+                subIndent.printAllRecursive(writer, level + 1, filter);
             }
 
             if (level == 0) {

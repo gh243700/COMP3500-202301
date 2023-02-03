@@ -121,8 +121,7 @@ public class Program {
                 Sort.quickSort(nums);
 
                 Logger.printTo(writer1);
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 System.exit(-1);
             }
 
@@ -150,7 +149,76 @@ public class Program {
   X: 10 30 40 50 70 80 90
 */
         }
+
+
+        {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("mylog1.log"));
+
+            log("hello");
+            log("world");
+            log("this is logging at the top level");
+
+            Logger.indent();
+            {
+                log("using indent, you can indent to organize your logs");
+                log("call unindent() to decrease the indentation level");
+            }
+            Logger.unindent();
+
+            Indent indent = Logger.indent();
+            {
+                log("whatever I say here");
+                log("is discarded!");
+                log("too bad!");
+
+                indent.discard();
+            }
+            Logger.unindent();
+
+            Logger.indent();
+            {
+                log("this won't be discarded");
+                log("it's true!");
+
+                doMagic();
+            }
+            Logger.unindent();
+
+            log("back to the top level!");
+            log("and let's print the logs");
+
+            Logger.printTo(writer);
+
+            Logger.clear();
+
+            log("log was just cleared");
+            log("so you start logging from the top level again");
+
+            Logger.printTo(writer);
+
+            writer.close();
+        }
+
+        Logger.clear();
+
+        {
+            final BufferedWriter writer1 = new BufferedWriter(new FileWriter("quicksort1.log"));
+            final BufferedWriter writer2 = new BufferedWriter(new FileWriter("quicksort2.log"));
+
+            int[] nums = new int[]{30, 10, 80, 90, 50, 70, 40};
+
+            Sort.quickSort(nums);
+
+            Logger.printTo(writer1);
+
+            Logger.printTo(writer2, "90");
+
+            writer1.close();
+            writer2.close();
+        }
+
     }
+
     public static void doMagic() {
         Logger.indent();
         {
@@ -159,6 +227,7 @@ public class Program {
         }
         Logger.unindent();
     }
+
     private static int sum(int[] nums) {
         int sum = 0;
         for (int i = 0; i < nums.length; ++i) {
@@ -181,11 +250,6 @@ public class Program {
         log(String.format("return average: %f", average));
         return average;
     }
-
-
-
-
-
 
 
 }

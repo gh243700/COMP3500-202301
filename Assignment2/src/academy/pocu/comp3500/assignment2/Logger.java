@@ -12,24 +12,21 @@ public final class Logger {
         printTo(writer, null);
     }
     public static void printTo(final BufferedWriter writer, final String filter) {
-        root.printAll(writer, 0, filter);
+        root.printAllRecursive(writer, 0, filter);
     }
 
     public static void clear() {
         root.discard();
         current = root;
     }
+
     public static Indent indent() {
-        Indent lastSubIndent = current.getLastSubIndent();
-
-        if (lastSubIndent == null) {
-            lastSubIndent = current.addSubIndent(null);
-        }
-
-        current = lastSubIndent;
+        current.addSubIndent(null);
+        current = current.getLastSubIndent();
 
         return current;
     }
+
     public static void unindent() {
         if (current.getParent() == null) {
             return;
