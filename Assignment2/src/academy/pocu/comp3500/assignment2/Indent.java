@@ -12,7 +12,7 @@ public final class Indent {
     public Indent() {
     }
 
-    public Indent(String message, Indent parent) {
+    private Indent(String message, Indent parent) {
         this.message = message;
         this.parent = parent;
     }
