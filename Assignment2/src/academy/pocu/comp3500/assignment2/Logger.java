@@ -3,8 +3,8 @@ package academy.pocu.comp3500.assignment2;
 import java.io.BufferedWriter;
 
 public final class Logger {
-    private static final Indent root = new Indent();
-    private static Indent current = root;
+    private static final Indent ROOT = new Indent();
+    private static Indent current = ROOT;
     public static void log(final String text) {
         current.addSubIndent(text);
     }
@@ -12,12 +12,12 @@ public final class Logger {
         printTo(writer, null);
     }
     public static void printTo(final BufferedWriter writer, final String filter) {
-        root.printAllRecursive(writer, 0, filter);
+        ROOT.printAllRecursive(writer, 0, filter);
     }
 
     public static void clear() {
-        root.discard();
-        current = root;
+        ROOT.discard();
+        current = ROOT;
     }
 
     public static Indent indent() {
