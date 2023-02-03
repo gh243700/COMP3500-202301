@@ -5,14 +5,15 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 public final class Indent {
-    private String message;
+    private final String message;
     private final ArrayList<Indent> subIndents = new ArrayList<>();
     private Indent parent;
 
     public Indent() {
+        this.message = null;
     }
 
-    private Indent(String message, Indent parent) {
+    private Indent(final String message, Indent parent) {
         this.message = message;
         this.parent = parent;
     }
