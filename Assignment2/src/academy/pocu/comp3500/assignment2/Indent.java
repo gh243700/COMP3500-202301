@@ -28,13 +28,9 @@ public final class Indent {
         return parent;
     }
 
-    private void forgetParent() {
-        this.parent = null;
-    }
-
     public void discard() {
         for (Indent indent : subIndents) {
-            indent.forgetParent();
+            indent.parent = null;
             indent.discard();
         }
 
