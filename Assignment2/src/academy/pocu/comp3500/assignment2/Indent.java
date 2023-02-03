@@ -1,12 +1,12 @@
 package academy.pocu.comp3500.assignment2;
 
-import academy.pocu.comp3500.assignment2.datastructure.LinkedList;
+import academy.pocu.comp3500.assignment2.datastructure.ArrayList;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
 public final class Indent {
     private String message;
-    private final LinkedList<Indent> subIndents = new LinkedList<>();
+    private final ArrayList<Indent> subIndents = new ArrayList<>();
     private Indent parent;
 
     public Indent() {
@@ -15,14 +15,6 @@ public final class Indent {
     public Indent(String message, Indent parent) {
         this.message = message;
         this.parent = parent;
-    }
-
-    public Indent getLastSubIndent() {
-        if (subIndents.getSize() == 0) {
-            return null;
-        }
-
-        return subIndents.getLast();
     }
 
     public Indent addSubIndent(String message) {

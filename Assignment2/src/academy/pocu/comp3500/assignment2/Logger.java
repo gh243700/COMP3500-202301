@@ -21,8 +21,7 @@ public final class Logger {
     }
 
     public static Indent indent() {
-        current.addSubIndent(null);
-        current = current.getLastSubIndent();
+        current = current.addSubIndent(null);
 
         return current;
     }
