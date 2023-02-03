@@ -39,7 +39,7 @@ public final class Indent {
     }
 
     public void printAllRecursive(final BufferedWriter writer, final int level, final String filter) {
-        if (filter != null && level != 0 && message != null) {
+        if (filter != null && message != null) {
             if (!message.contains(filter)) {
                 return;
             }
