@@ -35,8 +35,6 @@ public class Program {
                 level1.discard();
                 Logger.printTo(writer);
                 writer.close();
-
-                Indent indent = new Indent("S", new Indent());
             }
 
             Logger.clear();
