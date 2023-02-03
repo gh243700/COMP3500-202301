@@ -17,7 +17,7 @@ public final class Indent {
         this.parent = parent;
     }
 
-    public Indent registerSubIndent(String message) {
+    public Indent registerSubIndent(final String message) {
         Indent subIndent = new Indent(message, this);
         subIndents.add(subIndent);
 
@@ -37,7 +37,7 @@ public final class Indent {
         subIndents.clear();
     }
 
-    public void printAllRecursive(final BufferedWriter writer, int level, String filter) {
+    public void printAllRecursive(final BufferedWriter writer, final int level, final String filter) {
         if (filter != null && level != 0 && message != null) {
             if (!message.contains(filter)) {
                 return;
