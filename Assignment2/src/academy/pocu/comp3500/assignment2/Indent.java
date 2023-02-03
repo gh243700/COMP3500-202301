@@ -17,7 +17,7 @@ public final class Indent {
         this.parent = parent;
     }
 
-    public Indent addSubIndent(String message) {
+    public Indent registerSubIndent(String message) {
         Indent subIndent = new Indent(message, this);
         subIndents.add(subIndent);
 

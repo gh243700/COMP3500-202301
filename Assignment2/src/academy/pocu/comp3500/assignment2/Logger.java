@@ -6,7 +6,7 @@ public final class Logger {
     private static final Indent ROOT = new Indent();
     private static Indent current = ROOT;
     public static void log(final String text) {
-        current.addSubIndent(text);
+        current.registerSubIndent(text);
     }
     public static void printTo(final BufferedWriter writer) {
         printTo(writer, null);
@@ -21,7 +21,7 @@ public final class Logger {
     }
 
     public static Indent indent() {
-        current = current.addSubIndent(null);
+        current = current.registerSubIndent(null);
 
         return current;
     }
