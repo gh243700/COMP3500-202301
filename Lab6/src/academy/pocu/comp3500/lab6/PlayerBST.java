@@ -150,7 +150,7 @@ public final class PlayerBST {
             return false;
         }
 
-        if (node.isEqualRating(player)) {
+        if (node.isEqual(player)) {
             wrapper.setParent(parent);
             wrapper.setChild(node);
             return true;
@@ -178,11 +178,11 @@ public final class PlayerBST {
         Node subNode;
         boolean bAddToLeft = false;
 
-        if (node.isEqualRating(player)) {
+        if (node.isEqual(player) || node.compareRating(player) == 0) {
             return false;
         }
 
-        if (node.compareRating(player) <= 0) {
+        if (node.compareRating(player) < 0) {
             subNode = node.getRight();
         } else {
             bAddToLeft = true;
