@@ -55,7 +55,7 @@ public class Node {
         return Math.abs(player.getRating() - other.getRating());
     }
 
-    public boolean isEqualScore(Player player) {
+    public boolean isEqualRating(Player player) {
         return player.getId() == player.getId();
     }
 }
