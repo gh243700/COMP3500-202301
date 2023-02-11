@@ -25,7 +25,7 @@ public class Program {
         {
             League league = new League();
             Player[] result = league.getTop(8);
-            assert (result == null);
+            assert (result.length == 0);
         }
 
         test8();

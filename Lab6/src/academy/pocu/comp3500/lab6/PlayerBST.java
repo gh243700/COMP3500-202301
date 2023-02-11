@@ -204,10 +204,6 @@ public final class PlayerBST {
     }
 
     public Player[] getByOrder(final int count, final OrderMode mode) {
-        if (joinedCount <= 0) {
-            return null;
-        }
-
         Player[] result = new Player[joinedCount >= count ? count : joinedCount];
         getByOrderRecursive(root, result, new int[1], mode);
 
