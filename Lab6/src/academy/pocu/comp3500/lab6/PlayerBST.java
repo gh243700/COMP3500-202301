@@ -32,7 +32,7 @@ public final class PlayerBST {
             return;
         }
 
-        if (node.getPlayer().getRating() == target.getRating()) {
+        if (node.compareRating(target) == 0) {
             findClosestScoreRecursive(node.getLeft(), target, out, InOrderMode.PREDECESSOR);
             findClosestScoreRecursive(node.getRight(), target, out, InOrderMode.SUCCESSOR);
             return;
