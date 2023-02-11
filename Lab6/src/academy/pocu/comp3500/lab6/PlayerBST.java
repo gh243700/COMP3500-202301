@@ -38,9 +38,9 @@ public final class PlayerBST {
             return;
         }
 
-        if (out[0] == null || node.compareSubtractAbs(target) < out[0].compareSubtractAbs(target)) {
+        if (out[0] == null || node.ratingAbsMargin(target) < out[0].ratingAbsMargin(target)) {
             out[0] = node;
-        } else if (node.compareSubtractAbs(target) == out[0].compareSubtractAbs(target)) {
+        } else if (node.ratingAbsMargin(target) == out[0].ratingAbsMargin(target)) {
             out[0] = node.compareRating(out[0]) >= 1 ? node : out[0];
         }
 

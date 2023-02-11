@@ -51,7 +51,7 @@ public class Node {
         return this.player.getRating() == other.getRating() ? 0 : -1;
     }
 
-    public int compareSubtractAbs(Player other) {
+    public int ratingAbsMargin(Player other) {
         return Math.abs(player.getRating() - other.getRating());
     }
 
