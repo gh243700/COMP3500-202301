@@ -56,6 +56,6 @@ public class Node {
     }
 
     public boolean isEqual(Player player) {
-        return player.getRating() == player.getRating() && player.getId() == player.getId();
+        return player.getRating() == player.getRating() || player.getId() == player.getId();
     }
 }
