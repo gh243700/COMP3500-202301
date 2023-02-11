@@ -5,7 +5,7 @@ import academy.pocu.comp3500.lab6.leagueofpocu.Player;
 public final class PlayerBST {
     private Node root;
 
-    private enum inOrderMode {SUCCESSOR, PREDECESSOR, NONE}
+    private enum InOrderMode {SUCCESSOR, PREDECESSOR, NONE}
 
     public enum OrderMode {MAX, MIN}
 
@@ -22,19 +22,19 @@ public final class PlayerBST {
 
     public Player findClosestScoreOrNull(final Player player) {
         Node[] result = new Node[1];
-        findClosestScoreRecursive(root, player, result, inOrderMode.NONE);
+        findClosestScoreRecursive(root, player, result, InOrderMode.NONE);
 
         return (result[0] != null) ? result[0].getPlayer() : null;
     }
 
-    private void findClosestScoreRecursive(final Node node, final Player target, final Node[] out, final inOrderMode eMode) {
+    private void findClosestScoreRecursive(final Node node, final Player target, final Node[] out, final InOrderMode eMode) {
         if (node == null) {
             return;
         }
 
         if (node.getPlayer().getRating() == target.getRating()) {
-            findClosestScoreRecursive(node.getLeft(), target, out, inOrderMode.PREDECESSOR);
-            findClosestScoreRecursive(node.getRight(), target, out, inOrderMode.SUCCESSOR);
+            findClosestScoreRecursive(node.getLeft(), target, out, InOrderMode.PREDECESSOR);
+            findClosestScoreRecursive(node.getRight(), target, out, InOrderMode.SUCCESSOR);
             return;
         }
 
@@ -44,7 +44,7 @@ public final class PlayerBST {
             out[0] = node.compareRating(out[0]) >= 1 ? node : out[0];
         }
 
-        if (eMode == inOrderMode.SUCCESSOR || node.compareRating(target) > 0) {
+        if (eMode == InOrderMode.SUCCESSOR || node.compareRating(target) > 0) {
             findClosestScoreRecursive(node.getLeft(), target, out, eMode);
             return;
         }
