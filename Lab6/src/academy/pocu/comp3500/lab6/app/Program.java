@@ -22,6 +22,12 @@ public class Program {
 
     public static void main(String[] args) {
 
+        {
+            League league = new League();
+            Player[] result = league.getTop(8);
+            assert (result == null);
+        }
+
         test8();
 	    // write your code here
         {

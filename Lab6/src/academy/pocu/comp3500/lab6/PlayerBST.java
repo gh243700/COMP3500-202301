@@ -9,6 +9,8 @@ public final class PlayerBST {
 
     public enum OrderMode {MAX, MIN}
 
+    private int joinedCount;
+
     public PlayerBST() {
     }
 
@@ -54,6 +56,8 @@ public final class PlayerBST {
         if (findPlayerNode(null, root, player, wrapper) == false) {
             return false;
         }
+
+        --joinedCount;
 
         Node child = wrapper.getChild();
         Node parent = wrapper.getParent();
@@ -161,6 +165,7 @@ public final class PlayerBST {
 
     public boolean insert(final Player player) {
         if (root == null) {
+            ++joinedCount;
             root = new Node(player);
             return true;
         }
@@ -173,7 +178,7 @@ public final class PlayerBST {
         Node subNode;
         boolean bAddToLeft = false;
 
-        if (node.getPlayer() == player) {
+        if (node.getPlayer().getRating() == player.getRating()) {
             return false;
         }
 
@@ -190,6 +195,8 @@ public final class PlayerBST {
             } else {
                 node.setRight(new Node(player));
             }
+
+            ++joinedCount;
             return true;
         }
 
@@ -197,7 +204,11 @@ public final class PlayerBST {
     }
 
     public Player[] getByOrder(final int count, final OrderMode mode) {
-        Player[] result = new Player[count];
+        if (joinedCount <= 0) {
+            return null;
+        }
+
+        Player[] result = new Player[joinedCount >= count ? count : joinedCount];
         getByOrderRecursive(root, result, new int[1], mode);
 
         return result;
