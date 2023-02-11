@@ -28,6 +28,12 @@ public class Program {
             assert (result.length == 0);
         }
 
+        {
+            League league = new League();
+            boolean result = league.leave(new Player(1, "ss", 1));
+            assert (result == false);
+        }
+
         test8();
 	    // write your code here
         {
