@@ -9,9 +9,45 @@ import java.util.HashSet;
 import java.util.Random;
 
 public class Program {
+    private static void test8() {
+        Player player0 = new Player(8, "player0", 189);
+        Player player0_1 = new Player(9, "player0", 700);
+        Player player9 = new Player(7, "player9", 860);
+
+        League league = new League(new Player[]{player0, player0_1});
+
+        Player result1 = league.findMatchOrNull(player9);
+        assert (result1 == player0_1);
+    }
 
     public static void main(String[] args) {
+
+        test8();
 	    // write your code here
+        {
+            Player player1 = new Player(1, "player1", 9);
+            Player player2 = new Player(2, "player2", 12);
+
+            League league = new League(new Player[]{player1, player2});
+
+            Player player1Match = league.findMatchOrNull(player1); // player4
+            assert (player1Match == player2);
+            Player player2Match = league.findMatchOrNull(player2); // player2
+            assert (player2Match == player1);
+        }
+
+        {
+            Player player1 = new Player(1, "player1", 12);
+            Player player2 = new Player(2, "player2", 9);
+
+            League league = new League(new Player[]{player1, player2});
+
+            Player player1Match = league.findMatchOrNull(player1); // player4
+            assert (player1Match == player2);
+            Player player2Match = league.findMatchOrNull(player2); // player2
+            assert (player2Match == player1);
+        }
+
 
         {
             Program.joinTest();

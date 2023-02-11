@@ -19,24 +19,18 @@ public final class PlayerBST {
     }
 
     public Player findClosestScoreOrNull(final Player player) {
-
-        NodeWrapper wrapper = new NodeWrapper();
-        if (findPlayerNode(null, root, player, wrapper) == false) {
-            return null;
-        }
-
         Node[] result = new Node[1];
-        findClosestScoreRecursive(root, wrapper.getChild(), result, inOrderMode.NONE);
+        findClosestScoreRecursive(root, player, result, inOrderMode.NONE);
 
         return (result[0] != null) ? result[0].getPlayer() : null;
     }
 
-    private void findClosestScoreRecursive(final Node node, final Node target, final Node[] out, final inOrderMode eMode) {
+    private void findClosestScoreRecursive(final Node node, final Player target, final Node[] out, final inOrderMode eMode) {
         if (node == null) {
             return;
         }
 
-        if (node == target) {
+        if (node.getPlayer().getRating() == target.getRating()) {
             findClosestScoreRecursive(node.getLeft(), target, out, inOrderMode.PREDECESSOR);
             findClosestScoreRecursive(node.getRight(), target, out, inOrderMode.SUCCESSOR);
             return;
