@@ -23,6 +23,15 @@ public class Program {
     public static void main(String[] args) {
 
         {
+            Player player1 = new Player(1, "player1", 9);
+
+            League league = new League(new Player[]{player1});
+
+            boolean result = league.leave(new Player(1, "1", 1)); // player4
+            assert (result == false);
+        }
+
+        {
             League league = new League();
             Player[] result = league.getTop(8);
             assert (result.length == 0);

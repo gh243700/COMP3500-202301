@@ -54,4 +54,8 @@ public class Node {
     public int compareSubtractAbs(Player other) {
         return Math.abs(player.getRating() - other.getRating());
     }
+
+    public boolean isEqual(Player player) {
+        return player.getRating() == player.getRating() && player.getId() == player.getId();
+    }
 }
