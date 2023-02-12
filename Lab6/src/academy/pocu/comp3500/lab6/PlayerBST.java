@@ -100,7 +100,7 @@ public final class PlayerBST {
 
             return;
         }
-        //assert did not find leaf
+        //assert did not find deletable leaf
 
         Node shoudBeNull = playerNode.getRight();
         Node smallistRight = playerNode;
