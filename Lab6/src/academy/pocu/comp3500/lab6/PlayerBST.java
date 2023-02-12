@@ -102,18 +102,18 @@ public final class PlayerBST {
         }
         //assert did not find deletable leaf
 
-        Node shoudBeNull = playerNode.getRight();
-        Node smallistRight = playerNode;
+        Node shouldBeNull = playerNode.getRight();
+        Node smallestRight = playerNode;
 
-        while (shoudBeNull != null) {
-            smallistRight = shoudBeNull;
-            shoudBeNull = shoudBeNull.getLeft();
+        while (shouldBeNull != null) {
+            smallestRight = shouldBeNull;
+            shouldBeNull = shouldBeNull.getLeft();
         }
 
-        if (smallistRight == playerNode) {
+        if (smallestRight == playerNode) {
             playerNode.setRight(playerNode.getLeft());
         } else {
-            smallistRight.setLeft(playerNode.getLeft());
+            smallestRight.setLeft(playerNode.getLeft());
         }
 
         if (playerNodeParentOrNull == null) {
