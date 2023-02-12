@@ -216,8 +216,12 @@ public final class PlayerBST {
         }
 
         getByOrderRecursive((mode == OrderMode.MAX) ? node.getRight() : node.getLeft(), out, outCount, mode);
-        out[outCount[0]] = node.getPlayer();
-        ++outCount[0];
+
+        if (outCount[0] < out.length) {
+            out[outCount[0]] = node.getPlayer();
+            ++outCount[0];
+        }
+
         getByOrderRecursive((mode == OrderMode.MAX) ? node.getLeft() : node.getRight(), out, outCount, mode);
     }
 }
