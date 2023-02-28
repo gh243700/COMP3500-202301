@@ -4,8 +4,11 @@ import academy.pocu.comp3500.assignment1.PocuBasketballAssociation;
 import academy.pocu.comp3500.assignment1.pba.GameStat;
 import academy.pocu.comp3500.assignment1.pba.Player;
 
+import java.util.Random;
+
 public class Program {
 
+    /*
     public static int findDreamTeamSize(final Player[] players, final Player[] scratch) {
 
         long maxTeamwork = 0;
@@ -68,6 +71,8 @@ public class Program {
 
         return bestTeamSize;
     }
+
+ */
 
     public static void TestFindPlayerPointsPerGame()
     {
@@ -164,6 +169,38 @@ public class Program {
     }
 
     public static void main(String[] args) {
+
+
+        {
+            for (int j = 0; j < 100; j++)
+            {
+                int length = (int) (Math.random() * 10);
+                Player[] players = new Player[length];
+                Random random0 = new Random();
+                Random random1 = new Random();
+                System.out.println("Player[] players = {");
+                for (int i = 0; i < length; i++) {
+                    players[i] = new Player(String.format("Player %d", i), 0, random0.nextInt(100), random1.nextInt(100), 0);
+                    System.out.println("Player players"+ i +" = new Player(\" "+players[i].getName() + "\" ,"+ 0 +","+ players[i].getAssistsPerGame()+","+ ((i % 4 == 0) ? 0 : players[i].getPassesPerGame())+","+ 0 + "),");
+                }
+                System.out.println("};");
+
+                Player[] scratch = new Player[length];
+
+                long k = PocuBasketballAssociation.findDreamTeamSize(players, scratch);
+
+                Player[] scratchAnswer = new Player[length];
+                //long answer = findDreamTeamSize(players,  scratchAnswer);
+                //assert answer == k;
+
+                System.out.println("answer == " + k);
+            }
+
+        }
+
+/*
+
+
         {
             TestFindPlayerPointsPerGame();
             TestFind3ManDreamTeam();
@@ -333,12 +370,10 @@ players: [
     { "Player 4", pointsPerGame: 44, assistsPerGame: 1, passesPerGame: 1, shootingPercentage: 48 },
     { "Player 3", pointsPerGame: 31, assistsPerGame: 4, passesPerGame: 2, shootingPercentage: 32 }
 ]
-*/
+
 
 
             System.out.println("--");
-        }
-
-
+        }*/
     }
 }

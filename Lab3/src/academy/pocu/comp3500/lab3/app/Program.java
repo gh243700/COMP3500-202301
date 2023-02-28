@@ -10,6 +10,7 @@ public class Program {
 
     public static void main(String[] args) {
 
+
         // write your code here
         {
             for (int k = 0; k < 100; ++k) {
