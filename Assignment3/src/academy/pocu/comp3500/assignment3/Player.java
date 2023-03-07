@@ -24,7 +24,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = maxMoveTimeMilliseconds / 1000 * 2;
+        depth = maxMoveTimeMilliseconds / 1000 * 4;
     }
 
     @Override
@@ -34,9 +34,7 @@ public class Player extends PlayerBase {
         Node node = new Node(bitmap, null, null);
 
         Node resultNode = minimax(node, depth, start, isWhite(), isWhite());
-
-        int in = nodePool.allocCount;
-        int out = nodePool.deleteCount;
+        nodePool.delete(resultNode);
 
         if (timeOut) {
             --depth;
@@ -95,6 +93,7 @@ public class Player extends PlayerBase {
         }
 
         node.setEvaluationValue(leafNode.getEvaluationValue());
+        nodePool.delete(leafNode);
         return node;
     }
 
@@ -106,12 +105,12 @@ public class Player extends PlayerBase {
             int evaluationValue = node.getEvaluationValue();
             if (value < evaluationValue) {
                 if (result != null) {
-                    //nodePool.delete(result);
+                    nodePool.delete(result);
                 }
                 result = node;
                 value = evaluationValue;
             } else {
-                //nodePool.delete(node);
+                nodePool.delete(node);
             }
         }
 
@@ -127,13 +126,13 @@ public class Player extends PlayerBase {
 
             if (value > evaluationValue) {
                 if (result != null) {
-                    //nodePool.delete(result);
+                    nodePool.delete(result);
                 }
 
                 result = node;
                 value = evaluationValue;
             } else {
-                //nodePool.delete(node);
+                nodePool.delete(node);
             }
         }
 
@@ -225,7 +224,7 @@ public class Player extends PlayerBase {
                 boardCopy.setBitmap(offset, ChessPieceType.NONE);
                 boardCopy.setBitmap(offsetAfterMove, chessPieceType);
 
-                Node node = new Node(boardCopy, new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8), parent);
+                Node node = nodePool.alloc(boardCopy, new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8), parent);
                 node.setParent(parent == null ? node : parent);
                 result.add(node);
 
@@ -250,7 +249,7 @@ public class Player extends PlayerBase {
             boardCopy.setBitmap(offset, ChessPieceType.NONE);
             boardCopy.setBitmap(offsetAfterMove, (isWhite) ? ChessPieceType.WHITE_PAWN : ChessPieceType.BLACK_PAWN);
 
-            Node node = new Node(boardCopy, new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8), parent);
+            Node node = nodePool.alloc(boardCopy, new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8), parent);
             result.add(node);
         }
     }
@@ -271,7 +270,7 @@ public class Player extends PlayerBase {
             boardCopy.setBitmap(offset, ChessPieceType.NONE);
             boardCopy.setBitmap(offsetAfterMove, (isWhite) ? ChessPieceType.WHITE_PAWN : ChessPieceType.BLACK_PAWN);
 
-            Node node = new Node(boardCopy, new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8), parent);
+            Node node = nodePool.alloc(boardCopy, new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8), parent);
 
             result.add(node);
 

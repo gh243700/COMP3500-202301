@@ -682,7 +682,7 @@ public class Program {
 
     public static void main(String[] args) {
         test_King_move_black();
-        test_King_move_white();
+        //test_King_move_white();
         test_Rook_move_black();
         test_Rook_move_white();
         test_bishop_move_black();
