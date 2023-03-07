@@ -52,19 +52,12 @@ public class Player extends PlayerBase {
         } else {
             int eval = Integer.MAX_VALUE;
             for (Node n : canad) {
-                int min = minimax(n, n, depth, start, true, false);
+                int min = minimax(n, n, depth, start, true, true);
                 if (min < eval) {
                     result = n;
                     eval = min;
                 }
             }
-        }
-
-
-        if (timeOut) {
-            --depth;
-        } else {
-            ++depth;
         }
 
 
@@ -87,7 +80,7 @@ public class Player extends PlayerBase {
         ArrayList<Node> nodes = getNextMovesBitmapVer(node.getBitmap(), maximizingPlayer, node);
 
         if (nodes.size() == 0) {
-            return before.getBitmap().evaluate();
+            return (!isWhite) ? 1000 : -1000;
         }
 
         if (maximizingPlayer) {

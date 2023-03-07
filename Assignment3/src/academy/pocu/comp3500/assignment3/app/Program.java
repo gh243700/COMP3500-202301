@@ -53,6 +53,30 @@ public class Program {
             }
         }
 
+
+        {
+            // player dodges
+            char[][] board = {
+                    {0, 0, 0, 0, 'K', 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'R', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 'R', 0},
+                    {'k', 0, 0, 0, 0, 'Q', 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(true, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 0;
+            assert move.fromY == 6;
+            assert move.toX == 0;
+            assert move.toY == 7;
+        }
+
         {
             // player captures piece when possible
             char[][] board = {
@@ -183,11 +207,11 @@ public class Program {
 
             Move move = player.getNextMove(board);
 
-            //assert Game.isMoveValid(board, player, move);
-            //assert move.fromX == 0;
-            //assert move.fromY == 6;
-            //assert move.toX == 0;
-            //assert move.toY == 5;
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 0;
+            assert move.fromY == 6;
+            assert move.toX == 0;
+            assert move.toY == 5;
         }
 
         {
