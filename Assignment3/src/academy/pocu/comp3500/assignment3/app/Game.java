@@ -31,6 +31,7 @@ final class Game {
     };
 
     private char[][] board;
+
     private final int maxMoveTimeoutInMilliseconds;
     private final PlayerBase white;
     private final PlayerBase black;
@@ -89,6 +90,7 @@ final class Game {
         this.lastMove.toX = nextMove.toX;
         this.lastMove.toY = nextMove.toY;
 
+
         if (player.getMaxMoveTimeMilliseconds() != Integer.MAX_VALUE && duration > this.maxMoveTimeoutInMilliseconds) {
             this.winner = this.currentTurn % 2 != 0 ? 'B' : 'W';
             this.isGameOver = true;
@@ -96,6 +98,7 @@ final class Game {
 
             return;
         }
+
 
         if (!isMoveValid(board, player, nextMove)) {
             this.winner = this.currentTurn % 2 != 0 ? 'B' : 'W';
