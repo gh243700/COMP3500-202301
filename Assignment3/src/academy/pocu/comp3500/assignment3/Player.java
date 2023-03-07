@@ -22,25 +22,53 @@ public class Player extends PlayerBase {
     private boolean timeOut;
     private static NodePool nodePool = NodePool.getInstance();
 
+    public static ArrayList<Node> leaf = new ArrayList<>();
+
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = maxMoveTimeMilliseconds / 1000 * 4;
+        depth = 5;
     }
 
     @Override
     public Move getNextMove(char[][] board) {
         long start = System.nanoTime();
         Bitmap bitmap = Bitmap.convertToBitmap(board);
-        Node node = new Node(bitmap, null, null);
 
-        Node resultNode = minimax(node, depth, start, isWhite(), isWhite());
-        nodePool.delete(resultNode);
+        ArrayList<Node> canad = getNextMovesBitmapVer(bitmap, isWhite(), null);
+
+        Node result = null;
+        if (isWhite()) {
+            int eval = Integer.MIN_VALUE;
+
+            for (Node n : canad) {
+                int max = minimax(n, n, depth, start, false, false);
+
+                System.out.println(max);
+                if (max > eval) {
+                    result = n;
+                    eval = max;
+                }
+            }
+        } else {
+            int eval = Integer.MAX_VALUE;
+            for (Node n : canad) {
+                int min = minimax(n, n, depth, start, true, false);
+                if (min < eval) {
+                    result = n;
+                    eval = min;
+                }
+            }
+        }
+
 
         if (timeOut) {
             --depth;
+        } else {
+            ++depth;
         }
 
-        return resultNode.getMove();
+
+        return result.getMove();
     }
 
     @Override
@@ -48,53 +76,41 @@ public class Player extends PlayerBase {
         return getNextMove(board);
     }
 
-    public Node minimax(Node node, int depth, final long start, boolean maximizingPlayer, boolean isWhite) {
+    public int minimax(Node node, Node before, int depth, final long start, boolean maximizingPlayer, boolean isWhite) {
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        if (duration >= getMaxMoveTimeMilliseconds()) {
-            timeOut = true;
-            node.setEvaluationValue(node.getBitmap().evaluate());
-            return node;
+        if (depth == 0 || duration >= getMaxMoveTimeMilliseconds()) {
+            return node.getBitmap().evaluate();
         }
 
-        if (depth <= 0) {
-            timeOut = false;
-            node.setEvaluationValue(node.getBitmap().evaluate());
-            return node;
+        ArrayList<Node> nodes = getNextMovesBitmapVer(node.getBitmap(), maximizingPlayer, node);
+
+        if (nodes.size() == 0) {
+            return before.getBitmap().evaluate();
         }
-
-        ArrayList<Node> nextPossibleMoves = getNextMovesBitmapVer(node.getBitmap(), maximizingPlayer, (depth == this.depth) ? null : node);
-
-        if (nextPossibleMoves.size() == 0) {
-            node.setEvaluationValue(node.getBitmap().evaluate());
-            return node;
-        }
-
-        ArrayList<Node> moves = new ArrayList<>();
-
-        for (int i = 0; i < nextPossibleMoves.size(); ++i) {
-            Node nextNode = nextPossibleMoves.get(i);
-
-            Node m = minimax(nextNode, depth - 1, start, !maximizingPlayer, isWhite);
-            moves.add(m);
-        }
-
-        Node leafNode;
 
         if (maximizingPlayer) {
-            leafNode = maxEvaluationValue(moves);
-        } else {
-            leafNode = minEvaluationValue(moves);
+            int eval = Integer.MIN_VALUE;
+            for (Node n : nodes) {
+                int max = minimax(n, node, depth - 1, start, false, isWhite);
+                if (max > eval) {
+                    eval = max;
+                }
+            }
+
+            return eval;
         }
 
-        if (depth == this.depth) {
-            return leafNode;
+        int eval = Integer.MAX_VALUE;
+        for (Node n : nodes) {
+            int min = minimax(n, node, depth - 1, start, true, isWhite);
+            if (min < eval) {
+                eval = min;
+            }
         }
 
-        node.setEvaluationValue(leafNode.getEvaluationValue());
-        nodePool.delete(leafNode);
-        return node;
+        return eval;
     }
 
     private static Node maxEvaluationValue(ArrayList<Node> arrayList) {

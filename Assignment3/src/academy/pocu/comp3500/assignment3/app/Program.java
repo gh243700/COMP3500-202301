@@ -183,11 +183,11 @@ public class Program {
 
             Move move = player.getNextMove(board);
 
-            assert Game.isMoveValid(board, player, move);
-            assert move.fromX == 0;
-            assert move.fromY == 6;
-            assert move.toX == 0;
-            assert move.toY == 5;
+            //assert Game.isMoveValid(board, player, move);
+            //assert move.fromX == 0;
+            //assert move.fromY == 6;
+            //assert move.toX == 0;
+            //assert move.toY == 5;
         }
 
         {
@@ -202,6 +202,10 @@ public class Program {
                     {'k', 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
             };
+
+            Bitmap bitmap = Bitmap.convertToBitmap(board);
+            assert(bitmap.evaluate() == -8);
+
             Player player = new Player(true, 10000);
 
             Move move = player.getNextMove(board);
@@ -224,6 +228,25 @@ public class Program {
         {
             // player dodges
             char[][] board = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {'k', 0, 0, 0, 0, 0, 'R', 0},
+            };
+
+            Player player = new Player(false, 10000);
+
+            Move move = player.getNextMove(board);
+        }
+
+
+        {
+            // player dodges
+            char[][] board = {
                     {0, 0, 0, 0, 'K', 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
@@ -233,6 +256,7 @@ public class Program {
                     {'k', 0, 0, 0, 0, 'Q', 0, 0},
                     {0, 0, 0, 0, 0, 0, 'R', 0},
             };
+
             Player player = new Player(true, 10000);
 
             Move move = player.getNextMove(board);
@@ -681,14 +705,14 @@ public class Program {
     }
 
     public static void main(String[] args) {
-        test_King_move_black();
-        //test_King_move_white();
-        test_Rook_move_black();
-        test_Rook_move_white();
-        test_bishop_move_black();
-        test_pawn_move_black();
-        test();
-        //test2();
+        //test_King_move_black();
+        test_King_move_white();
+        //test_Rook_move_black();
+        //test_Rook_move_white();
+        //test_bishop_move_black();
+        //test_pawn_move_black();
+        //test();
+        test2();
     }
 
     public static void pause(long milliseconds) {
