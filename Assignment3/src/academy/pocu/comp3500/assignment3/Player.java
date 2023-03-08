@@ -3,7 +3,7 @@ package academy.pocu.comp3500.assignment3;
 import academy.pocu.comp3500.assignment3.chess.Move;
 import academy.pocu.comp3500.assignment3.chess.PlayerBase;
 
-import java.util.*;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Player extends PlayerBase {
