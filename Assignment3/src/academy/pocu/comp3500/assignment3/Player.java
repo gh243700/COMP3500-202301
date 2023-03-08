@@ -26,7 +26,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 4;
+        depth = 5;
     }
 
     @Override
@@ -58,8 +58,8 @@ public class Player extends PlayerBase {
                 if (result != null) {
                     movesPool.delete(result);
                 }
-                result = move;
 
+                result = move;
                 break;
             } else if (result != null) {
                 movesPool.delete(result);
