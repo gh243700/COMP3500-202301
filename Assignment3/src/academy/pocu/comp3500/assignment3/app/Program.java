@@ -1,14 +1,10 @@
 package academy.pocu.comp3500.assignment3.app;
 
-import academy.pocu.comp3500.assignment3.Bitmap;
-import academy.pocu.comp3500.assignment3.ChessPieceType;
-import academy.pocu.comp3500.assignment3.Player;
-import academy.pocu.comp3500.assignment3.Wrapper;
+import academy.pocu.comp3500.assignment3.*;
 import academy.pocu.comp3500.assignment3.chess.Move;
 import academy.pocu.comp3500.assignment3.chess.PlayerBase;
 
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -71,6 +67,8 @@ public class Program {
 
             Move move = player.getNextMove(board);
 
+            WrappersPool wrappersPool = WrappersPool.getInstance();
+            MovesPool movesPool = MovesPool.getInstance();
             assert Game.isMoveValid(board, player, move);
             assert move.fromX == 0;
             assert move.fromY == 6;

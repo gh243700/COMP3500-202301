@@ -3,28 +3,27 @@ package academy.pocu.comp3500.assignment3;
 import academy.pocu.comp3500.assignment3.chess.Move;
 
 public class Wrapper {
-    public int eval;
-    public Move move;
-
-    int from;
+    private int eval;
+    private Move move;
 
     public Wrapper(int eval, Move move) {
         this.move = move;
         this.eval = eval;
     }
 
+    public Wrapper() {
+    }
 
-    public Wrapper(int eval, Move move, int from) {
-        this.move = move;
+    public void reset(int eval, Move move) {
         this.eval = eval;
-        this.from = from;
+        this.move = move;
     }
 
-    public void setFrom(int from) {
-        this.from = from;
+    public Move getMove() {
+        return move;
     }
 
-    public int getFrom() {
-        return from;
+    public int getEval() {
+        return eval;
     }
 }
