@@ -23,7 +23,6 @@ public class Player extends PlayerBase {
     private boolean timeOut;
     private static WrappersPool wrappersPool = WrappersPool.getInstance();
     private static MovesPool movesPool = MovesPool.getInstance();
-    private static ArrayList<Move> sameMoves = new ArrayList<>(32);
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
@@ -114,7 +113,7 @@ public class Player extends PlayerBase {
         }
 
         Move bestMove = moves.get(0);
-        boolean topDepth = this.depth == depth;
+        ArrayList<Move> sameMoves = new ArrayList<>(32);
 
         if (maximizingPlayer) {
             int maxEval = Integer.MIN_VALUE + 1;
@@ -149,13 +148,9 @@ public class Player extends PlayerBase {
                 if (currentEval > maxEval) {
                     maxEval = currentEval;
                     bestMove = move;
-
-                    if (topDepth) {
-                        sameMoves.clear();
-                        sameMoves.add(move);
-                    }
-
-                } else if (topDepth && currentEval == maxEval) {
+                    sameMoves.clear();
+                    sameMoves.add(move);
+                } else if (currentEval == maxEval) {
                     sameMoves.add(move);
                 } else {
                     movesPool.delete(move);
@@ -164,7 +159,7 @@ public class Player extends PlayerBase {
                 wrappersPool.delete(wrapper);
             }
 
-            if (topDepth && sameMoves.size() > 1) {
+            if (sameMoves.size() > 1) {
                 bestMove = prioritizeProtectingOwnPiece(sameMoves, board, true);
             }
 
@@ -207,12 +202,12 @@ public class Player extends PlayerBase {
                 minEval = currentEval;
                 bestMove = move;
 
-                if (topDepth) {
-                    sameMoves.clear();
-                    sameMoves.add(move);
-                }
 
-            } else if (topDepth && minEval == currentEval) {
+                sameMoves.clear();
+                sameMoves.add(move);
+
+
+            } else if (minEval == currentEval) {
                 sameMoves.add(move);
             } else {
                 movesPool.delete(move);
@@ -221,7 +216,7 @@ public class Player extends PlayerBase {
             wrappersPool.delete(wrapper);
         }
 
-        if (topDepth && sameMoves.size() > 1) {
+        if (sameMoves.size() > 1) {
             bestMove = prioritizeProtectingOwnPiece(sameMoves, board, false);
         }
 
