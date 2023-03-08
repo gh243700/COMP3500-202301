@@ -300,7 +300,26 @@ public class Program {
     public static void main(String[] args) {
         //test();
 
+        {
+            // player dodges
+            char[][] board = {
+                    {0, 0, 0, 0, 'K', 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'R', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 'R', 0},
+                    {'k', 0, 0, 0, 0, 'Q', 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(true, 10000);
+
+            Move move = player.getNextMove(board);
+
+        }
+
         test2();
+        test();
     }
 
     public static void pause(long milliseconds) {
