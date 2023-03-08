@@ -64,30 +64,31 @@ public class Bitmap {
         return copy;
     }
 
-    public boolean GameOver(boolean isWhite) {
+    public boolean GameOver() {
 
         long mask = 0x0;
-        if (isWhite) {
-            for (int k = 0; k < 6; ++k) {
-                if ((board[k] | mask) != 0) {
-                    return false;
-                }
-            }
-        } else {
-            for (int k = 6; k < 12; ++k) {
-                if ((board[k] | mask) != 0) {
-                    return false;
-                }
+        int white = 0;
+        int black = 0;
 
+        for (int k = 0; k < 6; ++k) {
+            if ((board[k] | mask) != 0) {
+                ++white;
+                break;
             }
         }
 
-        return true;
+        for (int k = 6; k < 12; ++k) {
+            if ((board[k] | mask) != 0) {
+                ++black;
+                break;
+            }
+
+        }
+
+        return white == 0 || black == 0;
     }
 
     public int evaluate() {
-
-
         int whiteScore = 0;
         int blackScore = 0;
 
@@ -100,7 +101,6 @@ public class Bitmap {
                     } else {
                         blackScore += VALUES[k];
                     }
-                    break;
                 }
             }
 

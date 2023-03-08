@@ -24,7 +24,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 3;
+        depth = 4;
     }
 
     @Override
@@ -32,6 +32,9 @@ public class Player extends PlayerBase {
         long start = System.nanoTime();
         if (timeOut) {
             --depth;
+            timeOut = false;
+        } else {
+            ++depth;
         }
 
         return minimax(Bitmap.convertToBitmap(board), depth, isWhite(), start).move;
@@ -47,33 +50,22 @@ public class Player extends PlayerBase {
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        if (duration >= getMaxMoveTimeMilliseconds()) {
-            timeOut = true;
-
-            Wrapper wrapper = new Wrapper(board.evaluate(), null, 0);
-
-            return wrapper;
-        }
-
-        if (board.GameOver(!isWhite())) {
-            Wrapper wrapper = new Wrapper(board.evaluate(), null, 1);
-            return wrapper;
-        }
-
-        if (depth == 0) {
+        if (depth == 0 || duration >= getMaxMoveTimeMilliseconds() ||board.GameOver()) {
             Wrapper wrapper = new Wrapper(board.evaluate(), null, 2);
             return wrapper;
         }
 
         ArrayList<Move> moves = getNextMovesBitmapVer(board, maximizingPlayer);
+
         if (moves.size() == 0) {
             Wrapper wrapper = new Wrapper(board.evaluate(), null, 3);
             return wrapper;
         }
+
         Move bestMove = moves.get(0);
 
         if (maximizingPlayer) {
-            int maxEval = Integer.MIN_VALUE;
+            int maxEval = Integer.MIN_VALUE + 1;
             for (Move move : moves) {
                 // make move
                 int offsetFrom = move.fromY * 8 + move.fromX;
@@ -87,13 +79,12 @@ public class Player extends PlayerBase {
                 board.off(offsetTo, t2);
 
                 Wrapper wrapper = minimax(board, depth - 1, false, start);
+                int currentEval = wrapper.eval;
 
                 // undo move
                 board.off(offsetTo, t1);
                 board.on(offsetFrom, t1);
                 board.on(offsetTo, t2);
-
-                int currentEval = wrapper.eval;
 
                 if (currentEval > maxEval) {
                     maxEval = currentEval;
@@ -119,12 +110,13 @@ public class Player extends PlayerBase {
 
 
             Wrapper wrapper = minimax(board, depth - 1, true, start);
+            int currentEval = wrapper.eval;
+
             // undo move
             board.off(offsetTo, t1);
             board.on(offsetFrom, t1);
             board.on(offsetTo, t2);
 
-            int currentEval = wrapper.eval;
 
             if (currentEval < minEval) {
                 minEval = currentEval;
@@ -138,12 +130,7 @@ public class Player extends PlayerBase {
 
         ArrayList<Move> result = new ArrayList<>();
 
-        int count = 0;
         for (int i = 0; i < 64; ++i) {
-
-            if (count == 16) {
-                break;
-            }
 
             ChessPieceType chessPieceType = board.getChessPieceType(i);
 
@@ -151,7 +138,6 @@ public class Player extends PlayerBase {
                 continue;
             }
 
-            ++count;
             movesBitmapVersion(i, board, chessPieceType, isWhite, result);
         }
 
