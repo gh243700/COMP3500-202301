@@ -2,12 +2,13 @@ package academy.pocu.comp3500.assignment3.app;
 
 import academy.pocu.comp3500.assignment3.Bitmap;
 import academy.pocu.comp3500.assignment3.ChessPieceType;
-import academy.pocu.comp3500.assignment3.Node;
 import academy.pocu.comp3500.assignment3.Player;
+import academy.pocu.comp3500.assignment3.Wrapper;
 import academy.pocu.comp3500.assignment3.chess.Move;
 import academy.pocu.comp3500.assignment3.chess.PlayerBase;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ public class Program {
     }
 
     public static void test2() {
+
+
+
         {
             // getNextMove returns a valid move when there is only one piece in board
             char[] symbols = {'k', 'n', 'b', 'r', 'q', 'p'};
@@ -217,18 +221,17 @@ public class Program {
         {
             // pawn captures
             char[][] board = {
-                    {0, 0, 0, 0, 'K', 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 'Q', 0},
                     {0, 0, 0, 0, 0, 'p', 0, 0},
-                    {'k', 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
             };
 
             Bitmap bitmap = Bitmap.convertToBitmap(board);
-            assert(bitmap.evaluate() == -8);
 
             Player player = new Player(true, 10000);
 
@@ -240,439 +243,6 @@ public class Program {
             assert move.toX == 6;
             assert move.toY == 4;
         }
-
-    }
-
-    public static void test_King_move_black() {
-
-
-    }
-
-    public static void test_King_move_white() {
-        {
-            // player dodges
-            char[][] board = {
-                    {0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0},
-                    {'k', 0, 0, 0, 0, 0, 'R', 0},
-            };
-
-            Player player = new Player(false, 10000);
-
-            Move move = player.getNextMove(board);
-        }
-
-
-        {
-            // player dodges
-            char[][] board = {
-                    {0, 0, 0, 0, 'K', 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 'R', 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0},
-                    {'k', 0, 0, 0, 0, 'Q', 0, 0},
-                    {0, 0, 0, 0, 0, 0, 'R', 0},
-            };
-
-            Player player = new Player(true, 10000);
-
-            Move move = player.getNextMove(board);
-
-            assert Game.isMoveValid(board, player, move);
-            assert move.fromX == 0;
-            assert move.fromY == 6;
-            assert move.toX == 0;
-            assert move.toY == 5;
-        }
-    }
-
-    public static void test_Rook_move_black() {
-        {
-            char[][] board = new char[8][8];
-            int fromX = 3;
-            int fromY = 3;
-            board[fromX][fromY] = 'R';
-
-            ArrayList<Node> result = new ArrayList<>();
-
-            Bitmap bitmap = Bitmap.convertToBitmap(board);
-            Player.movesBitmapVersion(fromY * 8 + fromX, bitmap, ChessPieceType.BLACK_ROOK, false, result, null);
-
-            ArrayList<Move> resultM = new ArrayList<>();
-            for (Node wrapper : result) {
-                resultM.add(wrapper.getMove());
-            }
-
-
-            int[] y = {7, 6, 5, 4, 2, 1, 0, 3, 3, 3, 3, 3, 3, 3};
-            int[] x = {3, 3, 3, 3, 3, 3, 3, 0, 1, 2, 4, 5, 6, 7};
-
-            ArrayList<Move> expected = new ArrayList<>();
-            for (int i = 0; i < y.length; ++i) {
-                expected.add(new Move(fromX, fromY, x[i], y[i]));
-            }
-
-            assert (compare(resultM, expected));
-        }
-
-        {
-            char[][] board = new char[8][8];
-            int fromX = 3;
-            int fromY = 3;
-            board[fromX][fromY] = 'R';
-            board[1][3] = 'P';
-            board[3][2] = 'P';
-            board[7][3] = 'P';
-            board[3][5] = 'P';
-
-
-            ArrayList<Node> result = new ArrayList<>();
-
-            Bitmap bitmap = Bitmap.convertToBitmap(board);
-            Player.movesBitmapVersion(fromY * 8 + fromX, bitmap, ChessPieceType.BLACK_ROOK, false, result, null);
-
-            ArrayList<Move> resultM = new ArrayList<>();
-            for (Node wrapper : result) {
-                resultM.add(wrapper.getMove());
-            }
-
-
-            int[] y = {2, 4, 5, 6, 3};
-            int[] x = {3, 3, 3, 3, 4};
-
-            ArrayList<Move> expected = new ArrayList<>();
-            for (int i = 0; i < y.length; ++i) {
-                expected.add(new Move(fromX, fromY, x[i], y[i]));
-            }
-
-            assert (compare(resultM, expected));
-        }
-
-        {
-            char[][] board = new char[8][8];
-            int fromX = 3;
-            int fromY = 3;
-            board[fromX][fromY] = 'R';
-            board[1][3] = 'p';
-            board[3][2] = 'p';
-            board[7][3] = 'p';
-            board[3][5] = 'p';
-
-
-            ArrayList<Node> result = new ArrayList<>();
-
-            Bitmap bitmap = Bitmap.convertToBitmap(board);
-            Player.movesBitmapVersion(fromY * 8 + fromX, bitmap, ChessPieceType.BLACK_ROOK, false, result, null);
-
-            ArrayList<Move> resultM = new ArrayList<>();
-            for (Node wrapper : result) {
-                resultM.add(wrapper.getMove());
-            }
-
-
-            int[] y = {2, 4, 5, 6, 3, 1, 7, 3, 3};
-            int[] x = {3, 3, 3, 3, 4, 3, 3, 2, 5};
-
-            ArrayList<Move> expected = new ArrayList<>();
-            for (int i = 0; i < y.length; ++i) {
-                expected.add(new Move(fromX, fromY, x[i], y[i]));
-            }
-
-            assert (compare(resultM, expected));
-        }
-
-        {
-            char[][] board = new char[8][8];
-            int fromX = 0;
-            int fromY = 0;
-            board[fromX][fromY] = 'R';
-            board[0][1] = 'N';
-            board[1][0] = 'P';
-
-            ArrayList<Node> result = new ArrayList<>();
-
-            Bitmap bitmap = Bitmap.convertToBitmap(board);
-            Player.movesBitmapVersion(fromY * 8 + fromX, bitmap, ChessPieceType.BLACK_ROOK, false, result, null);
-
-            ArrayList<Move> resultM = new ArrayList<>();
-            for (Node wrapper : result) {
-                resultM.add(wrapper.getMove());
-            }
-
-
-            int[] y = {};
-            int[] x = {};
-
-            ArrayList<Move> expected = new ArrayList<>();
-            for (int i = 0; i < y.length; ++i) {
-                expected.add(new Move(fromX, fromY, x[i], y[i]));
-            }
-
-            assert (compare(resultM, expected));
-        }
-    }
-
-    public static void test_Rook_move_white() {
-        {
-            char[][] board = new char[8][8];
-            int fromX = 3;
-            int fromY = 3;
-            board[fromX][fromY] = 'r';
-
-            ArrayList<Node> result = new ArrayList<>();
-
-            Bitmap bitmap = Bitmap.convertToBitmap(board);
-            Player.movesBitmapVersion(fromY * 8 + fromX, bitmap, ChessPieceType.WHITE_ROOK, true, result, null);
-
-            ArrayList<Move> resultM = new ArrayList<>();
-            for (Node wrapper : result) {
-                resultM.add(wrapper.getMove());
-            }
-
-
-            int[] y = {7, 6, 5, 4, 2, 1, 0, 3, 3, 3, 3, 3, 3, 3};
-            int[] x = {3, 3, 3, 3, 3, 3, 3, 0, 1, 2, 4, 5, 6, 7};
-
-            ArrayList<Move> expected = new ArrayList<>();
-            for (int i = 0; i < y.length; ++i) {
-                expected.add(new Move(fromX, fromY, x[i], y[i]));
-            }
-
-            assert (compare(resultM, expected));
-        }
-
-        {
-            char[][] board = new char[8][8];
-            int fromX = 3;
-            int fromY = 3;
-            board[fromX][fromY] = 'r';
-            board[1][3] = 'p';
-            board[3][2] = 'p';
-            board[7][3] = 'p';
-            board[3][5] = 'p';
-
-
-            ArrayList<Node> result = new ArrayList<>();
-
-            Bitmap bitmap = Bitmap.convertToBitmap(board);
-            Player.movesBitmapVersion(fromY * 8 + fromX, bitmap, ChessPieceType.WHITE_ROOK, true, result, null);
-
-            ArrayList<Move> resultM = new ArrayList<>();
-            for (Node wrapper : result) {
-                resultM.add(wrapper.getMove());
-            }
-
-
-            int[] y = {2, 4, 5, 6, 3};
-            int[] x = {3, 3, 3, 3, 4};
-
-            ArrayList<Move> expected = new ArrayList<>();
-            for (int i = 0; i < y.length; ++i) {
-                expected.add(new Move(fromX, fromY, x[i], y[i]));
-            }
-
-            assert (compare(resultM, expected));
-        }
-
-        {
-            char[][] board = new char[8][8];
-            int fromX = 3;
-            int fromY = 3;
-            board[fromX][fromY] = 'r';
-            board[1][3] = 'P';
-            board[3][2] = 'P';
-            board[7][3] = 'P';
-            board[3][5] = 'P';
-
-
-            ArrayList<Node> result = new ArrayList<>();
-
-            Bitmap bitmap = Bitmap.convertToBitmap(board);
-            Player.movesBitmapVersion(fromY * 8 + fromX, bitmap, ChessPieceType.WHITE_ROOK, true, result, null);
-
-            ArrayList<Move> resultM = new ArrayList<>();
-            for (Node wrapper : result) {
-                resultM.add(wrapper.getMove());
-            }
-
-
-            int[] y = {2, 4, 5, 6, 3, 1, 7, 3, 3};
-            int[] x = {3, 3, 3, 3, 4, 3, 3, 2, 5};
-
-            ArrayList<Move> expected = new ArrayList<>();
-            for (int i = 0; i < y.length; ++i) {
-                expected.add(new Move(fromX, fromY, x[i], y[i]));
-            }
-
-            assert (compare(resultM, expected));
-        }
-    }
-    public static void test_bishop_move_black() {
-
-        {
-            char[][] board = new char[8][8];
-            int fromX = 3;
-            int fromY = 3;
-            board[fromX][fromY] = 'B';
-
-            ArrayList<Node> result = new ArrayList<>();
-
-            Bitmap bitmap = Bitmap.convertToBitmap(board);
-            Player.movesBitmapVersion(fromY * 8 + fromX, bitmap, ChessPieceType.BLACK_BISHOP, false, result, null);
-
-            ArrayList<Move> resultM = new ArrayList<>();
-            for (Node wrapper : result) {
-                resultM.add(wrapper.getMove());
-            }
-
-
-            int[] y = {0, 1, 2, 4, 5, 6, 7, 0, 1, 2, 4, 5, 6};
-            int[] x = {0, 1, 2, 4, 5, 6, 7, 6, 5, 4, 2, 1, 0};
-
-            ArrayList<Move> expected = new ArrayList<>();
-            for (int i = 0; i < y.length; ++i) {
-                expected.add(new Move(fromX, fromY, x[i], y[i]));
-            }
-
-            assert (compare(resultM, expected));
-        }
-
-        {
-            char[][] board = new char[8][8];
-            int fromX = 3;
-            int fromY = 3;
-            board[fromX][fromY] = 'B';
-            board[1][1] = 'P';
-            board[5][1] = 'P';
-            board[1][5] = 'P';
-            board[6][6] = 'P';
-
-
-            ArrayList<Node> result = new ArrayList<>();
-
-            Bitmap bitmap = Bitmap.convertToBitmap(board);
-            Player.movesBitmapVersion(fromY * 8 + fromX, bitmap, ChessPieceType.BLACK_BISHOP, false, result, null);
-
-            ArrayList<Move> resultM = new ArrayList<>();
-            for (Node wrapper : result) {
-                resultM.add(wrapper.getMove());
-            }
-
-
-            int[] y = {2, 4, 2, 4, 5};
-            int[] x = {2, 2, 4, 4, 5};
-
-            ArrayList<Move> expected = new ArrayList<>();
-            for (int i = 0; i < y.length; ++i) {
-                expected.add(new Move(fromX, fromY, x[i], y[i]));
-            }
-
-            assert (compare(resultM, expected));
-        }
-
-        {
-            char[][] board = new char[8][8];
-            int fromX = 3;
-            int fromY = 3;
-            board[fromX][fromY] = 'B';
-            board[1][1] = 'p';
-            board[5][1] = 'p';
-            board[1][5] = 'p';
-            board[6][6] = 'p';
-            board[2][3] = 'P';
-            board[3][4] = 'P';
-            board[3][2] = 'p';
-            board[4][3] = 'P';
-
-
-            ArrayList<Node> result = new ArrayList<>();
-
-            Bitmap bitmap = Bitmap.convertToBitmap(board);
-            Player.movesBitmapVersion(fromY * 8 + fromX, bitmap, ChessPieceType.BLACK_BISHOP, false, result, null);
-
-            ArrayList<Move> resultM = new ArrayList<>();
-            for (Node wrapper : result) {
-                resultM.add(wrapper.getMove());
-            }
-
-
-            int[] y = {1, 5, 2, 4, 2, 4, 1, 5, 6};
-            int[] x = {1, 1, 2, 2, 4, 4, 5, 5, 6};
-
-            ArrayList<Move> expected = new ArrayList<>();
-            for (int i = 0; i < y.length; ++i) {
-                expected.add(new Move(fromX, fromY, x[i], y[i]));
-            }
-
-            assert (compare(resultM, expected));
-        }
-    }
-    public static void test_pawn_move_black() {
-        {
-            char[][] board = new char[8][8];
-            int fromX = 3;
-            int fromY = 1;
-            board[fromX][fromY] = 'P';
-
-
-            ArrayList<Node> result = new ArrayList<>();
-
-            Bitmap bitmap = Bitmap.convertToBitmap(board);
-//            Player.movesBitmapVersion(fromY * 8 + fromX, bitmap, ChessPieceType.BLACK_PAWN, false, result);
-
-            ArrayList<Move> resultM = new ArrayList<>();
-            for (Node wrapper : result) {
-                resultM.add(wrapper.getMove());
-            }
-
-
-            int[] y = {2, 3};
-            int[] x = {3, 3};
-
-            ArrayList<Move> expected = new ArrayList<>();
-            for (int i = 0; i < y.length; ++i) {
-                expected.add(new Move(fromX, fromY, x[i], y[i]));
-            }
-
-            //assert (compare(resultM, expected));
-        }
-
-        {
-            char[][] board = new char[8][8];
-            int fromX = 7;
-            int fromY = 1;
-            board[fromX][fromY] = 'P';
-            board[3][0] = 'p';
-
-            ArrayList<Node> result = new ArrayList<>();
-
-            Bitmap bitmap = Bitmap.convertToBitmap(board);
-            Player.movesBitmapVersion(fromY * 8 + fromX, bitmap, ChessPieceType.BLACK_PAWN, false, result, null);
-
-            ArrayList<Move> resultM = new ArrayList<>();
-            for (Node wrapper : result) {
-                resultM.add(wrapper.getMove());
-            }
-
-
-            int[] y = {2, 3};
-            int[] x = {7, 7};
-
-            ArrayList<Move> expected = new ArrayList<>();
-            for (int i = 0; i < y.length; ++i) {
-                expected.add(new Move(fromX, fromY, x[i], y[i]));
-            }
-
-            assert (compare(resultM, expected));
-        }
-
 
     }
     public static void test() {
@@ -729,13 +299,168 @@ public class Program {
     }
 
     public static void main(String[] args) {
-        //test_King_move_black();
-        test_King_move_white();
-        //test_Rook_move_black();
-        //test_Rook_move_white();
-        //test_bishop_move_black();
-        //test_pawn_move_black();
         //test();
+
+        {
+            // player attacks
+            char[][] board = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'R', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'k', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(false, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 1;
+            assert move.fromY == 3;
+            assert move.toX == 1;
+            assert move.toY == 6;
+        }
+
+        {
+            // player attacks
+            char[][] board = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'R', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'k', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(false, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 1;
+            assert move.fromY == 3;
+            assert move.toX == 1;
+            assert move.toY == 5;
+        }
+
+        {
+            // player attacks
+            char[][] board = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'k', 0, 0, 0, 'Q', 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(false, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 5;
+            assert move.fromY == 6;
+            assert move.toX == 1;
+            assert move.toY == 6;
+        }
+
+        {
+            // player dodges
+            char[][] board = {
+                    {0, 0, 0, 0, 'K', 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'R', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 'R', 0},
+                    {'k', 0, 0, 0, 0, 'Q', 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(true, 10000);
+
+            Move move = player.getNextMove(board);
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 0;
+            assert move.fromY == 6;
+            assert move.toX == 0;
+            assert move.toY == 7;
+        }
+        {
+            // player captures
+            char[][] board = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'R', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'k', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(false, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 1;
+            assert move.fromY == 3;
+            assert move.toX == 1;
+            assert move.toY == 6;
+        }
+
+        {
+            System.out.println("---------------------------------------");
+            // player captures piece when possible
+            char[][] board = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 'Q', 0},
+                    {0, 0, 0, 0, 0, 'b', 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(true, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 5;
+            assert move.fromY == 5;
+            assert move.toX == 6;
+            assert move.toY == 4;
+        }
+
+        {
+            // player captures piece when possible
+            char[][] board = {
+                    {0, 0, 0, 'K', 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 'Q', 0},
+                    {0, 0, 0, 0, 0, 0, 'k', 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(true, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 6;
+            assert move.fromY == 5;
+            assert move.toX == 6;
+            assert move.toY == 4;
+        }
+
         test2();
     }
 

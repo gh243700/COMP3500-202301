@@ -5,7 +5,7 @@ import academy.pocu.comp3500.assignment3.chess.Move;
 import java.util.Stack;
 
 public class NodePool {
-    public Stack<Node> pool = new Stack<>();
+    public Stack<Wrapper> pool = new Stack<>();
     private static NodePool instance;
     public int allocCount = 0;
     public int deleteCount = 0;
@@ -21,24 +21,24 @@ public class NodePool {
     private NodePool(){
         pool.ensureCapacity(128);
         for (int i = 0; i < pool.capacity(); ++i) {
-            pool.add(new Node());
+            //pool.add();
         }
 
     }
 
-    public Node alloc(Bitmap bitmap, Move move, Node parent) {
+    public Wrapper alloc(Bitmap bitmap, Move move) {
         ++allocCount;
         if (pool.size() == 0) {
-            return new Node(bitmap, move, parent);
+            //return new Wrapper(bitmap, move);
         }
 
-        Node node = pool.pop();
-        node.reset(bitmap, move, parent);
+        Wrapper node = pool.pop();
+        //node.reset(bitmap, move);
 
         return node;
     }
 
-    public void delete(Node node) {
+    public void delete(Wrapper node) {
         ++deleteCount;
         pool.add(node);
     }
