@@ -70,6 +70,13 @@ public class Player extends PlayerBase {
             for (Move move : moves) {
                 // make move
 
+                end = System.nanoTime();
+                duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
+
+                if (duration >= getMaxMoveTimeMilliseconds()) {
+                    break;
+                }
+
                 int offsetFrom = move.fromY * 8 + move.fromX;
                 int offsetTo = move.toY * 8 + move.toX;
 
@@ -94,12 +101,24 @@ public class Player extends PlayerBase {
                 }
             }
 
+            if (maxEval == Integer.MAX_VALUE) {
+                maxEval = board.evaluate();
+            }
+
             return new Wrapper(maxEval, bestMove);
         }
 
         int minEval = Integer.MAX_VALUE;
         for (Move move : moves) {
             // make move
+
+            end = System.nanoTime();
+            duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
+
+            if (duration >= getMaxMoveTimeMilliseconds()) {
+                break;
+            }
+
             int offsetFrom = move.fromY * 8 + move.fromX;
             int offsetTo = move.toY * 8 + move.toX;
 
@@ -118,11 +137,14 @@ public class Player extends PlayerBase {
             board.on(offsetFrom, t1);
             board.on(offsetTo, t2);
 
-
             if (currentEval < minEval) {
                 minEval = currentEval;
                 bestMove = move;
             }
+        }
+
+        if (minEval == Integer.MAX_VALUE) {
+            minEval = board.evaluate();
         }
 
         return new Wrapper(minEval, bestMove);
@@ -133,7 +155,6 @@ public class Player extends PlayerBase {
         ArrayList<Move> result = new ArrayList<>();
 
         for (int i = 0; i < 64; ++i) {
-
             ChessPieceType chessPieceType = board.getChessPieceType(i);
 
             if (isWhite && board.chessPieceColor(i) == Color.BLACK || !isWhite && board.chessPieceColor(i) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {

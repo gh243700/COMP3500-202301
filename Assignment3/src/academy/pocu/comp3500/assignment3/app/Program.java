@@ -316,6 +316,7 @@ public class Program {
 
             Move move = player.getNextMove(board);
 
+
         }
 
         test2();

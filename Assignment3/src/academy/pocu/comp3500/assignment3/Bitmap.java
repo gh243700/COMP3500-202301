@@ -3,7 +3,7 @@ package academy.pocu.comp3500.assignment3;
 public class Bitmap {
     private long[] board = new long[12];
     private static final char[] LETTERS = {'k', 'r', 'b', 'q', 'n', 'p', 'K', 'R', 'B', 'Q', 'N', 'P'};
-    private static final int[] VALUES = {200, 5, 3, 9, 3, 1, 200, 5, 3, 9, 3, 1};
+    private static final int[] VALUES = {200, 5, 3, 9, 3, 1, -200, 5, 3, 9, 3, 1};
 
     public ChessPieceType getChessPieceType(final int offset) {
         long mask = 0x01;
