@@ -24,7 +24,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 2;
+        depth = 3;
     }
 
     @Override
@@ -101,7 +101,7 @@ public class Player extends PlayerBase {
                 }
             }
 
-            if (maxEval == Integer.MAX_VALUE) {
+            if (maxEval == Integer.MAX_VALUE + 1) {
                 maxEval = board.evaluate();
             }
 
