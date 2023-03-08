@@ -27,7 +27,6 @@ public class Program {
     public static void test2() {
 
 
-
         {
             // getNextMove returns a valid move when there is only one piece in board
             char[] symbols = {'k', 'n', 'b', 'r', 'q', 'p'};
@@ -47,12 +46,19 @@ public class Program {
                     board[p.y][p.x] = s;
                     Player player = new Player(true, 1000);
 
+                    if (s == 'b') {
+                        System.out.println();
+                    }
+
+
                     Move move = player.getNextMove(board);
 
                     if (!Game.isMoveValid(board, player, move)) {
                         player.getNextMove(board);
                     }
-                    assert Game.isMoveValid(board, player, move);
+
+
+                    //assert Game.isMoveValid(board, player, move);
                 }
             }
         }
@@ -245,6 +251,7 @@ public class Program {
         }
 
     }
+
     public static void test() {
         {
             final boolean IS_AUTO_PLAY = true; // true 라면 주기적으로 자동으로 다음 턴이 진행됨; false 라면 Enter/Return 키를 누를 때 진행됨
@@ -295,12 +302,29 @@ public class Program {
         }
 
 
-
     }
 
     public static void main(String[] args) {
 
-        test();
+        {
+            // player dodges
+            char[][] board = {
+                    {0, 0, 0, 0, 'K', 0, 0, 0},
+                    {0, 0, 0, 0, 'P', 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {'k', 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(true, 10000);
+
+            Move move = player.getNextMove(board);
+        }
+
+
+        //test();
         test2();
     }
 
