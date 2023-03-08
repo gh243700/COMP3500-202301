@@ -22,19 +22,46 @@ public class Player extends PlayerBase {
     private boolean timeOut;
     private static NodePool nodePool = NodePool.getInstance();
 
+    public static ArrayList<Node> leaf = new ArrayList<>();
+
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 3;
+        depth = 5;
     }
 
     @Override
     public Move getNextMove(char[][] board) {
         long start = System.nanoTime();
-        if (timeOut) {
-            --depth;
+        Bitmap bitmap = Bitmap.convertToBitmap(board);
+
+        ArrayList<Node> canad = getNextMovesBitmapVer(bitmap, isWhite(), null);
+
+        Node result = null;
+        if (isWhite()) {
+            int eval = Integer.MIN_VALUE;
+
+            for (Node n : canad) {
+                int max = minimax(n, n, depth, start, false, false);
+
+                System.out.println(max);
+                if (max > eval) {
+                    result = n;
+                    eval = max;
+                }
+            }
+        } else {
+            int eval = Integer.MAX_VALUE;
+            for (Node n : canad) {
+                int min = minimax(n, n, depth, start, true, true);
+                if (min < eval) {
+                    result = n;
+                    eval = min;
+                }
+            }
         }
 
-        return minimax(Bitmap.convertToBitmap(board), depth, isWhite(), start).move;
+
+        return result.getMove();
     }
 
     @Override
@@ -42,105 +69,91 @@ public class Player extends PlayerBase {
         return getNextMove(board);
     }
 
-    public Wrapper minimax(Bitmap board, int depth, boolean maximizingPlayer, long start) {
-
+    public int minimax(Node node, Node before, int depth, final long start, boolean maximizingPlayer, boolean isWhite) {
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        if (duration >= getMaxMoveTimeMilliseconds()) {
-            timeOut = true;
-
-            Wrapper wrapper = new Wrapper(board.evaluate(), null, 0);
-
-            return wrapper;
+        if (depth == 0 || duration >= getMaxMoveTimeMilliseconds()) {
+            return node.getBitmap().evaluate();
         }
 
-        if (board.GameOver(!isWhite())) {
-            Wrapper wrapper = new Wrapper(board.evaluate(), null, 1);
-            return wrapper;
-        }
+        ArrayList<Node> nodes = getNextMovesBitmapVer(node.getBitmap(), maximizingPlayer, node);
 
-        if (depth == 0) {
-            Wrapper wrapper = new Wrapper(board.evaluate(), null, 2);
-            return wrapper;
+        if (nodes.size() == 0) {
+            return (!isWhite) ? 1000 : -1000;
         }
-
-        ArrayList<Move> moves = getNextMovesBitmapVer(board, maximizingPlayer);
-        if (moves.size() == 0) {
-            Wrapper wrapper = new Wrapper(board.evaluate(), null, 3);
-            return wrapper;
-        }
-        Move bestMove = moves.get(0);
 
         if (maximizingPlayer) {
-            int maxEval = Integer.MIN_VALUE;
-            for (Move move : moves) {
-                // make move
-                int offsetFrom = move.fromY * 8 + move.fromX;
-                int offsetTo = move.toY * 8 + move.toX;
-
-                ChessPieceType t1 = board.getChessPieceType(offsetFrom);
-                ChessPieceType t2 = board.getChessPieceType(offsetTo);
-
-                board.on(offsetTo, t1);
-                board.off(offsetFrom, t1);
-                board.off(offsetTo, t2);
-
-                Wrapper wrapper = minimax(board, depth - 1, false, start);
-
-                // undo move
-                board.off(offsetTo, t1);
-                board.on(offsetFrom, t1);
-                board.on(offsetTo, t2);
-
-                int currentEval = wrapper.eval;
-
-                if (currentEval > maxEval) {
-                    maxEval = currentEval;
-                    bestMove = move;
+            int eval = Integer.MIN_VALUE;
+            for (Node n : nodes) {
+                int max = minimax(n, node, depth - 1, start, false, isWhite);
+                if (max > eval) {
+                    eval = max;
                 }
             }
 
-            return new Wrapper(maxEval, bestMove);
+            return eval;
         }
 
-        int minEval = Integer.MAX_VALUE;
-        for (Move move : moves) {
-            // make move
-            int offsetFrom = move.fromY * 8 + move.fromX;
-            int offsetTo = move.toY * 8 + move.toX;
-
-            ChessPieceType t1 = board.getChessPieceType(offsetFrom);
-            ChessPieceType t2 = board.getChessPieceType(offsetTo);
-
-            board.on(offsetTo, t1);
-            board.off(offsetFrom, t1);
-            board.off(offsetTo, t2);
-
-
-            Wrapper wrapper = minimax(board, depth - 1, true, start);
-            // undo move
-            board.off(offsetTo, t1);
-            board.on(offsetFrom, t1);
-            board.on(offsetTo, t2);
-
-            int currentEval = wrapper.eval;
-
-            if (currentEval < minEval) {
-                minEval = currentEval;
-                bestMove = move;
+        int eval = Integer.MAX_VALUE;
+        for (Node n : nodes) {
+            int min = minimax(n, node, depth - 1, start, true, isWhite);
+            if (min < eval) {
+                eval = min;
             }
         }
-        return new Wrapper(minEval, bestMove);
+
+        return eval;
     }
 
-    public static ArrayList<Move> getNextMovesBitmapVer(Bitmap board, boolean isWhite) {
+    private static Node maxEvaluationValue(ArrayList<Node> arrayList) {
+        int value = Integer.MIN_VALUE;
+        Node result = null;
 
-        ArrayList<Move> result = new ArrayList<>();
+        for (Node node : arrayList) {
+            int evaluationValue = node.getEvaluationValue();
+            if (value < evaluationValue) {
+                if (result != null) {
+                    nodePool.delete(result);
+                }
+                result = node;
+                value = evaluationValue;
+            } else {
+                nodePool.delete(node);
+            }
+        }
+
+        return result;
+    }
+
+    private static Node minEvaluationValue(ArrayList<Node> arrayList) {
+        int value = Integer.MAX_VALUE;
+        Node result = null;
+
+        for (Node node : arrayList) {
+            int evaluationValue = node.getEvaluationValue();
+
+            if (value > evaluationValue) {
+                if (result != null) {
+                    nodePool.delete(result);
+                }
+
+                result = node;
+                value = evaluationValue;
+            } else {
+                nodePool.delete(node);
+            }
+        }
+
+        return result;
+    }
+
+    public static ArrayList<Node> getNextMovesBitmapVer(Bitmap board, boolean isWhite, Node parent) {
+
+        ArrayList<Node> result = new ArrayList<>();
 
         int count = 0;
         for (int i = 0; i < 64; ++i) {
-
             if (count == 16) {
                 break;
             }
@@ -152,13 +165,13 @@ public class Player extends PlayerBase {
             }
 
             ++count;
-            movesBitmapVersion(i, board, chessPieceType, isWhite, result);
+            movesBitmapVersion(i, board, chessPieceType, isWhite, result, parent);
         }
 
         return result;
     }
 
-    public static void movesBitmapVersion(final int offset, final Bitmap board, final ChessPieceType chessPieceType, final boolean isWhite, ArrayList<Move> result) {
+    public static void movesBitmapVersion(final int offset, final Bitmap board, final ChessPieceType chessPieceType, final boolean isWhite, ArrayList<Node> result, Node parent) {
         int[] moveOffset = null;
         byte[] boundX = null;
         boolean loopOnce = false;
@@ -190,8 +203,8 @@ public class Player extends PlayerBase {
                 break;
             case BLACK_PAWN:
             case WHITE_PAWN:
-                pawnMovesBitmapVersion(offset, board, isWhite, result);
-                pawnAttacksBitmapVersion(offset, board, isWhite, result);
+                pawnMovesBitmapVersion(offset, board, isWhite, result, parent);
+                pawnAttacksBitmapVersion(offset, board, isWhite, result, parent);
                 return;
             default:
                 assert (false);
@@ -216,7 +229,13 @@ public class Player extends PlayerBase {
                     break;
                 }
 
-                result.add(new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8));
+                Bitmap boardCopy = board.makeCopy();
+                boardCopy.setBitmap(offset, ChessPieceType.NONE);
+                boardCopy.setBitmap(offsetAfterMove, chessPieceType);
+
+                Node node = nodePool.alloc(boardCopy, new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8), parent);
+                node.setParent(parent == null ? node : parent);
+                result.add(node);
 
                 if (c1Color != Color.NONE || loopOnce) {
                     break;
@@ -225,7 +244,7 @@ public class Player extends PlayerBase {
         }
     }
 
-    private static void pawnMovesBitmapVersion(final int offset, final Bitmap board, boolean isWhite, ArrayList<Move> result) {
+    private static void pawnMovesBitmapVersion(final int offset, final Bitmap board, boolean isWhite, ArrayList<Node> result, Node parent) {
         for (int i = 0; i < PAWN_MOVE_OFFSET.length; ++i) {
             int offsetAfterMove = offset + (isWhite ? -1 : 1) * PAWN_MOVE_OFFSET[i];
             int y = offset / 8;
@@ -234,11 +253,17 @@ public class Player extends PlayerBase {
                 break;
             }
 
-            result.add(new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8));
+            Bitmap boardCopy = board.makeCopy();
+
+            boardCopy.setBitmap(offset, ChessPieceType.NONE);
+            boardCopy.setBitmap(offsetAfterMove, (isWhite) ? ChessPieceType.WHITE_PAWN : ChessPieceType.BLACK_PAWN);
+
+            Node node = nodePool.alloc(boardCopy, new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8), parent);
+            result.add(node);
         }
     }
 
-    private static void pawnAttacksBitmapVersion(final int offset, final Bitmap board, boolean isWhite, ArrayList<Move> result) {
+    private static void pawnAttacksBitmapVersion(final int offset, final Bitmap board, boolean isWhite, ArrayList<Node> result, Node parent) {
         for (int i = 0; i < PAWN_ATTACK_OFFSET.length; ++i) {
             int x = 8 * (7 - offset % 8) + offset / 8;
             x += (isWhite ? -1 : 1) * PAWN_ATTACK_BOUND_X[i] * 8;
@@ -247,10 +272,16 @@ public class Player extends PlayerBase {
             ChessPieceType c1 = board.getChessPieceType(offsetAfterMove);
 
             if (board.chessPieceColor(offsetAfterMove) != ((isWhite) ? Color.BLACK : Color.WHITE) || offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
-                continue;
+                break;
             }
 
-            result.add(new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8));
+            Bitmap boardCopy = board.makeCopy();
+            boardCopy.setBitmap(offset, ChessPieceType.NONE);
+            boardCopy.setBitmap(offsetAfterMove, (isWhite) ? ChessPieceType.WHITE_PAWN : ChessPieceType.BLACK_PAWN);
+
+            Node node = nodePool.alloc(boardCopy, new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8), parent);
+
+            result.add(node);
 
             if (c1 != ChessPieceType.NONE) {
                 break;

@@ -3,7 +3,7 @@ package academy.pocu.comp3500.assignment3;
 public class Bitmap {
     private long[] board = new long[12];
     private static final char[] LETTERS = {'k', 'r', 'b', 'q', 'n', 'p', 'K', 'R', 'B', 'Q', 'N', 'P'};
-    private static final int[] VALUES = {200, 5, 3, 9, 3, 1, 200, 5, 3, 9, 3, 1};
+    private static final int[] VALUES = {200, 5, 3, 9, 3, 1, -200, -5, -3, -9, -3, -1};
 
     public ChessPieceType getChessPieceType(final int offset) {
         long mask = 0x01;
@@ -31,27 +31,30 @@ public class Bitmap {
         return Color.NONE;
     }
 
-    public void on(final int offset, final ChessPieceType type) {
-        if (type == ChessPieceType.NONE) {
+    public void setBitmap(final int offset, final ChessPieceType type) {
+        if (offset < 0 || offset >= 64) {
             return;
         }
 
         long mask = 0x01;
         mask = mask << offset;
 
-        board[type.ordinal()] = board[type.ordinal()] | mask;
-    }
+        for (int i = 0; i < board.length; ++i) {
+            if (i == type.ordinal()) {
+                continue;
+            }
 
-    public void off(final int offset, final ChessPieceType type) {
+            if ((board[i] & mask) != 0) {
+                board[i] ^= mask;
+                break;
+            }
+        }
+
         if (type == ChessPieceType.NONE) {
             return;
         }
 
-        long mask = 0x01;
-        mask = mask << offset;
-        mask = ~mask;
-
-        board[type.ordinal()] = board[type.ordinal()] & mask;
+        board[type.ordinal()] |= mask;
     }
 
     public Bitmap makeCopy() {
@@ -64,42 +67,17 @@ public class Bitmap {
         return copy;
     }
 
-    public boolean GameOver(boolean isWhite) {
-
-        long mask = 0x0;
-        if (isWhite) {
-            for (int k = 0; k < 6; ++k) {
-                if ((board[k] | mask) != 0) {
-                    return false;
-                }
-            }
-        } else {
-            for (int k = 6; k < 12; ++k) {
-                if ((board[k] | mask) != 0) {
-                    return false;
-                }
-
-            }
-        }
-
-        return true;
+    public boolean isKingAlive(boolean isWhite) {
+        return ((board[isWhite ? 0 : 6] | 0x0) != 0) ? true : false;
     }
 
     public int evaluate() {
-
-
-        int whiteScore = 0;
-        int blackScore = 0;
-
         long mask = 0x01;
+        int result = 0;
         for (int i = 0; i < 64; ++i) {
-            for (int k = 0; k < 12; ++k) {
+            for (int k = 0; k < board.length; ++k) {
                 if ((board[k] & mask) != 0) {
-                    if (k < 6) {
-                        whiteScore += VALUES[k];
-                    } else {
-                        blackScore += VALUES[k];
-                    }
+                    result += VALUES[k];
                     break;
                 }
             }
@@ -107,7 +85,7 @@ public class Bitmap {
             mask = mask << 1;
         }
 
-        return whiteScore - blackScore;
+        return result;
     }
 
 
@@ -118,40 +96,40 @@ public class Bitmap {
             char c = board[i / 8][i % 8];
             switch (c) {
                 case 'k':
-                    bitmap.on(i, ChessPieceType.WHITE_KING);
+                    bitmap.setBitmap(i, ChessPieceType.WHITE_KING);
                     break;
                 case 'r':
-                    bitmap.on(i, ChessPieceType.WHITE_ROOK);
+                    bitmap.setBitmap(i, ChessPieceType.WHITE_ROOK);
                     break;
                 case 'b':
-                    bitmap.on(i, ChessPieceType.WHITE_BISHOP);
+                    bitmap.setBitmap(i, ChessPieceType.WHITE_BISHOP);
                     break;
                 case 'q':
-                    bitmap.on(i, ChessPieceType.WHITE_QUEEN);
+                    bitmap.setBitmap(i, ChessPieceType.WHITE_QUEEN);
                     break;
                 case 'n':
-                    bitmap.on(i, ChessPieceType.WHITE_KNIGHT);
+                    bitmap.setBitmap(i, ChessPieceType.WHITE_KNIGHT);
                     break;
                 case 'p':
-                    bitmap.on(i, ChessPieceType.WHITE_PAWN);
+                    bitmap.setBitmap(i, ChessPieceType.WHITE_PAWN);
                     break;
                 case 'K':
-                    bitmap.on(i, ChessPieceType.BLACK_KING);
+                    bitmap.setBitmap(i, ChessPieceType.BLACK_KING);
                     break;
                 case 'R':
-                    bitmap.on(i, ChessPieceType.BLACK_ROOK);
+                    bitmap.setBitmap(i, ChessPieceType.BLACK_ROOK);
                     break;
                 case 'B':
-                    bitmap.on(i, ChessPieceType.BLACK_BISHOP);
+                    bitmap.setBitmap(i, ChessPieceType.BLACK_BISHOP);
                     break;
                 case 'Q':
-                    bitmap.on(i, ChessPieceType.BLACK_QUEEN);
+                    bitmap.setBitmap(i, ChessPieceType.BLACK_QUEEN);
                     break;
                 case 'N':
-                    bitmap.on(i, ChessPieceType.BLACK_KNIGHT);
+                    bitmap.setBitmap(i, ChessPieceType.BLACK_KNIGHT);
                     break;
                 case 'P':
-                    bitmap.on(i, ChessPieceType.BLACK_PAWN);
+                    bitmap.setBitmap(i, ChessPieceType.BLACK_PAWN);
                     break;
                 default:
                     break;
