@@ -24,7 +24,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 10;
+        depth = 3;
     }
 
     @Override
@@ -32,17 +32,9 @@ public class Player extends PlayerBase {
         long start = System.nanoTime();
         if (timeOut) {
             --depth;
-            timeOut = false;
-        } else {
-            ++depth;
         }
 
-        Wrapper wrapper = minimax(Bitmap.convertToBitmap(board), depth, isWhite(), start);
-
-        if (wrapper.move == null) {
-            System.out.println();
-        }
-        return wrapper.move;
+        return minimax(Bitmap.convertToBitmap(board), depth, isWhite(), start).move;
     }
 
     @Override
@@ -63,7 +55,7 @@ public class Player extends PlayerBase {
             return wrapper;
         }
 
-        if (board.GameOver(maximizingPlayer)) {
+        if (board.GameOver(!isWhite())) {
             Wrapper wrapper = new Wrapper(board.evaluate(), null, 1);
             return wrapper;
         }
@@ -78,7 +70,6 @@ public class Player extends PlayerBase {
             Wrapper wrapper = new Wrapper(board.evaluate(), null, 3);
             return wrapper;
         }
-
         Move bestMove = moves.get(0);
 
         if (maximizingPlayer) {

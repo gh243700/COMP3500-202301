@@ -299,8 +299,168 @@ public class Program {
     }
 
     public static void main(String[] args) {
+        //test();
 
-        test();
+        {
+            // player attacks
+            char[][] board = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'R', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'k', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(false, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 1;
+            assert move.fromY == 3;
+            assert move.toX == 1;
+            assert move.toY == 6;
+        }
+
+        {
+            // player attacks
+            char[][] board = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'R', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'k', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(false, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 1;
+            assert move.fromY == 3;
+            assert move.toX == 1;
+            assert move.toY == 5;
+        }
+
+        {
+            // player attacks
+            char[][] board = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'k', 0, 0, 0, 'Q', 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(false, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 5;
+            assert move.fromY == 6;
+            assert move.toX == 1;
+            assert move.toY == 6;
+        }
+
+        {
+            // player dodges
+            char[][] board = {
+                    {0, 0, 0, 0, 'K', 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'R', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 'R', 0},
+                    {'k', 0, 0, 0, 0, 'Q', 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(true, 10000);
+
+            Move move = player.getNextMove(board);
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 0;
+            assert move.fromY == 6;
+            assert move.toX == 0;
+            assert move.toY == 7;
+        }
+        {
+            // player captures
+            char[][] board = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'R', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 'k', 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(false, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 1;
+            assert move.fromY == 3;
+            assert move.toX == 1;
+            assert move.toY == 6;
+        }
+
+        {
+            System.out.println("---------------------------------------");
+            // player captures piece when possible
+            char[][] board = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 'Q', 0},
+                    {0, 0, 0, 0, 0, 'b', 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(true, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 5;
+            assert move.fromY == 5;
+            assert move.toX == 6;
+            assert move.toY == 4;
+        }
+
+        {
+            // player captures piece when possible
+            char[][] board = {
+                    {0, 0, 0, 'K', 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 'Q', 0},
+                    {0, 0, 0, 0, 0, 0, 'k', 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+            };
+            Player player = new Player(true, 10000);
+
+            Move move = player.getNextMove(board);
+
+            assert Game.isMoveValid(board, player, move);
+            assert move.fromX == 6;
+            assert move.fromY == 5;
+            assert move.toX == 6;
+            assert move.toY == 4;
+        }
+
         test2();
     }
 
