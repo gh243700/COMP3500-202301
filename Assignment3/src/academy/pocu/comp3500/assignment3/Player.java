@@ -19,15 +19,15 @@ public class Player extends PlayerBase {
     private final static byte[] BISHOP_MOVE_BOUND_X = {1, 1, -1, -1};
     private final static byte[] KNIGHT_MOVE_OFFSET = {6, 10, 15, 17, -6, -10, -15, -17};
     private final static byte[] KNIGHT_MOVE_BOUND_X = {-2, 2, -1, 1, 2, -2, 1, -1};
-    private static WrappersPool wrappersPool = WrappersPool.getInstance();
-    private static MovesPool movesPool = MovesPool.getInstance();
+    private WrappersPool wrappersPool = WrappersPool.getInstance();
+    private MovesPool movesPool = MovesPool.getInstance();
     private int depth;
     private Bitmap bitmap;
     private Stack<Move> moveStack = new Stack<>();
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 4;
+        depth = 2;
         bitmap = new Bitmap();
     }
 
@@ -328,7 +328,6 @@ public class Player extends PlayerBase {
 
                 moveStack.add(move);
 
-
                 if (c1Color != Color.NONE || loopOnce) {
                     break;
                 }
@@ -360,6 +359,7 @@ public class Player extends PlayerBase {
             if (bitmap.chessPieceColor(offsetAfterMove) != ((isWhite) ? Color.BLACK : Color.WHITE) || offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
                 continue;
             }
+
 
             Move move = movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
             moveStack.add(move);
