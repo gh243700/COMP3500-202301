@@ -51,24 +51,30 @@ public class Player extends PlayerBase {
     }
 
     public static Move prioritizeProtectingOwnPiece(ArrayList<Move> moves, Bitmap board, boolean isWhite) {
-        Move result = null;
+        ArrayList<Move> priorityMoves = new ArrayList<>();
+        ArrayList<Move> nonPriorityMoves = new ArrayList<>();
+
 
         for (Move move : moves) {
+            int offsetFrom = move.fromY * 8 + move.fromX;
+            ChessPieceType t1 = board.getChessPieceType(offsetFrom);
+
             if (isProtectingOwnPiece(move, board, isWhite)) {
-                if (result != null) {
-                    movesPool.delete(result);
+                if (t1 == ChessPieceType.BLACK_KING || t1 == ChessPieceType.WHITE_KING) {
+                    return move;
                 }
 
-                result = move;
-                break;
-            } else if (result != null) {
-                movesPool.delete(result);
+                priorityMoves.add(move);
             } else {
-                result = move;
+                nonPriorityMoves.add(move);
             }
         }
 
-        return result;
+        if (priorityMoves.size() == 0) {
+            return nonPriorityMoves.get(0);
+        }
+
+        return priorityMoves.get(0);
     }
 
     public static boolean isProtectingOwnPiece(Move move, Bitmap board, boolean isWhite) {
@@ -115,17 +121,12 @@ public class Player extends PlayerBase {
         Move bestMove = moves.get(0);
         ArrayList<Move> sameMoves = new ArrayList<>(32);
 
+        boolean isTopDepth = this.depth == depth;
+
         if (maximizingPlayer) {
             int maxEval = Integer.MIN_VALUE + 1;
             for (Move move : moves) {
                 // make move
-
-                end = System.nanoTime();
-                duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
-
-                if (duration >= getMaxMoveTimeMilliseconds()) {
-                    break;
-                }
 
                 int offsetFrom = move.fromY * 8 + move.fromX;
                 int offsetTo = move.toY * 8 + move.toX;
@@ -150,7 +151,7 @@ public class Player extends PlayerBase {
                     bestMove = move;
                     sameMoves.clear();
                     sameMoves.add(move);
-                } else if (currentEval == maxEval) {
+                } else if (isTopDepth && currentEval == maxEval) {
                     sameMoves.add(move);
                 } else {
                     movesPool.delete(move);
@@ -159,12 +160,8 @@ public class Player extends PlayerBase {
                 wrappersPool.delete(wrapper);
             }
 
-            if (sameMoves.size() > 1) {
+            if (isTopDepth && sameMoves.size() > 1) {
                 bestMove = prioritizeProtectingOwnPiece(sameMoves, board, true);
-            }
-
-            if (maxEval == Integer.MAX_VALUE + 1) {
-                maxEval = board.evaluate();
             }
 
             return wrappersPool.alloc(maxEval, bestMove);
@@ -173,12 +170,6 @@ public class Player extends PlayerBase {
         int minEval = Integer.MAX_VALUE;
         for (Move move : moves) {
             // make move
-            end = System.nanoTime();
-            duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
-
-            if (duration >= getMaxMoveTimeMilliseconds()) {
-                break;
-            }
 
             int offsetFrom = move.fromY * 8 + move.fromX;
             int offsetTo = move.toY * 8 + move.toX;
@@ -206,8 +197,7 @@ public class Player extends PlayerBase {
                 sameMoves.clear();
                 sameMoves.add(move);
 
-
-            } else if (minEval == currentEval) {
+            } else if (isTopDepth && minEval == currentEval) {
                 sameMoves.add(move);
             } else {
                 movesPool.delete(move);
@@ -216,12 +206,8 @@ public class Player extends PlayerBase {
             wrappersPool.delete(wrapper);
         }
 
-        if (sameMoves.size() > 1) {
+        if (isTopDepth && sameMoves.size() > 1) {
             bestMove = prioritizeProtectingOwnPiece(sameMoves, board, false);
-        }
-
-        if (minEval == Integer.MAX_VALUE) {
-            minEval = board.evaluate();
         }
 
         return wrappersPool.alloc(minEval, bestMove);
