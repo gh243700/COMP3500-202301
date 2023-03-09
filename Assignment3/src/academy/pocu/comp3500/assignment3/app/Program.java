@@ -51,6 +51,8 @@ public class Program {
                 }
             }
         }
+
+
         {
             // player dodges
             char[][] board = {
@@ -238,6 +240,7 @@ public class Program {
         }
 
     }
+
     public static void test() {
         {
             final boolean IS_AUTO_PLAY = true; // true 라면 주기적으로 자동으로 다음 턴이 진행됨; false 라면 Enter/Return 키를 누를 때 진행됨
@@ -286,7 +289,6 @@ public class Program {
                 }
             }
         }
-
 
 
     }

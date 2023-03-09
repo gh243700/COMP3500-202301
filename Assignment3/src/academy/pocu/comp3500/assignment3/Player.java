@@ -59,7 +59,7 @@ public class Player extends PlayerBase {
         return getNextMove(board);
     }
 
-    public Move prioritizeProtectingOwnPiece(boolean isWhite) {
+    public Move prioritizeMove(boolean isWhite) {
         Move bestMove = sameMoves.get(0);
         int bestEvaluation = Integer.MIN_VALUE;
 
@@ -108,22 +108,21 @@ public class Player extends PlayerBase {
         ArrayList<ChessPiece> chessPieces = bitmap.getChessPieces();
 
         boolean result = true;
-        if (isWhite) {
-            for (int i = 0; i < chessPieces.size(); ++i) {
-                ChessPiece chessPiece = chessPieces.get(i);
-                ChessPieceType chessPieceType = chessPiece.getType();
-                Color color = Color.chessPieceColor(chessPieceType);
 
-                if (isWhite ? Color.WHITE == color : Color.BLACK == color) {
-                    continue;
-                }
+        for (int i = 0; i < chessPieces.size(); ++i) {
+            ChessPiece chessPiece = chessPieces.get(i);
+            ChessPieceType chessPieceType = chessPiece.getType();
+            Color color = Color.chessPieceColor(chessPieceType);
 
-                boolean isSafe = isSafe(chessPiece.getOffset(), offsetTo, chessPieceType, isWhite ? false : true);
+            if (isWhite ? Color.WHITE == color : Color.BLACK == color) {
+                continue;
+            }
 
-                if (isSafe == false) {
-                    result = false;
-                    break;
-                }
+            boolean isSafe = isSafeFromEnemy(chessPiece.getOffset(), offsetTo, chessPieceType, isWhite ? false : true);
+
+            if (isSafe == false) {
+                result = false;
+                break;
             }
         }
 
@@ -214,7 +213,7 @@ public class Player extends PlayerBase {
             }
 
             if (isTopDepth && sameMoves.size() > 1) {
-                bestMove = prioritizeProtectingOwnPiece(true);
+                bestMove = prioritizeMove(true);
             }
 
             return wrappersPool.alloc(maxEval, bestMove);
@@ -277,7 +276,7 @@ public class Player extends PlayerBase {
         }
 
         if (isTopDepth && sameMoves.size() > 1) {
-            bestMove = prioritizeProtectingOwnPiece(false);
+            bestMove = prioritizeMove(false);
         }
 
         return wrappersPool.alloc(minEval, bestMove);
@@ -406,7 +405,7 @@ public class Player extends PlayerBase {
         }
     }
 
-    public boolean isSafe(final int offset, int offsetTo, final ChessPieceType chessPieceType, final boolean isWhite) {
+    public boolean isSafeFromEnemy(final int offset, int offsetTo, final ChessPieceType chessPieceType, final boolean isWhite) {
         int[] moveOffset = null;
         byte[] boundX = null;
         boolean loopOnce = false;
