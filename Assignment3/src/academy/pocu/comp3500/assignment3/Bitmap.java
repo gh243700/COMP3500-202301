@@ -42,7 +42,7 @@ public class Bitmap {
 
     public Bitmap() {
         chessPieces = new ArrayList<>(32);
-        removed = new ArrayList<>(40);
+        removed = new ArrayList<>(32);
         for (int i = 0; i < 40; ++i) {
             removed.add(new ChessPiece(ChessPieceType.NONE, -1));
         }

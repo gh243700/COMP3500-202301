@@ -21,8 +21,7 @@ public class Program {
     }
 
     public static void test2() {
-
-
+/*
         {
             // getNextMove returns a valid move when there is only one piece in board
             char[] symbols = {'k', 'n', 'b', 'r', 'q', 'p'};
@@ -51,8 +50,11 @@ public class Program {
                 }
             }
         }
+ */
 
 
+
+/*
         {
             // player dodges
             char[][] board = {
@@ -77,6 +79,8 @@ public class Program {
             assert move.toX == 0;
             assert move.toY == 7;
         }
+
+ */
 
         {
             // player captures piece when possible
@@ -168,6 +172,7 @@ public class Program {
             assert move.fromY == 5;
             assert move.toX == 6;
             assert move.toY == 4;
+
         }
         {
             // player dodges

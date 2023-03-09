@@ -23,14 +23,12 @@ public class Player extends PlayerBase {
     private int depth;
     private Bitmap bitmap;
     private ArrayList<Move> sameMoves;
-    private ArrayList<Move> priorityMoves = new ArrayList<>();
-    private ArrayList<Move> nonPriorityMoves = new ArrayList<>();
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
         depth = 4;
         bitmap = new Bitmap();
-        sameMoves = new ArrayList<>(128);
+        sameMoves = new ArrayList<>(64);
     }
 
     @Override
@@ -71,20 +69,17 @@ public class Player extends PlayerBase {
                     bestEvaluation = eval;
                     bestMove = move;
                 }
-            } else {
-                ChessPieceType enemyChessPiece = bitmap.getChessPieceType(move.toX + move.toY * 8);
+                continue;
+            }
 
-                if (enemyChessPiece == ChessPieceType.NONE) {
-                    continue;
-                }
-
-                int enemyValue = bitmap.VALUES[enemyChessPiece.ordinal()];
-
-                if (enemyValue > bestEvaluation) {
-                    bestEvaluation = enemyValue;
-                    bestMove = move;
-                }
-
+            ChessPieceType enemyTypeOrNone = bitmap.getChessPieceType(move.toX + move.toY * 8);
+            if (enemyTypeOrNone == ChessPieceType.NONE) {
+                continue;
+            }
+            int enemyCaptureEval = bitmap.VALUES[enemyTypeOrNone.ordinal()];
+            if (enemyCaptureEval > bestEvaluation) {
+                bestEvaluation = enemyCaptureEval;
+                bestMove = move;
             }
         }
 
@@ -200,6 +195,9 @@ public class Player extends PlayerBase {
                     bestMove = move;
 
                     if (isTopDepth) {
+                        for (Move garbage : sameMoves) {
+                            movesPool.delete(garbage);
+                        }
                         sameMoves.clear();
                         sameMoves.add(move);
                     }
@@ -262,10 +260,12 @@ public class Player extends PlayerBase {
                 bestMove = move;
 
                 if (isTopDepth) {
+                    for (Move garbage : sameMoves) {
+                        movesPool.delete(garbage);
+                    }
                     sameMoves.clear();
                     sameMoves.add(move);
                 }
-
             } else if (isTopDepth && minEval == currentEval) {
                 sameMoves.add(move);
             } else {
