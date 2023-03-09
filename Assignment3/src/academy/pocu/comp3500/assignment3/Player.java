@@ -96,7 +96,7 @@ public class Player extends PlayerBase {
                     continue;
                 }
 
-                boolean isSafe = isSafe(offsetTo, chessPieceType, isWhite ? false : true);
+                boolean isSafe = isSafe(chessPiece.getOffset(), offsetTo, chessPieceType, isWhite ? false : true);
 
                 if (isSafe == false) {
                     result = false;
@@ -368,7 +368,7 @@ public class Player extends PlayerBase {
         }
     }
 
-    public boolean isSafe(final int offset, final ChessPieceType chessPieceType, final boolean isWhite) {
+    public boolean isSafe(final int offset, int offsetTo, final ChessPieceType chessPieceType, final boolean isWhite) {
         int[] moveOffset = null;
         byte[] boundX = null;
         boolean loopOnce = false;
@@ -400,7 +400,7 @@ public class Player extends PlayerBase {
                 break;
             case BLACK_PAWN:
             case WHITE_PAWN:
-                return isSafeFromPawn(offset, isWhite);
+                return isSafeFromPawn(offset, offsetTo, isWhite);
             default:
                 assert (false);
                 break;
@@ -420,7 +420,7 @@ public class Player extends PlayerBase {
                 ChessPieceType c1 = bitmap.getChessPieceType(offsetAfterMove);
                 Color c1Color = Color.chessPieceColor(c1);
 
-                if (isWhite && c1Color == Color.WHITE || !isWhite && c1Color == Color.BLACK) {
+                if (offsetAfterMove == offsetTo) {
                     return false;
                 }
 
@@ -433,7 +433,7 @@ public class Player extends PlayerBase {
         return true;
     }
 
-    private boolean isSafeFromPawn(final int offset, boolean isWhite) {
+    private boolean isSafeFromPawn(final int offset, int offsetTo, boolean isWhite) {
         for (int i = 0; i < PAWN_ATTACK_OFFSET.length; ++i) {
             int x = 8 * (7 - offset % 8) + offset / 8;
             x += (isWhite ? -1 : 1) * PAWN_ATTACK_BOUND_X[i] * 8;
@@ -441,7 +441,11 @@ public class Player extends PlayerBase {
 
             ChessPieceType c1 = bitmap.getChessPieceType(offsetAfterMove);
 
-            if (bitmap.chessPieceColor(offsetAfterMove) != ((isWhite) ? Color.BLACK : Color.WHITE) || offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
+            if (offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
+                continue;
+            }
+
+            if (offsetTo == offsetAfterMove) {
                 return false;
             }
 
@@ -453,6 +457,4 @@ public class Player extends PlayerBase {
 
         return true;
     }
-
-
 }
