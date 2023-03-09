@@ -31,11 +31,11 @@ public class Bitmap {
             BLACK_PAWN_COUNT
     };
 
-    public void decreesCount(ChessPieceType type) {
+    public static void decreesCount(ChessPieceType type) {
         --COUNTS[type.ordinal()];
     }
 
-    public void increaseCount(ChessPieceType type) {
+    public static void increaseCount(ChessPieceType type) {
         ++COUNTS[type.ordinal()];
     }
 
