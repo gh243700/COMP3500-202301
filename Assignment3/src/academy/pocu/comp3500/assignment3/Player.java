@@ -27,9 +27,9 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 2;
+        depth = 5;
         bitmap = new Bitmap();
-        
+
         WrappersPool.reset();
         MovesPool.reset();
     }
