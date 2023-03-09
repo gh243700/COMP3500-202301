@@ -62,7 +62,7 @@ public class Player extends PlayerBase {
         for (int i = 0; i < 2; ++i) {
             Move move = (i == 0) ? m1 : m2;
             ChessPieceType chessPieceType = bitmap.getChessPieceType(move.fromX + move.fromY * 8);
-            int eval = bitmap.VALUES[chessPieceType.ordinal()];
+            int eval = Bitmap.VALUES[chessPieceType.ordinal()];
             if (isProtectingOwnPiece(move, isWhite)) {
                 if (eval > bestEvaluation) {
                     bestEvaluation = eval;
@@ -75,7 +75,7 @@ public class Player extends PlayerBase {
             if (enemyTypeOrNone == ChessPieceType.NONE) {
                 continue;
             }
-            int enemyCaptureEval = bitmap.VALUES[enemyTypeOrNone.ordinal()];
+            int enemyCaptureEval = Bitmap.VALUES[enemyTypeOrNone.ordinal()];
             if (enemyCaptureEval > bestEvaluation) {
                 bestEvaluation = enemyCaptureEval;
                 bestMove = move;
