@@ -59,20 +59,36 @@ public class Player extends PlayerBase {
         return getNextMove(board);
     }
 
-    public ArrayList<Move> prioritizeProtectingOwnPiece(boolean isWhite) {
-        priorityMoves.clear();
-        nonPriorityMoves.clear();
+    public Move prioritizeProtectingOwnPiece(boolean isWhite) {
+        Move bestMove = sameMoves.get(0);
+        int bestEvaluation = Integer.MIN_VALUE;
 
         for (Move move : sameMoves) {
+            ChessPieceType chessPieceType = bitmap.getChessPieceType(move.fromX + move.fromY * 8);
+            int eval = bitmap.VALUES[chessPieceType.ordinal()];
             if (isProtectingOwnPiece(move, isWhite)) {
-                priorityMoves.add(move);
+                if (eval > bestEvaluation) {
+                    bestEvaluation = eval;
+                    bestMove = move;
+                }
             } else {
-                nonPriorityMoves.add(move);
+                ChessPieceType enemyChessPiece = bitmap.getChessPieceType(move.toX + move.toY * 8);
+
+                if (enemyChessPiece == ChessPieceType.NONE) {
+                    continue;
+                }
+
+                int enemyValue = bitmap.VALUES[enemyChessPiece.ordinal()];
+
+                if (enemyValue > bestEvaluation) {
+                    bestEvaluation = enemyValue;
+                    bestMove = move;
+                }
+
             }
         }
 
-        priorityMoves.addAll(nonPriorityMoves);
-        return priorityMoves;
+        return bestMove;
     }
 
     public boolean isProtectingOwnPiece(Move move, boolean isWhite) {
@@ -198,7 +214,7 @@ public class Player extends PlayerBase {
             }
 
             if (isTopDepth && sameMoves.size() > 1) {
-                bestMove = prioritizeProtectingOwnPiece(true).get(0);
+                bestMove = prioritizeProtectingOwnPiece(true);
             }
 
             return wrappersPool.alloc(maxEval, bestMove);
@@ -261,7 +277,7 @@ public class Player extends PlayerBase {
         }
 
         if (isTopDepth && sameMoves.size() > 1) {
-            bestMove = prioritizeProtectingOwnPiece(false).get(0);
+            bestMove = prioritizeProtectingOwnPiece(false);
         }
 
         return wrappersPool.alloc(minEval, bestMove);

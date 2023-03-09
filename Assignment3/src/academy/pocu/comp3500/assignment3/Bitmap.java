@@ -5,20 +5,20 @@ import java.util.ArrayList;
 public class Bitmap {
     private long[] board = new long[12];
     private static final char[] LETTERS = {'k', 'r', 'b', 'q', 'n', 'p', 'K', 'R', 'B', 'Q', 'N', 'P'};
-    private static final int[] VALUES = {200, 5, 3, 9, 3, 1, 200, 5, 3, 9, 3, 1};
-    private int whiteKingCount = 0;
-    private int whiteRookCount = 0;
-    private int whiteBishopCount = 0;
-    private int whiteQueenCount = 0;
-    private int whiteKnightCount = 0;
-    private int whitePawnCount = 0;
-    private int blackKingCount = 0;
-    private int blackRookCount = 0;
-    private int blackBishopCount = 0;
-    private int blackQueenCount = 0;
-    private int blackKnightCount = 0;
-    private int blackPawnCount = 0;
-    private int[] counts = {
+    public static final int[] VALUES = {200, 5, 3, 9, 3, 1, 200, 5, 3, 9, 3, 1};
+    private byte whiteKingCount = 0;
+    private byte whiteRookCount = 0;
+    private byte whiteBishopCount = 0;
+    private byte whiteQueenCount = 0;
+    private byte whiteKnightCount = 0;
+    private byte whitePawnCount = 0;
+    private byte blackKingCount = 0;
+    private byte blackRookCount = 0;
+    private byte blackBishopCount = 0;
+    private byte blackQueenCount = 0;
+    private byte blackKnightCount = 0;
+    private byte blackPawnCount = 0;
+    private byte[] counts = {
             whiteKingCount,
             whiteRookCount,
             whiteBishopCount,
