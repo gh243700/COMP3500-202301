@@ -61,9 +61,12 @@ public class Player extends PlayerBase {
         for (Move move : sameMoves) {
             int offsetFrom = move.fromX + move.fromY * 8;
             int offsetTo = move.toX + move.toY * 8;
-            ChessPieceType type = bitmap.getChessPieceType(offsetFrom);
-            bitmap.off(offsetFrom, type);
-            bitmap.on(offsetTo, type);
+            ChessPieceType t1 = bitmap.getChessPieceType(offsetFrom);
+            ChessPieceType t2 = bitmap.getChessPieceType(offsetTo);
+
+            bitmap.off(offsetFrom, t1);
+            bitmap.on(offsetTo, t1);
+            bitmap.off(offsetTo, t2);
 
             int score =  bitmap.evaluate();
 
@@ -88,8 +91,9 @@ public class Player extends PlayerBase {
                 maxScore = score;
             }
 
-            bitmap.off(offsetTo, type);
-            bitmap.on(offsetFrom, type);
+            bitmap.off(offsetTo, t1);
+            bitmap.on(offsetFrom, t1);
+            bitmap.on(offsetTo, t2);
         }
         return result;
     }
