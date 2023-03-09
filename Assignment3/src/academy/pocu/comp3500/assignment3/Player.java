@@ -54,7 +54,7 @@ public class Player extends PlayerBase {
         return getNextMove(board);
     }
 
-    public Move prioritizeProtectingOwnPiece() {
+    public Move prioritizeProtectingOwnPiece(boolean isWhite) {
         Move result = null;
         int maxScore = Integer.MIN_VALUE;
 
@@ -66,10 +66,14 @@ public class Player extends PlayerBase {
 
             bitmap.off(offsetFrom, t1);
             bitmap.on(offsetTo, t1);
-            bitmap.off(offsetTo, t2);
+
+            boolean captured = false;
+            if (Color.chessPieceColor(t2) == ((isWhite) ? Color.BLACK : Color.WHITE)) {
+                bitmap.off(offsetTo, t2);
+                captured = true;
+            }
 
             int score =  bitmap.evaluate();
-
 
             // 우선순위를 결정할 평가값이 같은 경우
             if (score == maxScore) {
@@ -80,7 +84,7 @@ public class Player extends PlayerBase {
                 ChessPieceType typeTo = bitmap.getChessPieceType(to);
 
                 // 자신의 말을 보호하는 경우
-                if (Color.chessPieceColor(typeFrom) ==Color.chessPieceColor(typeTo)) {
+                if (Color.chessPieceColor(typeFrom) == Color.chessPieceColor(typeTo)) {
                     result = move;
                     maxScore = score;
                 }
@@ -91,9 +95,13 @@ public class Player extends PlayerBase {
                 maxScore = score;
             }
 
+            if (captured) {
+                bitmap.on(offsetTo, t2);
+            }
+
             bitmap.off(offsetTo, t1);
             bitmap.on(offsetFrom, t1);
-            bitmap.on(offsetTo, t2);
+
         }
         return result;
     }
@@ -101,7 +109,7 @@ public class Player extends PlayerBase {
     public Wrapper minimax(Bitmap board, int depth, boolean maximizingPlayer, long start) {
 
         long end = System.nanoTime();
-        long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
+        long duration = 0;//TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
         if (depth == 0 || board.GameOver() || duration >= getMaxMoveTimeMilliseconds()) {
             return wrappersPool.alloc(board.evaluate(), null);
@@ -210,9 +218,10 @@ public class Player extends PlayerBase {
                 minEval = currentEval;
                 bestMove = move;
 
-
-                sameMoves.clear();
-                sameMoves.add(move);
+                if (isTopDepth) {
+                    sameMoves.clear();
+                    sameMoves.add(move);
+                }
 
             } else if (isTopDepth && minEval == currentEval) {
                 sameMoves.add(move);
@@ -224,7 +233,7 @@ public class Player extends PlayerBase {
         }
 
         if (isTopDepth && sameMoves.size() > 1) {
-            bestMove = prioritizeProtectingOwnPiece();
+            bestMove = prioritizeProtectingOwnPiece(false);
         }
 
         return wrappersPool.alloc(minEval, bestMove);
