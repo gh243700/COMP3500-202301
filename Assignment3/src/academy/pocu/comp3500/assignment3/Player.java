@@ -152,6 +152,9 @@ public class Player extends PlayerBase {
         }
 
         Move bestMoveTemp = moveStack.peek();
+
+        boolean foundBestMove = false;
+
         boolean isTopDepth = this.depth == depth;
 
         if (maximizingPlayer) {
@@ -183,11 +186,17 @@ public class Player extends PlayerBase {
                 board.addChessPieceFromBoard(offsetTo, t2);
 
                 if (currentEval > maxEval) {
+                    if (foundBestMove) {
+                        movesPool.delete(bestMoveTemp);
+                    }
 
                     maxEval = currentEval;
                     bestMoveTemp = move;
+                    foundBestMove = true;
                 } else if (isTopDepth && currentEval == maxEval) {
                     bestMoveTemp = prioritizeMove(true, bestMoveTemp, move);
+                } else {
+                    movesPool.delete(move);
                 }
 
             }
@@ -229,6 +238,8 @@ public class Player extends PlayerBase {
                 bestMoveTemp = move;
             } else if (isTopDepth && minEval == currentEval) {
                 bestMoveTemp = prioritizeMove(false, bestMoveTemp, move);
+            } else {
+                movesPool.delete(move);
             }
         }
 

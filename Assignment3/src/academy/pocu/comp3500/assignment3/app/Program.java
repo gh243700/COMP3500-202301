@@ -73,6 +73,7 @@ public class Program {
 
             Move move = player.getNextMove(board);
 
+            WrappersPool wrappersPool = WrappersPool.getInstance();
             MovesPool movesPool = MovesPool.getInstance();
             assert Game.isMoveValid(board, player, move);
             assert move.fromX == 0;
