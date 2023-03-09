@@ -4,7 +4,6 @@ import academy.pocu.comp3500.assignment3.chess.Move;
 import academy.pocu.comp3500.assignment3.chess.PlayerBase;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 public class Player extends PlayerBase {
@@ -329,7 +328,6 @@ public class Player extends PlayerBase {
             result.add(movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8));
         }
     }
-
     private void pawnAttacksBitmapVersion(final int offset, boolean isWhite, ArrayList<Move> result) {
         for (int i = 0; i < PAWN_ATTACK_OFFSET.length; ++i) {
             int x = 8 * (7 - offset % 8) + offset / 8;
