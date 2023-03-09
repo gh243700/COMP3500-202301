@@ -86,6 +86,22 @@ public class Bitmap {
         return Color.NONE;
     }
 
+    public void moveChessPiece(int offsetFrom, int offsetTo, ChessPieceType chessPieceType) {
+
+        if (chessPieceType == ChessPieceType.NONE) {
+            return;
+        }
+
+        for (int i = 0; i < chessPieces.size(); ++i) {
+            ChessPiece chessPiece = chessPieces.get(i);
+            if (offsetFrom == chessPiece.getOffset() && chessPieceType == chessPiece.getType()) {
+                chessPiece.setOffset(offsetTo);
+                return;
+            }
+        }
+    }
+
+
     public void on(final int offset, final ChessPieceType type) {
         if (type == ChessPieceType.NONE) {
             return;
@@ -94,8 +110,12 @@ public class Bitmap {
         long mask = 0x01;
         mask = mask << offset;
 
-        if (removed.size() == 0) {
-            removed.add(new ChessPiece(ChessPieceType.NONE, -1));
+        board[type.ordinal()] = board[type.ordinal()] | mask;
+    }
+
+    public void addChessPieceFromBoard(final int offset, final ChessPieceType type) {
+        if (type == ChessPieceType.NONE) {
+            return;
         }
 
         ChessPiece chessPiece = removed.get(0);
@@ -103,9 +123,6 @@ public class Bitmap {
         chessPiece.reset(type, offset);
         removed.remove(chessPiece);
         chessPieces.add(chessPiece);
-
-
-        board[type.ordinal()] = board[type.ordinal()] | mask;
     }
 
     public void off(final int offset, final ChessPieceType type) {
@@ -117,6 +134,15 @@ public class Bitmap {
         mask = mask << offset;
         mask = ~mask;
 
+        board[type.ordinal()] = board[type.ordinal()] & mask;
+    }
+
+
+    public void removeChessPieceFromBoard(final int offset, final ChessPieceType type) {
+        if (type == ChessPieceType.NONE) {
+            return;
+        }
+
         for (int i = 0; i < chessPieces.size(); ++i) {
             ChessPiece chessPiece = chessPieces.get(i);
             if (chessPiece.getOffset() == offset && chessPiece.getType() == type) {
@@ -126,8 +152,6 @@ public class Bitmap {
                 break;
             }
         }
-
-        board[type.ordinal()] = board[type.ordinal()] & mask;
     }
 
     public Bitmap makeCopy() {
@@ -181,8 +205,8 @@ public class Bitmap {
 
 
     public void convertToBitmap(char[][] board) {
-
         removed.addAll(chessPieces);
+        chessPieces.clear();
 
         for (int i = 0; i < 12; ++i) {
             this.board[i] = this.board[i] & 0x0;
@@ -194,6 +218,7 @@ public class Bitmap {
             switch (c) {
                 case 'k':
                     chessPiece = removed.get(0);
+                    removed.remove(0);
                     chessPiece.reset(ChessPieceType.WHITE_KING, i);
                     chessPieces.add(chessPiece);
                     ++whiteKingCount;
@@ -201,14 +226,15 @@ public class Bitmap {
                     break;
                 case 'r':
                     chessPiece = removed.get(0);
+                    removed.remove(0);
                     chessPiece.reset(ChessPieceType.WHITE_ROOK, i);
                     chessPieces.add(chessPiece);
-
                     ++whiteRookCount;
                     on(i, ChessPieceType.WHITE_ROOK);
                     break;
                 case 'b':
                     chessPiece = removed.get(0);
+                    removed.remove(0);
                     chessPiece.reset(ChessPieceType.WHITE_BISHOP, i);
                     chessPieces.add(chessPiece);
 
@@ -217,6 +243,7 @@ public class Bitmap {
                     break;
                 case 'q':
                     chessPiece = removed.get(0);
+                    removed.remove(0);
                     chessPiece.reset(ChessPieceType.WHITE_QUEEN, i);
                     chessPieces.add(chessPiece);
                     ++whiteQueenCount;
@@ -224,6 +251,7 @@ public class Bitmap {
                     break;
                 case 'n':
                     chessPiece = removed.get(0);
+                    removed.remove(0);
                     chessPiece.reset(ChessPieceType.WHITE_KNIGHT, i);
                     chessPieces.add(chessPiece);
                     ++whiteKnightCount;
@@ -231,6 +259,7 @@ public class Bitmap {
                     break;
                 case 'p':
                     chessPiece = removed.get(0);
+                    removed.remove(0);
                     chessPiece.reset(ChessPieceType.WHITE_PAWN, i);
                     chessPieces.add(chessPiece);
                     ++whitePawnCount;
@@ -238,6 +267,7 @@ public class Bitmap {
                     break;
                 case 'K':
                     chessPiece = removed.get(0);
+                    removed.remove(0);
                     chessPiece.reset(ChessPieceType.BLACK_KING, i);
                     chessPieces.add(chessPiece);
                     ++blackKingCount;
@@ -245,6 +275,7 @@ public class Bitmap {
                     break;
                 case 'R':
                     chessPiece = removed.get(0);
+                    removed.remove(0);
                     chessPiece.reset(ChessPieceType.BLACK_ROOK, i);
                     chessPieces.add(chessPiece);
                     ++blackRookCount;
@@ -252,6 +283,7 @@ public class Bitmap {
                     break;
                 case 'B':
                     chessPiece = removed.get(0);
+                    removed.remove(0);
                     chessPiece.reset(ChessPieceType.BLACK_BISHOP, i);
                     chessPieces.add(chessPiece);
                     ++blackBishopCount;
@@ -259,6 +291,7 @@ public class Bitmap {
                     break;
                 case 'Q':
                     chessPiece = removed.get(0);
+                    removed.remove(0);
                     chessPiece.reset(ChessPieceType.BLACK_QUEEN, i);
                     chessPieces.add(chessPiece);
                     ++blackQueenCount;
@@ -266,6 +299,7 @@ public class Bitmap {
                     break;
                 case 'N':
                     chessPiece = removed.get(0);
+                    removed.remove(0);
                     chessPiece.reset(ChessPieceType.BLACK_KNIGHT, i);
                     chessPieces.add(chessPiece);
                     ++blackKingCount;
@@ -273,6 +307,7 @@ public class Bitmap {
                     break;
                 case 'P':
                     chessPiece = removed.get(0);
+                    removed.remove(0);
                     chessPiece.reset(ChessPieceType.BLACK_PAWN, i);
                     chessPieces.add(chessPiece);
                     ++blackPawnCount;

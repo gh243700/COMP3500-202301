@@ -294,7 +294,7 @@ public class Program {
     public static void main(String[] args) {
         //test();
         test2();
-        //test();
+        test();
     }
 
     public static void pause(long milliseconds) {

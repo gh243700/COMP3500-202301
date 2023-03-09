@@ -91,13 +91,13 @@ final class Game {
         this.lastMove.toY = nextMove.toY;
 
 
-        if (player.getMaxMoveTimeMilliseconds() != Integer.MAX_VALUE && duration > this.maxMoveTimeoutInMilliseconds) {
-            this.winner = this.currentTurn % 2 != 0 ? 'B' : 'W';
-            this.isGameOver = true;
-            this.timeOutInMilliseconds = duration;
+        //if (player.getMaxMoveTimeMilliseconds() != Integer.MAX_VALUE && duration > this.maxMoveTimeoutInMilliseconds) {
+        //    this.winner = this.currentTurn % 2 != 0 ? 'B' : 'W';
+        //    this.isGameOver = true;
+        //    this.timeOutInMilliseconds = duration;
 
-            return;
-        }
+           // return;
+        //}
 
 
         if (!isMoveValid(board, player, nextMove)) {

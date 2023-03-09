@@ -28,7 +28,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 5;
+        depth = 4;
         bitmap = new Bitmap();
         sameMoves = new ArrayList<>(128);
     }
@@ -80,8 +80,14 @@ public class Player extends PlayerBase {
         int offsetFrom = move.fromY * 8 + move.fromX;
         int offsetTo = move.toY * 8 + move.toX;
         ChessPieceType t1 = bitmap.getChessPieceType(offsetFrom);
+        ChessPieceType t2 = bitmap.getChessPieceType(offsetTo);
+
         bitmap.on(offsetTo, t1);
         bitmap.off(offsetFrom, t1);
+        bitmap.off(offsetTo, t2);
+
+        bitmap.moveChessPiece(offsetFrom, offsetTo, t1);
+        bitmap.removeChessPieceFromBoard(offsetTo, t2);
 
         ArrayList<ChessPiece> chessPieces = bitmap.getChessPieces();
 
@@ -108,6 +114,10 @@ public class Player extends PlayerBase {
         // undo
         bitmap.off(offsetTo, t1);
         bitmap.on(offsetFrom, t1);
+        bitmap.on(offsetTo, t2);
+
+        bitmap.moveChessPiece(offsetTo, offsetFrom, t1);
+        bitmap.addChessPieceFromBoard(offsetTo, t2);
 
         return result;
     }
@@ -152,6 +162,9 @@ public class Player extends PlayerBase {
                 board.off(offsetFrom, t1);
                 board.off(offsetTo, t2);
 
+                board.moveChessPiece(offsetFrom, offsetTo, t1);
+                board.removeChessPieceFromBoard(offsetTo, t2);
+
                 Wrapper wrapper = minimax(board, depth - 1, false, start);
                 int currentEval = wrapper.getEval();
 
@@ -159,6 +172,9 @@ public class Player extends PlayerBase {
                 board.off(offsetTo, t1);
                 board.on(offsetFrom, t1);
                 board.on(offsetTo, t2);
+
+                board.moveChessPiece(offsetTo, offsetFrom, t1);
+                board.addChessPieceFromBoard(offsetTo, t2);
 
                 if (captured) {
                     board.increaseCount(t2);
@@ -208,6 +224,9 @@ public class Player extends PlayerBase {
             board.off(offsetFrom, t1);
             board.off(offsetTo, t2);
 
+            board.moveChessPiece(offsetFrom, offsetTo, t1);
+            board.removeChessPieceFromBoard(offsetTo, t2);
+
             Wrapper wrapper = minimax(board, depth - 1, true, start);
             int currentEval = wrapper.getEval();
 
@@ -219,6 +238,9 @@ public class Player extends PlayerBase {
             board.off(offsetTo, t1);
             board.on(offsetFrom, t1);
             board.on(offsetTo, t2);
+
+            board.moveChessPiece(offsetTo, offsetFrom, t1);
+            board.addChessPieceFromBoard(offsetTo, t2);
 
             if (currentEval < minEval) {
                 minEval = currentEval;
