@@ -21,7 +21,6 @@ public class Player extends PlayerBase {
     private static WrappersPool wrappersPool = WrappersPool.getInstance();
     private static MovesPool movesPool = MovesPool.getInstance();
     private int depth;
-    private boolean timeOut;
     private Bitmap bitmap;
     private ArrayList<Move> sameMoves;
     private ArrayList<Move> priorityMoves = new ArrayList<>();
