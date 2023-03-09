@@ -22,13 +22,11 @@ public class Player extends PlayerBase {
     private static MovesPool movesPool = MovesPool.getInstance();
     private int depth;
     private Bitmap bitmap;
-    private ArrayList<Move> sameMoves;
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
         depth = 4;
         bitmap = new Bitmap();
-        sameMoves = new ArrayList<>(64);
     }
 
     @Override
@@ -57,11 +55,12 @@ public class Player extends PlayerBase {
         return getNextMove(board);
     }
 
-    public Move prioritizeMove(boolean isWhite) {
-        Move bestMove = sameMoves.get(0);
+    public Move prioritizeMove(boolean isWhite, Move m1, Move m2) {
         int bestEvaluation = Integer.MIN_VALUE;
+        Move bestMove = m1;
 
-        for (Move move : sameMoves) {
+        for (int i = 0; i < 2; ++i) {
+            Move move = (i == 0) ? m1 : m2;
             ChessPieceType chessPieceType = bitmap.getChessPieceType(move.fromX + move.fromY * 8);
             int eval = bitmap.VALUES[chessPieceType.ordinal()];
             if (isProtectingOwnPiece(move, isWhite)) {
@@ -82,6 +81,9 @@ public class Player extends PlayerBase {
                 bestMove = move;
             }
         }
+
+        Move deletableMove = (bestMove == m1) ? m2 : m1;
+        movesPool.delete(deletableMove);
 
         return bestMove;
     }
@@ -193,25 +195,13 @@ public class Player extends PlayerBase {
                 if (currentEval > maxEval) {
                     maxEval = currentEval;
                     bestMove = move;
-
-                    if (isTopDepth) {
-                        for (Move garbage : sameMoves) {
-                            movesPool.delete(garbage);
-                        }
-                        sameMoves.clear();
-                        sameMoves.add(move);
-                    }
                 } else if (isTopDepth && currentEval == maxEval) {
-                    sameMoves.add(move);
+                    bestMove = prioritizeMove(true, bestMove, move);
                 } else {
                     movesPool.delete(move);
                 }
 
                 wrappersPool.delete(wrapper);
-            }
-
-            if (isTopDepth && sameMoves.size() > 1) {
-                bestMove = prioritizeMove(true);
             }
 
             return wrappersPool.alloc(maxEval, bestMove);
@@ -258,25 +248,13 @@ public class Player extends PlayerBase {
             if (currentEval < minEval) {
                 minEval = currentEval;
                 bestMove = move;
-
-                if (isTopDepth) {
-                    for (Move garbage : sameMoves) {
-                        movesPool.delete(garbage);
-                    }
-                    sameMoves.clear();
-                    sameMoves.add(move);
-                }
             } else if (isTopDepth && minEval == currentEval) {
-                sameMoves.add(move);
+                bestMove = prioritizeMove(false, bestMove, move);
             } else {
                 movesPool.delete(move);
             }
 
             wrappersPool.delete(wrapper);
-        }
-
-        if (isTopDepth && sameMoves.size() > 1) {
-            bestMove = prioritizeMove(false);
         }
 
         return wrappersPool.alloc(minEval, bestMove);
