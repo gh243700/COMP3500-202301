@@ -23,11 +23,14 @@ public class Player extends PlayerBase {
     private static MovesPool movesPool = MovesPool.getInstance();
     private int depth;
     private boolean timeOut;
-    private Bitmap bitmap = new Bitmap();
-    private ArrayList<Move> sameMoves = new ArrayList<>(32);
+    private Bitmap bitmap;
+    private ArrayList<Move> sameMoves;
+
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
         depth = 10;
+        bitmap = new Bitmap();
+        sameMoves = new ArrayList<>(32);
     }
 
     @Override
@@ -52,9 +55,9 @@ public class Player extends PlayerBase {
         return getNextMove(board);
     }
 
-    public Move prioritizeProtectingOwnPiece(ArrayList<Move> moves, boolean isWhite) {
+    public Move prioritizeProtectingOwnPiece(boolean isWhite) {
         Move result = null;
-        for (Move move : moves) {
+        for (Move move : sameMoves) {
             int offsetFrom = move.fromY * 8 + move.fromX;
             ChessPieceType t1 = bitmap.getChessPieceType(offsetFrom);
 
@@ -166,7 +169,7 @@ public class Player extends PlayerBase {
             }
 
             if (isTopDepth && sameMoves.size() > 1) {
-                bestMove = prioritizeProtectingOwnPiece(sameMoves, true);
+                bestMove = prioritizeProtectingOwnPiece( true);
             }
 
             return wrappersPool.alloc(maxEval, bestMove);
@@ -222,7 +225,7 @@ public class Player extends PlayerBase {
         }
 
         if (isTopDepth && sameMoves.size() > 1) {
-            bestMove = prioritizeProtectingOwnPiece(sameMoves, false);
+            bestMove = prioritizeProtectingOwnPiece(false);
         }
 
         return wrappersPool.alloc(minEval, bestMove);
