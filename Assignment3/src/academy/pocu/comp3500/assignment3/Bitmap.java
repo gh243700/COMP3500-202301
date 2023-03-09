@@ -34,8 +34,16 @@ public class Bitmap {
             blackPawnCount
     };
 
-    private ArrayList<ChessPiece> chessPieces = new ArrayList<>(32);
-    private ArrayList<ChessPiece> removed = new ArrayList<>(32);
+    private ArrayList<ChessPiece> chessPieces;
+    private ArrayList<ChessPiece> removed;
+
+    public Bitmap() {
+        chessPieces = new ArrayList<>(32);
+        removed = new ArrayList<>(32);
+        for (int i = 0; i < 32; ++i) {
+            chessPieces.add(new ChessPiece(ChessPieceType.NONE, -1));
+        }
+    }
 
     public ArrayList<ChessPiece> getChessPieces() {
         return chessPieces;
@@ -170,74 +178,101 @@ public class Bitmap {
 
 
     public void convertToBitmap(char[][] board) {
-        chessPieces.clear();
-        removed.clear();
+
+        removed.addAll(chessPieces);
 
         for (int i = 0; i < 12; ++i) {
             this.board[i] = this.board[i] & 0x0;
         }
 
+        ChessPiece chessPiece;
         for (int i = 0; i < 64; ++i) {
             char c = board[i / 8][i % 8];
             switch (c) {
                 case 'k':
-                    chessPieces.add(new ChessPiece(ChessPieceType.WHITE_KING, i));
+                    chessPiece = removed.get(0);
+                    chessPiece.reset(ChessPieceType.WHITE_KING, i);
+                    chessPieces.add(chessPiece);
                     ++whiteKingCount;
                     on(i, ChessPieceType.WHITE_KING);
                     break;
                 case 'r':
-                    chessPieces.add(new ChessPiece(ChessPieceType.WHITE_ROOK, i));
+                    chessPiece = removed.get(0);
+                    chessPiece.reset(ChessPieceType.WHITE_ROOK, i);
+                    chessPieces.add(chessPiece);
+
                     ++whiteRookCount;
                     on(i, ChessPieceType.WHITE_ROOK);
                     break;
                 case 'b':
-                    chessPieces.add(new ChessPiece(ChessPieceType.WHITE_BISHOP, i));
+                    chessPiece = removed.get(0);
+                    chessPiece.reset(ChessPieceType.WHITE_BISHOP, i);
+                    chessPieces.add(chessPiece);
+
                     ++whiteBishopCount;
                     on(i, ChessPieceType.WHITE_BISHOP);
                     break;
                 case 'q':
-                    chessPieces.add(new ChessPiece(ChessPieceType.WHITE_QUEEN, i));
+                    chessPiece = removed.get(0);
+                    chessPiece.reset(ChessPieceType.WHITE_QUEEN, i);
+                    chessPieces.add(chessPiece);
                     ++whiteQueenCount;
                     on(i, ChessPieceType.WHITE_QUEEN);
                     break;
                 case 'n':
-                    chessPieces.add(new ChessPiece(ChessPieceType.WHITE_KNIGHT, i));
+                    chessPiece = removed.get(0);
+                    chessPiece.reset(ChessPieceType.WHITE_KNIGHT, i);
+                    chessPieces.add(chessPiece);
                     ++whiteKnightCount;
                     on(i, ChessPieceType.WHITE_KNIGHT);
                     break;
                 case 'p':
-                    chessPieces.add(new ChessPiece(ChessPieceType.WHITE_PAWN, i));
+                    chessPiece = removed.get(0);
+                    chessPiece.reset(ChessPieceType.WHITE_PAWN, i);
+                    chessPieces.add(chessPiece);
                     ++whitePawnCount;
                     on(i, ChessPieceType.WHITE_PAWN);
                     break;
                 case 'K':
-                    chessPieces.add(new ChessPiece(ChessPieceType.BLACK_KING, i));
+                    chessPiece = removed.get(0);
+                    chessPiece.reset(ChessPieceType.BLACK_KING, i);
+                    chessPieces.add(chessPiece);
                     ++blackKingCount;
                     on(i, ChessPieceType.BLACK_KING);
                     break;
                 case 'R':
-                    chessPieces.add(new ChessPiece(ChessPieceType.BLACK_ROOK, i));
+                    chessPiece = removed.get(0);
+                    chessPiece.reset(ChessPieceType.BLACK_ROOK, i);
+                    chessPieces.add(chessPiece);
                     ++blackRookCount;
                     on(i, ChessPieceType.BLACK_ROOK);
                     break;
                 case 'B':
-                    chessPieces.add(new ChessPiece(ChessPieceType.BLACK_BISHOP, i));
+                    chessPiece = removed.get(0);
+                    chessPiece.reset(ChessPieceType.BLACK_BISHOP, i);
+                    chessPieces.add(chessPiece);
                     ++blackBishopCount;
                     on(i, ChessPieceType.BLACK_BISHOP);
                     break;
                 case 'Q':
-                    chessPieces.add(new ChessPiece(ChessPieceType.BLACK_QUEEN, i));
+                    chessPiece = removed.get(0);
+                    chessPiece.reset(ChessPieceType.BLACK_QUEEN, i);
+                    chessPieces.add(chessPiece);
                     ++blackQueenCount;
                     on(i, ChessPieceType.BLACK_QUEEN);
                     break;
                 case 'N':
-                    chessPieces.add(new ChessPiece(ChessPieceType.BLACK_KNIGHT, i));
+                    chessPiece = removed.get(0);
+                    chessPiece.reset(ChessPieceType.BLACK_KNIGHT, i);
+                    chessPieces.add(chessPiece);
                     ++blackKingCount;
                     on(i, ChessPieceType.BLACK_KNIGHT);
                     break;
                 case 'P':
+                    chessPiece = removed.get(0);
+                    chessPiece.reset(ChessPieceType.BLACK_PAWN, i);
+                    chessPieces.add(chessPiece);
                     ++blackPawnCount;
-                    chessPieces.add(new ChessPiece(ChessPieceType.BLACK_PAWN, i));
                     on(i, ChessPieceType.BLACK_PAWN);
                     break;
                 default:

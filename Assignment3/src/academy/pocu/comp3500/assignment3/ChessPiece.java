@@ -9,6 +9,11 @@ public class ChessPiece {
         this.offset = offset;
     }
 
+    public void reset(ChessPieceType type, int offset) {
+        this.type = type;
+        this.offset = offset;
+    }
+
     public void setOffset(int offset) {
         this.offset = offset;
     }
