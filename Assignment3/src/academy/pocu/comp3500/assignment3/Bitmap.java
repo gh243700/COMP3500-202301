@@ -4,39 +4,39 @@ public class Bitmap {
     private long[] board = new long[12];
     private static final char[] LETTERS = {'k', 'r', 'b', 'q', 'n', 'p', 'K', 'R', 'B', 'Q', 'N', 'P'};
     private static final int[] VALUES = {200, 5, 3, 9, 3, 1, 200, 5, 3, 9, 3, 1};
-    private int WHITE_KING_COUNT = 0;
-    private int WHITE_ROOK_COUNT = 0;
-    private int WHITE_BISHOP_COUNT = 0;
-    private int WHITE_QUEEN_COUNT = 0;
-    private int WHITE_KNIGHT_COUNT = 0;
-    private int WHITE_PAWN_COUNT = 0;
-    private int BLACK_KING_COUNT = 0;
-    private int BLACK_ROOK_COUNT = 0;
-    private int BLACK_BISHOP_COUNT = 0;
-    private int BLACK_QUEEN_COUNT = 0;
-    private int BLACK_KNIGHT_COUNT = 0;
-    private int BLACK_PAWN_COUNT = 0;
-    private int[] COUNTS = {
-            WHITE_KING_COUNT,
-            WHITE_ROOK_COUNT,
-            WHITE_BISHOP_COUNT,
-            WHITE_QUEEN_COUNT,
-            WHITE_KNIGHT_COUNT,
-            WHITE_PAWN_COUNT,
-            BLACK_KING_COUNT,
-            BLACK_ROOK_COUNT,
-            BLACK_BISHOP_COUNT,
-            BLACK_QUEEN_COUNT,
-            BLACK_KNIGHT_COUNT,
-            BLACK_PAWN_COUNT
+    private int whiteKingCount = 0;
+    private int whiteRookCount = 0;
+    private int whiteBishopCount = 0;
+    private int whiteQueenCount = 0;
+    private int whiteKnightCount = 0;
+    private int whitePawnCount = 0;
+    private int blackKingCount = 0;
+    private int blackRookCount = 0;
+    private int blackBishopCount = 0;
+    private int blackQueenCount = 0;
+    private int blackKnightCount = 0;
+    private int blackPawnCount = 0;
+    private int[] counts = {
+            whiteKingCount,
+            whiteRookCount,
+            whiteBishopCount,
+            whiteQueenCount,
+            whiteKnightCount,
+            whitePawnCount,
+            blackKingCount,
+            blackRookCount,
+            blackBishopCount,
+            blackQueenCount,
+            blackKnightCount,
+            blackPawnCount
     };
 
     public void decreesCount(ChessPieceType type) {
-        --COUNTS[type.ordinal()];
+        --counts[type.ordinal()];
     }
 
     public void increaseCount(ChessPieceType type) {
-        ++COUNTS[type.ordinal()];
+        ++counts[type.ordinal()];
     }
 
     public ChessPieceType getChessPieceType(final int offset) {
@@ -128,9 +128,9 @@ public class Bitmap {
 
         for (int i = 0; i < 12; ++i) {
             if (i < 6) {
-                whiteScore += COUNTS[i] * VALUES[i];
+                whiteScore += counts[i] * VALUES[i];
             } else {
-                blackScore += COUNTS[i] * VALUES[i];
+                blackScore += counts[i] * VALUES[i];
             }
         }
 
@@ -148,51 +148,51 @@ public class Bitmap {
             char c = board[i / 8][i % 8];
             switch (c) {
                 case 'k':
-                    ++WHITE_KING_COUNT;
+                    ++whiteKingCount;
                     on(i, ChessPieceType.WHITE_KING);
                     break;
                 case 'r':
-                    ++WHITE_ROOK_COUNT;
+                    ++whiteRookCount;
                     on(i, ChessPieceType.WHITE_ROOK);
                     break;
                 case 'b':
-                    ++WHITE_BISHOP_COUNT;
+                    ++whiteBishopCount;
                     on(i, ChessPieceType.WHITE_BISHOP);
                     break;
                 case 'q':
-                    ++WHITE_QUEEN_COUNT;
+                    ++whiteQueenCount;
                     on(i, ChessPieceType.WHITE_QUEEN);
                     break;
                 case 'n':
-                    ++WHITE_KNIGHT_COUNT;
+                    ++whiteKnightCount;
                     on(i, ChessPieceType.WHITE_KNIGHT);
                     break;
                 case 'p':
-                    ++WHITE_PAWN_COUNT;
+                    ++whitePawnCount;
                     on(i, ChessPieceType.WHITE_PAWN);
                     break;
                 case 'K':
-                    ++BLACK_KING_COUNT;
+                    ++blackKingCount;
                     on(i, ChessPieceType.BLACK_KING);
                     break;
                 case 'R':
-                    ++BLACK_ROOK_COUNT;
+                    ++blackRookCount;
                     on(i, ChessPieceType.BLACK_ROOK);
                     break;
                 case 'B':
-                    ++BLACK_BISHOP_COUNT;
+                    ++blackBishopCount;
                     on(i, ChessPieceType.BLACK_BISHOP);
                     break;
                 case 'Q':
-                    ++BLACK_QUEEN_COUNT;
+                    ++blackQueenCount;
                     on(i, ChessPieceType.BLACK_QUEEN);
                     break;
                 case 'N':
-                    ++BLACK_KING_COUNT;
+                    ++blackKingCount;
                     on(i, ChessPieceType.BLACK_KNIGHT);
                     break;
                 case 'P':
-                    ++BLACK_PAWN_COUNT;
+                    ++blackPawnCount;
                     on(i, ChessPieceType.BLACK_PAWN);
                     break;
                 default:

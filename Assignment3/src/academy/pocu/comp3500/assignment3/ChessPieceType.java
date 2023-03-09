@@ -15,7 +15,6 @@ public enum ChessPieceType {
     BLACK_PAWN,
     NONE;
 
-
     public static ChessPieceType fromInteger(int x) {
         ChessPieceType chessPieceType;
         switch (x) {

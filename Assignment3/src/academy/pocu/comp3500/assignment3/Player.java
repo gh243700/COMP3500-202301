@@ -19,15 +19,15 @@ public class Player extends PlayerBase {
     private final static byte[] BISHOP_MOVE_BOUND_X = {1, 1, -1, -1};
     private final static int[] KNIGHT_MOVE_OFFSET = {6, 10, 15, 17, -6, -10, -15, -17};
     private final static byte[] KNIGHT_MOVE_BOUND_X = {-2, 2, -1, 1, 2, -2, 1, -1};
-    private int depth;
-    private boolean timeOut;
     private static WrappersPool wrappersPool = WrappersPool.getInstance();
     private static MovesPool movesPool = MovesPool.getInstance();
+    private int depth;
+    private boolean timeOut;
     private Bitmap bitmap = new Bitmap();
-
+    private ArrayList<Move> sameMoves = new ArrayList<>(32);
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 5;
+        depth = 10;
     }
 
     @Override
@@ -114,7 +114,6 @@ public class Player extends PlayerBase {
         }
 
         Move bestMove = moves.get(0);
-        ArrayList<Move> sameMoves = new ArrayList<>(32);
 
         boolean isTopDepth = this.depth == depth;
 
@@ -154,8 +153,11 @@ public class Player extends PlayerBase {
                 if (currentEval > maxEval) {
                     maxEval = currentEval;
                     bestMove = move;
-                    sameMoves.clear();
-                    sameMoves.add(move);
+
+                    if (isTopDepth) {
+                        sameMoves.clear();
+                        sameMoves.add(move);
+                    }
                 } else if (isTopDepth && currentEval == maxEval) {
                     sameMoves.add(move);
                 } else {
