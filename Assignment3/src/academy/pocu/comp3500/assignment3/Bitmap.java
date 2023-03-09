@@ -36,6 +36,10 @@ public class Bitmap {
     private ArrayList<ChessPiece> chessPieces;
     private ArrayList<ChessPiece> removed;
 
+    public long[] getBoard() {
+        return board;
+    }
+
     public Bitmap() {
         chessPieces = new ArrayList<>(32);
         removed = new ArrayList<>(40);

@@ -29,7 +29,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 3;
+        depth = 5;
         bitmap = new Bitmap();
         sameMoves = new ArrayList<>(128);
     }
@@ -37,17 +37,21 @@ public class Player extends PlayerBase {
     @Override
     public Move getNextMove(char[][] board) {
         long start = System.nanoTime();
-        if (timeOut) {
-            --depth;
-            timeOut = false;
-        } else {
-            ++depth;
-        }
 
         bitmap.convertToBitmap(board);
         Wrapper wrapper = minimax(bitmap, depth, isWhite(), start);
         Move result = wrapper.getMove();
         wrappersPool.delete(wrapper);
+
+        long end = System.nanoTime();
+        long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
+
+        if (duration >= getMaxMoveTimeMilliseconds()) {
+            --depth;
+        } else {
+            ++depth;
+        }
+
         return result;
     }
 
@@ -67,6 +71,7 @@ public class Player extends PlayerBase {
                 nonPriorityMoves.add(move);
             }
         }
+
         priorityMoves.addAll(nonPriorityMoves);
         return priorityMoves;
     }
@@ -79,12 +84,25 @@ public class Player extends PlayerBase {
         bitmap.on(offsetTo, t1);
         bitmap.off(offsetFrom, t1);
 
-        boolean result = true;
+        ArrayList<ChessPiece> chessPieces = bitmap.getChessPieces();
 
-        for (Move attack : getNextMovesBitmapVer(!isWhite)) {
-            if (attack.toX == move.toX && attack.toY == move.toY) {
-                result = false;
-                break;
+        boolean result = true;
+        if (isWhite) {
+            for (int i = 0; i < chessPieces.size(); ++i) {
+                ChessPiece chessPiece = chessPieces.get(i);
+                ChessPieceType chessPieceType = chessPiece.getType();
+                Color color = Color.chessPieceColor(chessPieceType);
+
+                if (isWhite ? Color.WHITE == color : Color.BLACK == color) {
+                    continue;
+                }
+
+                boolean isSafe = isSafe(offsetTo, chessPieceType, isWhite ? false : true);
+
+                if (isSafe == false) {
+                    result = false;
+                    break;
+                }
             }
         }
 
@@ -100,7 +118,7 @@ public class Player extends PlayerBase {
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        if (depth == 0 || board.GameOver() || duration >= getMaxMoveTimeMilliseconds()) {
+        if (depth == 0 || board.GameOver() || duration >= getMaxMoveTimeMilliseconds() * 2 / 3) {
             return wrappersPool.alloc(board.evaluate(), null);
         }
 
@@ -165,7 +183,7 @@ public class Player extends PlayerBase {
             }
 
             if (isTopDepth && sameMoves.size() > 1) {
-                //bestMove = prioritizeProtectingOwnPiece(true).get(0);
+                bestMove = prioritizeProtectingOwnPiece(true).get(0);
             }
 
             return wrappersPool.alloc(maxEval, bestMove);
@@ -222,7 +240,7 @@ public class Player extends PlayerBase {
         }
 
         if (isTopDepth && sameMoves.size() > 1) {
-            //bestMove = prioritizeProtectingOwnPiece(false).get(0);
+            bestMove = prioritizeProtectingOwnPiece(false).get(0);
         }
 
         return wrappersPool.alloc(minEval, bestMove);
@@ -350,5 +368,92 @@ public class Player extends PlayerBase {
             }
         }
     }
+
+    public boolean isSafe(final int offset, final ChessPieceType chessPieceType, final boolean isWhite) {
+        int[] moveOffset = null;
+        byte[] boundX = null;
+        boolean loopOnce = false;
+
+        switch (chessPieceType) {
+            case BLACK_KING:
+            case WHITE_KING:
+                loopOnce = true;
+            case BLACK_QUEEN:
+            case WHITE_QUEEN:
+                moveOffset = KING_QUEEN_MOVE_OFFSET;
+                boundX = KING_QUEEN_MOVE_BOUND_X;
+                break;
+            case BLACK_ROOK:
+            case WHITE_ROOK:
+                moveOffset = ROOK_MOVE_OFFSET;
+                boundX = ROOK_MOVE_BOUND_X;
+                break;
+            case BLACK_BISHOP:
+            case WHITE_BISHOP:
+                moveOffset = BISHOP_MOVE_OFFSET;
+                boundX = BISHOP_MOVE_BOUND_X;
+                break;
+            case BLACK_KNIGHT:
+            case WHITE_KNIGHT:
+                loopOnce = true;
+                moveOffset = KNIGHT_MOVE_OFFSET;
+                boundX = KNIGHT_MOVE_BOUND_X;
+                break;
+            case BLACK_PAWN:
+            case WHITE_PAWN:
+                return isSafeFromPawn(offset, isWhite);
+            default:
+                assert (false);
+                break;
+        }
+
+        for (int i = 0; i < moveOffset.length; ++i) {
+            int offsetAfterMove = offset;
+            while (true) {
+                int x = 8 * (7 - offsetAfterMove % 8) + offsetAfterMove / 8;
+                x += -1 * boundX[i] * 8;
+                offsetAfterMove += moveOffset[i];
+
+                if (offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
+                    break;
+                }
+
+                ChessPieceType c1 = bitmap.getChessPieceType(offsetAfterMove);
+                Color c1Color = Color.chessPieceColor(c1);
+
+                if (isWhite && c1Color == Color.WHITE || !isWhite && c1Color == Color.BLACK) {
+                    return false;
+                }
+
+                if (c1Color != Color.NONE || loopOnce) {
+                    break;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isSafeFromPawn(final int offset, boolean isWhite) {
+        for (int i = 0; i < PAWN_ATTACK_OFFSET.length; ++i) {
+            int x = 8 * (7 - offset % 8) + offset / 8;
+            x += (isWhite ? -1 : 1) * PAWN_ATTACK_BOUND_X[i] * 8;
+            int offsetAfterMove = offset + (isWhite ? -1 : 1) * PAWN_ATTACK_OFFSET[i];
+
+            ChessPieceType c1 = bitmap.getChessPieceType(offsetAfterMove);
+
+            if (bitmap.chessPieceColor(offsetAfterMove) != ((isWhite) ? Color.BLACK : Color.WHITE) || offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
+                return false;
+            }
+
+
+            if (c1 != ChessPieceType.NONE) {
+                break;
+            }
+        }
+
+        return true;
+    }
+
 
 }
