@@ -165,7 +165,7 @@ public class Player extends PlayerBase {
             }
 
             if (isTopDepth && sameMoves.size() > 1) {
-                bestMove = prioritizeProtectingOwnPiece(true).get(0);
+                //bestMove = prioritizeProtectingOwnPiece(true).get(0);
             }
 
             return wrappersPool.alloc(maxEval, bestMove);
@@ -222,7 +222,7 @@ public class Player extends PlayerBase {
         }
 
         if (isTopDepth && sameMoves.size() > 1) {
-            bestMove = prioritizeProtectingOwnPiece(false).get(0);
+            //bestMove = prioritizeProtectingOwnPiece(false).get(0);
         }
 
         return wrappersPool.alloc(minEval, bestMove);
@@ -231,7 +231,6 @@ public class Player extends PlayerBase {
     public ArrayList<Move> getNextMovesBitmapVer(boolean isWhite) {
 
         ArrayList<Move> result = new ArrayList<>();
-
         ArrayList<ChessPiece> chessPieces = bitmap.getChessPieces();
 
         for (int i = 0; i < chessPieces.size(); ++i) {
