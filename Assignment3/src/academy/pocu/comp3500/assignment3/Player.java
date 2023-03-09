@@ -27,7 +27,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 10;
+        depth = 5;
         bitmap = new Bitmap();
         sameMoves = new ArrayList<>(32);
     }
@@ -234,14 +234,17 @@ public class Player extends PlayerBase {
 
         ArrayList<Move> result = new ArrayList<>();
 
-        for (int i = 0; i < 64; ++i) {
-            ChessPieceType chessPieceType = bitmap.getChessPieceType(i);
+        ArrayList<ChessPiece> chessPieces = bitmap.getChessPieces();
 
-            if (isWhite && bitmap.chessPieceColor(i) == Color.BLACK || !isWhite && bitmap.chessPieceColor(i) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
+        for (int i = 0; i < chessPieces.size(); ++i) {
+            ChessPiece chessPiece = chessPieces.get(i);
+            ChessPieceType chessPieceType = chessPiece.getType();
+
+            if (isWhite && Color.chessPieceColor(chessPieceType) == Color.BLACK || !isWhite && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
                 continue;
             }
 
-            movesBitmapVersion(i, chessPieceType, isWhite, result);
+            movesBitmapVersion(chessPiece.getOffset(), chessPieceType, isWhite, result);
         }
 
         return result;
@@ -315,7 +318,6 @@ public class Player extends PlayerBase {
             }
         }
     }
-
     private void pawnMovesBitmapVersion(final int offset, boolean isWhite, ArrayList<Move> result) {
         for (int i = 0; i < PAWN_MOVE_OFFSET.length; ++i) {
             int offsetAfterMove = offset + (isWhite ? -1 : 1) * PAWN_MOVE_OFFSET[i];
@@ -339,6 +341,7 @@ public class Player extends PlayerBase {
             if (bitmap.chessPieceColor(offsetAfterMove) != ((isWhite) ? Color.BLACK : Color.WHITE) || offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
                 continue;
             }
+
             Move move = movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
             result.add(move);
 
