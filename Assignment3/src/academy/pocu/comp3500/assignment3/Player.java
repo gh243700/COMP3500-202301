@@ -109,7 +109,7 @@ public class Player extends PlayerBase {
     public Wrapper minimax(Bitmap board, int depth, boolean maximizingPlayer, long start) {
 
         long end = System.nanoTime();
-        long duration = 0;//TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
+        long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
         if (depth == 0 || board.GameOver() || duration >= getMaxMoveTimeMilliseconds()) {
             return wrappersPool.alloc(board.evaluate(), null);
