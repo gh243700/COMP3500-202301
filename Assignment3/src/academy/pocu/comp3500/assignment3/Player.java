@@ -19,18 +19,18 @@ public class Player extends PlayerBase {
     private final static byte[] BISHOP_MOVE_BOUND_X = {1, 1, -1, -1};
     private final static byte[] KNIGHT_MOVE_OFFSET = {6, 10, 15, 17, -6, -10, -15, -17};
     private final static byte[] KNIGHT_MOVE_BOUND_X = {-2, 2, -1, 1, 2, -2, 1, -1};
+    private WrappersPool wrappersPool = WrappersPool.getInstance();
     private MovesPool movesPool = MovesPool.getInstance();
     private int depth;
     private Bitmap bitmap;
     private Stack<Move> moveStack = new Stack<>();
-
-    private Move bestMove;
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
         depth = 5;
         bitmap = new Bitmap();
 
+        WrappersPool.reset();
         MovesPool.reset();
     }
 
@@ -39,7 +39,9 @@ public class Player extends PlayerBase {
         long start = System.nanoTime();
 
         bitmap.convertToBitmap(board);
-        minimax(bitmap, depth, isWhite(), start);
+        Wrapper wrapper = minimax(bitmap, depth, isWhite(), start);
+        Move result = wrapper.getMove();
+        wrappersPool.delete(wrapper);
 
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
@@ -50,7 +52,7 @@ public class Player extends PlayerBase {
             ++depth;
         }
 
-        return bestMove;
+        return result;
     }
 
     @Override
@@ -60,6 +62,7 @@ public class Player extends PlayerBase {
 
     public Move prioritizeMove(boolean isWhite, Move m1, Move m2) {
         int bestEvaluation = Integer.MIN_VALUE;
+        Move bestMove = m1;
 
         for (int i = 0; i < 2; ++i) {
             Move move = (i == 0) ? m1 : m2;
@@ -136,23 +139,22 @@ public class Player extends PlayerBase {
         return result;
     }
 
-    public int minimax(Bitmap board, int depth, boolean maximizingPlayer, long start) {
+    public Wrapper minimax(Bitmap board, int depth, boolean maximizingPlayer, long start) {
 
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
         if (depth == 0 || board.GameOver() || duration >= getMaxMoveTimeMilliseconds() * 2 / 3) {
-            return board.evaluate();
+            return wrappersPool.alloc(board.evaluate(), null);
         }
 
         int count = getNextMovesBitmapVer(maximizingPlayer);
 
         if (count == 0) {
-            return board.evaluate();
+            return wrappersPool.alloc(board.evaluate(), null);
         }
 
-        Move bestMoveTemp = moveStack.peek();
-
+        Move bestMove = moveStack.peek();
         boolean foundBestMove = false;
 
         boolean isTopDepth = this.depth == depth;
@@ -175,7 +177,8 @@ public class Player extends PlayerBase {
                 board.moveChessPiece(offsetFrom, offsetTo, t1);
                 board.removeChessPieceFromBoard(offsetTo, t2);
 
-                int currentEval = minimax(board, depth - 1, false, start);
+                Wrapper wrapper = minimax(board, depth - 1, false, start);
+                int currentEval = wrapper.getEval();
 
                 // undo move
                 board.off(offsetTo, t1);
@@ -187,22 +190,22 @@ public class Player extends PlayerBase {
 
                 if (currentEval > maxEval) {
                     if (foundBestMove) {
-                        movesPool.delete(bestMoveTemp);
+                        movesPool.delete(bestMove);
                     }
 
                     maxEval = currentEval;
-                    bestMoveTemp = move;
+                    bestMove = move;
                     foundBestMove = true;
                 } else if (isTopDepth && currentEval == maxEval) {
-                    bestMoveTemp = prioritizeMove(true, bestMoveTemp, move);
+                    bestMove = prioritizeMove(true, bestMove, move);
                 } else {
                     movesPool.delete(move);
                 }
 
+                wrappersPool.delete(wrapper);
             }
 
-            bestMove = bestMoveTemp;
-            return maxEval;
+            return wrappersPool.alloc(maxEval, bestMove);
         }
 
         int minEval = Integer.MAX_VALUE;
@@ -223,7 +226,8 @@ public class Player extends PlayerBase {
             board.moveChessPiece(offsetFrom, offsetTo, t1);
             board.removeChessPieceFromBoard(offsetTo, t2);
 
-            int currentEval = minimax(board, depth - 1, true, start);
+            Wrapper wrapper = minimax(board, depth - 1, true, start);
+            int currentEval = wrapper.getEval();
 
             // undo move
             board.off(offsetTo, t1);
@@ -235,16 +239,16 @@ public class Player extends PlayerBase {
 
             if (currentEval < minEval) {
                 minEval = currentEval;
-                bestMoveTemp = move;
+                bestMove = move;
             } else if (isTopDepth && minEval == currentEval) {
-                bestMoveTemp = prioritizeMove(false, bestMoveTemp, move);
+                bestMove = prioritizeMove(false, bestMove, move);
             } else {
                 movesPool.delete(move);
             }
+            wrappersPool.delete(wrapper);
         }
 
-        bestMove = bestMoveTemp;
-        return minEval;
+        return wrappersPool.alloc(minEval, bestMove);
     }
 
     public int getNextMovesBitmapVer(boolean isWhite) {
