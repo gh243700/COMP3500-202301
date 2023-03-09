@@ -8,11 +8,7 @@ public class MovesPool {
     public Stack<Move> pool = new Stack<>();
     private static MovesPool instance;
 
-    public int allocCount = 0;
-    public int deleteCount = 0;
-
     public static MovesPool getInstance() {
-
         if (instance == null) {
             instance = new MovesPool();
         }
@@ -27,7 +23,6 @@ public class MovesPool {
     }
 
     public Move alloc(final int fromX, final int fromY, final int toX, final int toY) {
-        ++allocCount;
         if (pool.size() == 0) {
             return new Move(fromX, fromY, toX, toY);
         }
@@ -43,7 +38,6 @@ public class MovesPool {
     }
 
     public void delete(Move move) {
-        ++deleteCount;
         pool.add(move);
     }
 }
