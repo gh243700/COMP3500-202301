@@ -4,7 +4,6 @@ import academy.pocu.comp3500.assignment3.chess.Move;
 import academy.pocu.comp3500.assignment3.chess.PlayerBase;
 
 import java.util.ArrayList;
-import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 public class Player extends PlayerBase {
@@ -23,7 +22,6 @@ public class Player extends PlayerBase {
     private static MovesPool movesPool = MovesPool.getInstance();
     private int depth;
     private Bitmap bitmap;
-    private Stack<Move> moveStack = new Stack<>();
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
@@ -145,21 +143,21 @@ public class Player extends PlayerBase {
             return wrappersPool.alloc(board.evaluate(), null);
         }
 
-        int count = getNextMovesBitmapVer(maximizingPlayer);
+        ArrayList<Move> moves = getNextMovesBitmapVer(maximizingPlayer);
 
-        if (count == 0) {
+        if (moves.size() == 0) {
             return wrappersPool.alloc(board.evaluate(), null);
         }
 
-        Move bestMove = moveStack.peek();
+        Move bestMove = moves.get(0);
 
         boolean isTopDepth = this.depth == depth;
 
         if (maximizingPlayer) {
             int maxEval = Integer.MIN_VALUE + 1;
-            for (int i = 0; i < count; ++i) {
+            for (Move move : moves) {
                 // make move
-                Move move = moveStack.pop();
+
                 int offsetFrom = move.fromY * 8 + move.fromX;
                 int offsetTo = move.toY * 8 + move.toX;
 
@@ -200,9 +198,8 @@ public class Player extends PlayerBase {
         }
 
         int minEval = Integer.MAX_VALUE;
-        for (int i = 0; i < count; ++i) {
+        for (Move move : moves) {
             // make move
-            Move move = moveStack.pop();
 
             int offsetFrom = move.fromY * 8 + move.fromX;
             int offsetTo = move.toY * 8 + move.toX;
@@ -242,9 +239,9 @@ public class Player extends PlayerBase {
         return wrappersPool.alloc(minEval, bestMove);
     }
 
-    public int getNextMovesBitmapVer(boolean isWhite) {
+    public ArrayList<Move> getNextMovesBitmapVer(boolean isWhite) {
 
-        int beforeAddCount = moveStack.size();
+        ArrayList<Move> result = new ArrayList<>();
         ArrayList<ChessPiece> chessPieces = bitmap.getChessPieces();
 
         for (int i = 0; i < chessPieces.size(); ++i) {
@@ -255,13 +252,13 @@ public class Player extends PlayerBase {
                 continue;
             }
 
-            movesBitmapVersion(chessPiece.getOffset(), chessPieceType, isWhite);
+            movesBitmapVersion(chessPiece.getOffset(), chessPieceType, isWhite, result);
         }
 
-        return moveStack.size() - beforeAddCount;
+        return result;
     }
 
-    public void movesBitmapVersion(final int offset, final ChessPieceType chessPieceType, final boolean isWhite) {
+    public void movesBitmapVersion(final int offset, final ChessPieceType chessPieceType, final boolean isWhite, ArrayList<Move> result) {
         byte[] moveOffset = null;
         byte[] boundX = null;
         boolean loopOnce = false;
@@ -293,8 +290,8 @@ public class Player extends PlayerBase {
                 break;
             case BLACK_PAWN:
             case WHITE_PAWN:
-                pawnMovesBitmapVersion(offset, isWhite);
-                pawnAttacksBitmapVersion(offset, isWhite);
+                pawnMovesBitmapVersion(offset, isWhite, result);
+                pawnAttacksBitmapVersion(offset, isWhite, result);
                 return;
             default:
                 assert (false);
@@ -320,7 +317,7 @@ public class Player extends PlayerBase {
                 }
                 Move move = movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
 
-                moveStack.add(move);
+                result.add(move);
 
 
                 if (c1Color != Color.NONE || loopOnce) {
@@ -330,7 +327,7 @@ public class Player extends PlayerBase {
         }
     }
 
-    private void pawnMovesBitmapVersion(final int offset, boolean isWhite) {
+    private void pawnMovesBitmapVersion(final int offset, boolean isWhite, ArrayList<Move> result) {
         for (int i = 0; i < PAWN_MOVE_OFFSET.length; ++i) {
             int offsetAfterMove = offset + (isWhite ? -1 : 1) * PAWN_MOVE_OFFSET[i];
             int y = offset / 8;
@@ -339,11 +336,11 @@ public class Player extends PlayerBase {
                 break;
             }
 
-            moveStack.add(movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8));
+            result.add(movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8));
         }
     }
 
-    private void pawnAttacksBitmapVersion(final int offset, boolean isWhite) {
+    private void pawnAttacksBitmapVersion(final int offset, boolean isWhite, ArrayList<Move> result) {
         for (int i = 0; i < PAWN_ATTACK_OFFSET.length; ++i) {
             int x = 8 * (7 - offset % 8) + offset / 8;
             x += (isWhite ? -1 : 1) * PAWN_ATTACK_BOUND_X[i] * 8;
@@ -356,7 +353,7 @@ public class Player extends PlayerBase {
             }
 
             Move move = movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
-            moveStack.add(move);
+            result.add(move);
 
 
             if (c1 != ChessPieceType.NONE) {
