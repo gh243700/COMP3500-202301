@@ -4,19 +4,19 @@ public class Bitmap {
     private long[] board = new long[12];
     private static final char[] LETTERS = {'k', 'r', 'b', 'q', 'n', 'p', 'K', 'R', 'B', 'Q', 'N', 'P'};
     private static final int[] VALUES = {200, 5, 3, 9, 3, 1, 200, 5, 3, 9, 3, 1};
-    private static int WHITE_KING_COUNT = 0;
-    private static int WHITE_ROOK_COUNT = 0;
-    private static int WHITE_BISHOP_COUNT = 0;
-    private static int WHITE_QUEEN_COUNT = 0;
-    private static int WHITE_KNIGHT_COUNT = 0;
-    private static int WHITE_PAWN_COUNT = 0;
-    private static int BLACK_KING_COUNT = 0;
-    private static int BLACK_ROOK_COUNT = 0;
-    private static int BLACK_BISHOP_COUNT = 0;
-    private static int BLACK_QUEEN_COUNT = 0;
-    private static int BLACK_KNIGHT_COUNT = 0;
-    private static int BLACK_PAWN_COUNT = 0;
-    private static int[] COUNTS = {
+    private int WHITE_KING_COUNT = 0;
+    private int WHITE_ROOK_COUNT = 0;
+    private int WHITE_BISHOP_COUNT = 0;
+    private int WHITE_QUEEN_COUNT = 0;
+    private int WHITE_KNIGHT_COUNT = 0;
+    private int WHITE_PAWN_COUNT = 0;
+    private int BLACK_KING_COUNT = 0;
+    private int BLACK_ROOK_COUNT = 0;
+    private int BLACK_BISHOP_COUNT = 0;
+    private int BLACK_QUEEN_COUNT = 0;
+    private int BLACK_KNIGHT_COUNT = 0;
+    private int BLACK_PAWN_COUNT = 0;
+    private int[] COUNTS = {
             WHITE_KING_COUNT,
             WHITE_ROOK_COUNT,
             WHITE_BISHOP_COUNT,
@@ -31,11 +31,11 @@ public class Bitmap {
             BLACK_PAWN_COUNT
     };
 
-    public static void decreesCount(ChessPieceType type) {
+    public void decreesCount(ChessPieceType type) {
         --COUNTS[type.ordinal()];
     }
 
-    public static void increaseCount(ChessPieceType type) {
+    public void increaseCount(ChessPieceType type) {
         ++COUNTS[type.ordinal()];
     }
 
@@ -138,10 +138,10 @@ public class Bitmap {
     }
 
 
-    public static void convertToBitmap(char[][] board, Bitmap bitmap) {
+    public void convertToBitmap(char[][] board) {
 
         for (int i = 0; i < 12; ++i) {
-            bitmap.board[i] = bitmap.board[i] & 0x0;
+            this.board[i] = this.board[i] & 0x0;
         }
 
         for (int i = 0; i < 64; ++i) {
@@ -149,51 +149,51 @@ public class Bitmap {
             switch (c) {
                 case 'k':
                     ++WHITE_KING_COUNT;
-                    bitmap.on(i, ChessPieceType.WHITE_KING);
+                    on(i, ChessPieceType.WHITE_KING);
                     break;
                 case 'r':
                     ++WHITE_ROOK_COUNT;
-                    bitmap.on(i, ChessPieceType.WHITE_ROOK);
+                    on(i, ChessPieceType.WHITE_ROOK);
                     break;
                 case 'b':
                     ++WHITE_BISHOP_COUNT;
-                    bitmap.on(i, ChessPieceType.WHITE_BISHOP);
+                    on(i, ChessPieceType.WHITE_BISHOP);
                     break;
                 case 'q':
                     ++WHITE_QUEEN_COUNT;
-                    bitmap.on(i, ChessPieceType.WHITE_QUEEN);
+                    on(i, ChessPieceType.WHITE_QUEEN);
                     break;
                 case 'n':
                     ++WHITE_KNIGHT_COUNT;
-                    bitmap.on(i, ChessPieceType.WHITE_KNIGHT);
+                    on(i, ChessPieceType.WHITE_KNIGHT);
                     break;
                 case 'p':
                     ++WHITE_PAWN_COUNT;
-                    bitmap.on(i, ChessPieceType.WHITE_PAWN);
+                    on(i, ChessPieceType.WHITE_PAWN);
                     break;
                 case 'K':
                     ++BLACK_KING_COUNT;
-                    bitmap.on(i, ChessPieceType.BLACK_KING);
+                    on(i, ChessPieceType.BLACK_KING);
                     break;
                 case 'R':
                     ++BLACK_ROOK_COUNT;
-                    bitmap.on(i, ChessPieceType.BLACK_ROOK);
+                    on(i, ChessPieceType.BLACK_ROOK);
                     break;
                 case 'B':
                     ++BLACK_BISHOP_COUNT;
-                    bitmap.on(i, ChessPieceType.BLACK_BISHOP);
+                    on(i, ChessPieceType.BLACK_BISHOP);
                     break;
                 case 'Q':
                     ++BLACK_QUEEN_COUNT;
-                    bitmap.on(i, ChessPieceType.BLACK_QUEEN);
+                    on(i, ChessPieceType.BLACK_QUEEN);
                     break;
                 case 'N':
                     ++BLACK_KING_COUNT;
-                    bitmap.on(i, ChessPieceType.BLACK_KNIGHT);
+                    on(i, ChessPieceType.BLACK_KNIGHT);
                     break;
                 case 'P':
                     ++BLACK_PAWN_COUNT;
-                    bitmap.on(i, ChessPieceType.BLACK_PAWN);
+                    on(i, ChessPieceType.BLACK_PAWN);
                     break;
                 default:
                     break;
