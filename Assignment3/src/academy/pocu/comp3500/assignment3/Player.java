@@ -27,7 +27,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 5;
+        depth = 3;
         bitmap = new Bitmap();
         sameMoves = new ArrayList<>(32);
     }
