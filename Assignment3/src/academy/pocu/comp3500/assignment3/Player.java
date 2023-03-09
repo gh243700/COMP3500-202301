@@ -23,6 +23,7 @@ public class Player extends PlayerBase {
     private boolean timeOut;
     private static WrappersPool wrappersPool = WrappersPool.getInstance();
     private static MovesPool movesPool = MovesPool.getInstance();
+    private Bitmap bitmap = new Bitmap();
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
@@ -39,7 +40,8 @@ public class Player extends PlayerBase {
             ++depth;
         }
 
-        Wrapper wrapper = minimax(Bitmap.convertToBitmap(board), depth, isWhite(), start);
+        Bitmap.convertToBitmap(board, bitmap);
+        Wrapper wrapper = minimax(bitmap, depth, isWhite(), start);
         Move result = wrapper.getMove();
         wrappersPool.delete(wrapper);
         return result;
@@ -51,10 +53,7 @@ public class Player extends PlayerBase {
     }
 
     public static Move prioritizeProtectingOwnPiece(ArrayList<Move> moves, Bitmap board, boolean isWhite) {
-        ArrayList<Move> priorityMoves = new ArrayList<>();
-        ArrayList<Move> nonPriorityMoves = new ArrayList<>();
-
-
+        Move result = null;
         for (Move move : moves) {
             int offsetFrom = move.fromY * 8 + move.fromX;
             ChessPieceType t1 = board.getChessPieceType(offsetFrom);
@@ -64,17 +63,13 @@ public class Player extends PlayerBase {
                     return move;
                 }
 
-                priorityMoves.add(move);
+                result = move;
             } else {
-                nonPriorityMoves.add(move);
+                result = move;
             }
         }
 
-        if (priorityMoves.size() == 0) {
-            return nonPriorityMoves.get(0);
-        }
-
-        return priorityMoves.get(0);
+        return result;
     }
 
     public static boolean isProtectingOwnPiece(Move move, Bitmap board, boolean isWhite) {
@@ -134,6 +129,12 @@ public class Player extends PlayerBase {
                 ChessPieceType t1 = board.getChessPieceType(offsetFrom);
                 ChessPieceType t2 = board.getChessPieceType(offsetTo);
 
+                boolean captured = false;
+                if (Color.chessPieceColor(t2) == Color.BLACK) {
+                    board.decreesCount(t2);
+                    captured = true;
+                }
+
                 board.on(offsetTo, t1);
                 board.off(offsetFrom, t1);
                 board.off(offsetTo, t2);
@@ -145,6 +146,10 @@ public class Player extends PlayerBase {
                 board.off(offsetTo, t1);
                 board.on(offsetFrom, t1);
                 board.on(offsetTo, t2);
+
+                if (captured) {
+                    board.increaseCount(t2);
+                }
 
                 if (currentEval > maxEval) {
                     maxEval = currentEval;
@@ -177,12 +182,22 @@ public class Player extends PlayerBase {
             ChessPieceType t1 = board.getChessPieceType(offsetFrom);
             ChessPieceType t2 = board.getChessPieceType(offsetTo);
 
+            boolean captured = false;
+            if (Color.chessPieceColor(t2) == Color.WHITE) {
+                board.decreesCount(t2);
+                captured = true;
+            }
+
             board.on(offsetTo, t1);
             board.off(offsetFrom, t1);
             board.off(offsetTo, t2);
 
             Wrapper wrapper = minimax(board, depth - 1, true, start);
             int currentEval = wrapper.getEval();
+
+            if (captured) {
+                board.increaseCount(t2);
+            }
 
             // undo move
             board.off(offsetTo, t1);
