@@ -45,7 +45,7 @@ public class Player extends PlayerBase {
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        if (duration >= getMaxMoveTimeMilliseconds()) {
+        if (duration >= getMaxMoveTimeMilliseconds() * 2 / 3) {
             --depth;
         } else {
             ++depth;
