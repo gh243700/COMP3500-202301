@@ -29,7 +29,7 @@ public class Player extends PlayerBase {
         super(isWhite, maxMoveTimeMilliseconds);
         depth = 3;
         bitmap = new Bitmap();
-        sameMoves = new ArrayList<>(32);
+        sameMoves = new ArrayList<>(128);
     }
 
     @Override
@@ -52,6 +52,46 @@ public class Player extends PlayerBase {
     @Override
     public Move getNextMove(char[][] board, Move opponentMove) {
         return getNextMove(board);
+    }
+
+    public Move prioritizeProtectingOwnPiece() {
+        Move result = null;
+        int maxScore = Integer.MIN_VALUE;
+
+        for (Move move : sameMoves) {
+            int offsetFrom = move.fromX + move.fromY * 8;
+            int offsetTo = move.toX + move.toY * 8;
+            ChessPieceType type = bitmap.getChessPieceType(offsetFrom);
+            bitmap.off(offsetFrom, type);
+            bitmap.on(offsetTo, type);
+
+            int score =  bitmap.evaluate();
+
+
+            // 우선순위를 결정할 평가값이 같은 경우
+            if (score == maxScore) {
+                int from = move.fromY * 8 + move.fromX;
+                int to = move.toY * 8 + move.toX;
+
+                ChessPieceType typeFrom = bitmap.getChessPieceType(from);
+                ChessPieceType typeTo = bitmap.getChessPieceType(to);
+
+                // 자신의 말을 보호하는 경우
+                if (Color.chessPieceColor(typeFrom) ==Color.chessPieceColor(typeTo)) {
+                    result = move;
+                    maxScore = score;
+                }
+            }
+            // 우선순위를 결정할 평가값이 큰 경우
+            else if (score > maxScore) {
+                result = move;
+                maxScore = score;
+            }
+
+            bitmap.off(offsetTo, type);
+            bitmap.on(offsetFrom, type);
+        }
+        return result;
     }
 
     public Move prioritizeProtectingOwnPiece(boolean isWhite) {
@@ -224,7 +264,7 @@ public class Player extends PlayerBase {
         }
 
         if (isTopDepth && sameMoves.size() > 1) {
-            bestMove = prioritizeProtectingOwnPiece(false);
+            bestMove = prioritizeProtectingOwnPiece();
         }
 
         return wrappersPool.alloc(minEval, bestMove);
@@ -249,7 +289,6 @@ public class Player extends PlayerBase {
 
         return result;
     }
-
     public void movesBitmapVersion(final int offset, final ChessPieceType chessPieceType, final boolean isWhite, ArrayList<Move> result) {
         int[] moveOffset = null;
         byte[] boundX = null;
