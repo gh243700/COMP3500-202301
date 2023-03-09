@@ -18,8 +18,8 @@ public class Player extends PlayerBase {
     private final static byte[] BISHOP_MOVE_BOUND_X = {1, 1, -1, -1};
     private final static byte[] KNIGHT_MOVE_OFFSET = {6, 10, 15, 17, -6, -10, -15, -17};
     private final static byte[] KNIGHT_MOVE_BOUND_X = {-2, 2, -1, 1, 2, -2, 1, -1};
-    private static WrappersPool wrappersPool = WrappersPool.getInstance();
-    private static MovesPool movesPool = MovesPool.getInstance();
+
+    private Move bestResultMove;
     private int depth;
     private Bitmap bitmap;
 
@@ -34,14 +34,13 @@ public class Player extends PlayerBase {
         long start = System.nanoTime();
 
         bitmap.convertToBitmap(board);
-        Wrapper wrapper = minimax(bitmap, depth, isWhite(), start);
-        Move result = wrapper.getMove();
-        wrappersPool.delete(wrapper);
+        minimax(bitmap, depth, isWhite(), start);
+        Move result = bestResultMove;
 
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        if (duration >= getMaxMoveTimeMilliseconds() * 2 / 3) {
+        if (duration >= getMaxMoveTimeMilliseconds()) {
             --depth;
         } else {
             ++depth;
@@ -81,9 +80,6 @@ public class Player extends PlayerBase {
                 bestMove = move;
             }
         }
-
-        Move deletable = bestMove == m1 ? m2 : m1;
-        movesPool.delete(deletable);
 
         return bestMove;
     }
@@ -134,19 +130,19 @@ public class Player extends PlayerBase {
         return result;
     }
 
-    public Wrapper minimax(Bitmap board, int depth, boolean maximizingPlayer, long start) {
+    public int minimax(Bitmap board, int depth, boolean maximizingPlayer, long start) {
 
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
         if (depth == 0 || board.GameOver() || duration >= getMaxMoveTimeMilliseconds() * 2 / 3) {
-            return wrappersPool.alloc(board.evaluate(), null);
+            return board.evaluate();
         }
 
         ArrayList<Move> moves = getNextMovesBitmapVer(maximizingPlayer);
 
         if (moves.size() == 0) {
-            return wrappersPool.alloc(board.evaluate(), null);
+            return board.evaluate();
         }
 
         Move bestMove = moves.get(0);
@@ -171,8 +167,7 @@ public class Player extends PlayerBase {
                 board.moveChessPiece(offsetFrom, offsetTo, t1);
                 board.removeChessPieceFromBoard(offsetTo, t2);
 
-                Wrapper wrapper = minimax(board, depth - 1, false, start);
-                int currentEval = wrapper.getEval();
+                int currentEval = minimax(board, depth - 1, false, start);
 
                 // undo move
                 board.off(offsetTo, t1);
@@ -187,14 +182,14 @@ public class Player extends PlayerBase {
                     bestMove = move;
                 } else if (isTopDepth && currentEval == maxEval) {
                     bestMove = prioritizeMove(true, bestMove, move);
-                } else {
-                    movesPool.delete(move);
                 }
-
-                wrappersPool.delete(wrapper);
             }
 
-            return wrappersPool.alloc(maxEval, bestMove);
+            if (isTopDepth) {
+                bestResultMove = bestMove;
+            }
+
+            return maxEval;
         }
 
         int minEval = Integer.MAX_VALUE;
@@ -214,8 +209,7 @@ public class Player extends PlayerBase {
             board.moveChessPiece(offsetFrom, offsetTo, t1);
             board.removeChessPieceFromBoard(offsetTo, t2);
 
-            Wrapper wrapper = minimax(board, depth - 1, true, start);
-            int currentEval = wrapper.getEval();
+            int currentEval = minimax(board, depth - 1, true, start);
 
             // undo move
             board.off(offsetTo, t1);
@@ -230,13 +224,14 @@ public class Player extends PlayerBase {
                 bestMove = move;
             } else if (isTopDepth && minEval == currentEval) {
                 bestMove = prioritizeMove(false, bestMove, move);
-            } else {
-                movesPool.delete(move);
             }
-            wrappersPool.delete(wrapper);
         }
 
-        return wrappersPool.alloc(minEval, bestMove);
+        if (isTopDepth) {
+            bestResultMove = bestMove;
+        }
+
+        return minEval;
     }
 
     public ArrayList<Move> getNextMovesBitmapVer(boolean isWhite) {
@@ -315,7 +310,7 @@ public class Player extends PlayerBase {
                 if (isWhite && c1Color == Color.WHITE || !isWhite && c1Color == Color.BLACK) {
                     break;
                 }
-                Move move = movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
+                Move move = new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
 
                 result.add(move);
 
@@ -336,7 +331,7 @@ public class Player extends PlayerBase {
                 break;
             }
 
-            result.add(movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8));
+            result.add(new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8));
         }
     }
 
@@ -352,7 +347,7 @@ public class Player extends PlayerBase {
                 continue;
             }
 
-            Move move = movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
+            Move move = new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
             result.add(move);
 
 
