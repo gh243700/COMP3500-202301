@@ -176,8 +176,6 @@ public class Program {
             assert move.toY == 4;
 
             MovesPool movesPool = MovesPool.getInstance();
-            System.out.println(movesPool.allocCount);
-            System.out.println(movesPool.deleteCount);
         }
         {
             // player dodges
