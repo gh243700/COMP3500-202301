@@ -108,7 +108,7 @@ public class Player extends PlayerBase {
             return wrappersPool.alloc(board.evaluate(), null);
         }
 
-        LinkedList<Move> moves = getNextMovesBitmapVer(maximizingPlayer);
+        ArrayList<Move> moves = getNextMovesBitmapVer(maximizingPlayer);
 
         if (moves.size() == 0) {
             return wrappersPool.alloc(board.evaluate(), null);
@@ -169,7 +169,7 @@ public class Player extends PlayerBase {
             }
 
             if (isTopDepth && sameMoves.size() > 1) {
-                bestMove = prioritizeProtectingOwnPiece( true);
+                bestMove = prioritizeProtectingOwnPiece(true);
             }
 
             return wrappersPool.alloc(maxEval, bestMove);
@@ -231,9 +231,9 @@ public class Player extends PlayerBase {
         return wrappersPool.alloc(minEval, bestMove);
     }
 
-    public LinkedList<Move> getNextMovesBitmapVer(boolean isWhite) {
+    public ArrayList<Move> getNextMovesBitmapVer(boolean isWhite) {
 
-        LinkedList<Move> result = new LinkedList<>();
+        ArrayList<Move> result = new ArrayList<>();
 
         for (int i = 0; i < 64; ++i) {
             ChessPieceType chessPieceType = bitmap.getChessPieceType(i);
@@ -248,7 +248,7 @@ public class Player extends PlayerBase {
         return result;
     }
 
-    public void movesBitmapVersion(final int offset, final ChessPieceType chessPieceType, final boolean isWhite, LinkedList<Move> result) {
+    public void movesBitmapVersion(final int offset, final ChessPieceType chessPieceType, final boolean isWhite, ArrayList<Move> result) {
         int[] moveOffset = null;
         byte[] boundX = null;
         boolean loopOnce = false;
@@ -307,11 +307,8 @@ public class Player extends PlayerBase {
                 }
                 Move move = movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
 
-                if (isWhite && c1Color == Color.BLACK || !isWhite && c1Color == Color.WHITE) {
-                    result.addFirst(move);
-                } else {
-                    result.addLast(move);
-                }
+                result.add(move);
+
 
                 if (c1Color != Color.NONE || loopOnce) {
                     break;
@@ -320,7 +317,7 @@ public class Player extends PlayerBase {
         }
     }
 
-    private void pawnMovesBitmapVersion(final int offset, boolean isWhite, LinkedList<Move> result) {
+    private void pawnMovesBitmapVersion(final int offset, boolean isWhite, ArrayList<Move> result) {
         for (int i = 0; i < PAWN_MOVE_OFFSET.length; ++i) {
             int offsetAfterMove = offset + (isWhite ? -1 : 1) * PAWN_MOVE_OFFSET[i];
             int y = offset / 8;
@@ -329,11 +326,11 @@ public class Player extends PlayerBase {
                 break;
             }
 
-            result.addLast(movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8));
+            result.add(movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8));
         }
     }
 
-    private void pawnAttacksBitmapVersion(final int offset, boolean isWhite, LinkedList<Move> result) {
+    private void pawnAttacksBitmapVersion(final int offset, boolean isWhite, ArrayList<Move> result) {
         for (int i = 0; i < PAWN_ATTACK_OFFSET.length; ++i) {
             int x = 8 * (7 - offset % 8) + offset / 8;
             x += (isWhite ? -1 : 1) * PAWN_ATTACK_BOUND_X[i] * 8;
@@ -344,16 +341,9 @@ public class Player extends PlayerBase {
             if (bitmap.chessPieceColor(offsetAfterMove) != ((isWhite) ? Color.BLACK : Color.WHITE) || offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
                 continue;
             }
-
-            Color c1Color = Color.chessPieceColor(c1);
-
             Move move = movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
+            result.add(move);
 
-            if (isWhite && c1Color == Color.BLACK || !isWhite && c1Color == Color.WHITE) {
-                result.addFirst(move);
-            } else {
-                result.addLast(move);
-            }
 
             if (c1 != ChessPieceType.NONE) {
                 break;
