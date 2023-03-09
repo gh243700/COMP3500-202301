@@ -15,15 +15,6 @@ public class MovesPool {
         return instance;
     }
 
-    public static void reset() {
-        if (instance == null) {
-            return;
-        }
-
-        instance = new MovesPool();
-    }
-
-
     private MovesPool() {
         pool.ensureCapacity(128);
         for (int i = 0; i < pool.capacity(); ++i) {

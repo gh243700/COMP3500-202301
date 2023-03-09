@@ -14,14 +14,6 @@ public class WrappersPool {
         return instance;
     }
 
-    public static void reset() {
-        if (instance == null) {
-            return;
-        }
-
-        instance = new WrappersPool();
-    }
-
     private WrappersPool(){
     }
 
