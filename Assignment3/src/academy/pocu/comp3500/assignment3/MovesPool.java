@@ -32,6 +32,7 @@ public class MovesPool {
         result.fromY = fromY;
         result.toX = toX;
         result.toY = toY;
+
         return result;
     }
 
