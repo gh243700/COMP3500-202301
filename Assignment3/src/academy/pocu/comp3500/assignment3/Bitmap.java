@@ -43,7 +43,7 @@ public class Bitmap {
     public Bitmap() {
         chessPieces = new ArrayList<>(32);
         removed = new ArrayList<>(32);
-        for (int i = 0; i < 40; ++i) {
+        for (int i = 0; i < 32; ++i) {
             removed.add(new ChessPiece(ChessPieceType.NONE, -1));
         }
     }
@@ -119,7 +119,6 @@ public class Bitmap {
         }
 
         ChessPiece chessPiece = removed.get(0);
-
         chessPiece.reset(type, offset);
         removed.remove(chessPiece);
         chessPieces.add(chessPiece);
@@ -182,7 +181,6 @@ public class Bitmap {
                 ++black;
                 break;
             }
-
         }
 
         return white == 0 || black == 0;
