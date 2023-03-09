@@ -18,8 +18,8 @@ public class Player extends PlayerBase {
     private final static byte[] BISHOP_MOVE_BOUND_X = {1, 1, -1, -1};
     private final static byte[] KNIGHT_MOVE_OFFSET = {6, 10, 15, 17, -6, -10, -15, -17};
     private final static byte[] KNIGHT_MOVE_BOUND_X = {-2, 2, -1, 1, 2, -2, 1, -1};
-    private static WrappersPool wrappersPool = WrappersPool.getInstance();
-    private static MovesPool movesPool = MovesPool.getInstance();
+    //private static WrappersPool wrappersPool = WrappersPool.getInstance();
+    //private static MovesPool movesPool = MovesPool.getInstance();
     private int depth;
     private Bitmap bitmap;
 
