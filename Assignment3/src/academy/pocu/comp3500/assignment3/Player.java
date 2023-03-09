@@ -40,7 +40,7 @@ public class Player extends PlayerBase {
             ++depth;
         }
 
-        Bitmap.convertToBitmap(board, bitmap);
+        bitmap.convertToBitmap(board);
         Wrapper wrapper = minimax(bitmap, depth, isWhite(), start);
         Move result = wrapper.getMove();
         wrappersPool.delete(wrapper);
