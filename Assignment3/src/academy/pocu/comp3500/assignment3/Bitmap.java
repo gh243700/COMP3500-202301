@@ -39,7 +39,6 @@ public class Bitmap {
         ++COUNTS[type.ordinal()];
     }
 
-
     public ChessPieceType getChessPieceType(final int offset) {
         long mask = 0x1;
         mask = mask << offset;
