@@ -39,9 +39,9 @@ public class Bitmap {
 
     public Bitmap() {
         chessPieces = new ArrayList<>(32);
-        removed = new ArrayList<>(32);
-        for (int i = 0; i < 32; ++i) {
-            chessPieces.add(new ChessPiece(ChessPieceType.NONE, -1));
+        removed = new ArrayList<>(40);
+        for (int i = 0; i < 40; ++i) {
+            removed.add(new ChessPiece(ChessPieceType.NONE, -1));
         }
     }
 
@@ -91,16 +91,16 @@ public class Bitmap {
         long mask = 0x01;
         mask = mask << offset;
 
-        for (int i = 0; i < removed.size(); ++i) {
-            ChessPiece chessPiece = removed.get(i);
-            if (chessPiece.getType() == type) {
-                chessPiece.setOffset(offset);
-                removed.remove(chessPiece);
-                chessPieces.add(chessPiece);
-            }
-
-
+        if (removed.size() == 0) {
+            removed.add(new ChessPiece(ChessPieceType.NONE, -1));
         }
+
+        ChessPiece chessPiece = removed.get(0);
+
+        chessPiece.reset(type, offset);
+        removed.remove(chessPiece);
+        chessPieces.add(chessPiece);
+
 
         board[type.ordinal()] = board[type.ordinal()] | mask;
     }

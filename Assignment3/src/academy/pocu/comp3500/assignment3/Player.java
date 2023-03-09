@@ -56,6 +56,50 @@ public class Player extends PlayerBase {
 
     public Move prioritizeProtectingOwnPiece(boolean isWhite) {
         Move result = null;
+        for (Move move : sameMoves) {
+            int offsetFrom = move.fromY * 8 + move.fromX;
+            ChessPieceType t1 = bitmap.getChessPieceType(offsetFrom);
+
+            if (isProtectingOwnPiece(move, isWhite)) {
+                if (t1 == ChessPieceType.BLACK_KING || t1 == ChessPieceType.WHITE_KING) {
+                    return move;
+                }
+
+            }
+            result = move;
+        }
+
+        return result;
+    }
+
+    public boolean isProtectingOwnPiece(Move move, boolean isWhite) {
+        // move
+        int offsetFrom = move.fromY * 8 + move.fromX;
+        int offsetTo = move.toY * 8 + move.toX;
+
+        ChessPieceType t1 = bitmap.getChessPieceType(offsetFrom);
+
+        bitmap.on(offsetTo, t1);
+        bitmap.off(offsetFrom, t1);
+
+        boolean result = true;
+
+        for (Move attack : getNextMovesBitmapVer(!isWhite)) {
+            if (attack.toX == move.toX && attack.toY == move.toY) {
+                result = false;
+                break;
+            }
+        }
+
+        // undo
+        bitmap.off(offsetTo, t1);
+        bitmap.on(offsetFrom, t1);
+
+        return result;
+    }
+/*
+    public Move prioritizeProtectingOwnPiece(boolean isWhite) {
+        Move result = null;
         int maxScore = Integer.MIN_VALUE;
 
         for (Move move : sameMoves) {
@@ -105,6 +149,8 @@ public class Player extends PlayerBase {
         }
         return result;
     }
+ */
+
 
     public Wrapper minimax(Bitmap board, int depth, boolean maximizingPlayer, long start) {
 
