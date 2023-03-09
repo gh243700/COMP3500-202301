@@ -15,10 +15,6 @@ public class WrappersPool {
     }
 
     private WrappersPool(){
-        pool.ensureCapacity(128);
-        for (int i = 0; i < pool.capacity(); ++i) {
-            pool.add(new Wrapper());
-        }
     }
 
     public Wrapper alloc(int eval, Move move) {

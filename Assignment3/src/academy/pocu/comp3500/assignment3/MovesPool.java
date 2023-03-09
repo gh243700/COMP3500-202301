@@ -9,7 +9,8 @@ public class MovesPool {
     private static MovesPool instance;
 
     public int allocCount = 0;
-    public int deletCount = 0;
+    public int deleteCount = 0;
+
     public static MovesPool getInstance() {
 
         if (instance == null) {
@@ -32,6 +33,7 @@ public class MovesPool {
         }
 
         Move result = pool.pop();
+
         result.fromX = fromX;
         result.fromY = fromY;
         result.toX = toX;
@@ -41,7 +43,7 @@ public class MovesPool {
     }
 
     public void delete(Move move) {
-        ++deletCount;
+        ++deleteCount;
         pool.add(move);
     }
 }

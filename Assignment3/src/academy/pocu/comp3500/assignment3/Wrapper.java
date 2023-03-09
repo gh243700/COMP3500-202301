@@ -5,6 +5,7 @@ import academy.pocu.comp3500.assignment3.chess.Move;
 public class Wrapper {
     private int eval;
     private Move move;
+    MovesPool movesPool = MovesPool.getInstance();
 
     public Wrapper(int eval, Move move) {
         this.move = move;

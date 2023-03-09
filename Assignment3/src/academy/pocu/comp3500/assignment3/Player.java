@@ -7,16 +7,16 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Player extends PlayerBase {
-    private final static int[] PAWN_MOVE_OFFSET = {8, 16};
-    private final static int[] PAWN_ATTACK_OFFSET = {9, 7};
+    private final static byte[] PAWN_MOVE_OFFSET = {8, 16};
+    private final static byte[] PAWN_ATTACK_OFFSET = {9, 7};
     private final static byte[] PAWN_ATTACK_BOUND_X = {-1, 1};
-    private final static int[] KING_QUEEN_MOVE_OFFSET = {1, -1, 8, -8, -7, 9, 7, -9};
+    private final static byte[] KING_QUEEN_MOVE_OFFSET = {1, -1, 8, -8, -7, 9, 7, -9};
     private final static byte[] KING_QUEEN_MOVE_BOUND_X = {1, -1, 0, 0, 1, 1, -1, -1};
-    private final static int[] ROOK_MOVE_OFFSET = {1, -1, 8, -8};
+    private final static byte[] ROOK_MOVE_OFFSET = {1, -1, 8, -8};
     private final static byte[] ROOK_MOVE_BOUND_X = {1, -1, 0, 0};
-    private final static int[] BISHOP_MOVE_OFFSET = {-7, 9, 7, -9};
+    private final static byte[] BISHOP_MOVE_OFFSET = {-7, 9, 7, -9};
     private final static byte[] BISHOP_MOVE_BOUND_X = {1, 1, -1, -1};
-    private final static int[] KNIGHT_MOVE_OFFSET = {6, 10, 15, 17, -6, -10, -15, -17};
+    private final static byte[] KNIGHT_MOVE_OFFSET = {6, 10, 15, 17, -6, -10, -15, -17};
     private final static byte[] KNIGHT_MOVE_BOUND_X = {-2, 2, -1, 1, 2, -2, 1, -1};
     private static WrappersPool wrappersPool = WrappersPool.getInstance();
     private static MovesPool movesPool = MovesPool.getInstance();
@@ -82,8 +82,8 @@ public class Player extends PlayerBase {
             }
         }
 
-        Move deletableMove = (bestMove == m1) ? m2 : m1;
-        movesPool.delete(deletableMove);
+        Move deletable = bestMove == m1 ? m2 : m1;
+        movesPool.delete(deletable);
 
         return bestMove;
     }
@@ -164,12 +164,6 @@ public class Player extends PlayerBase {
                 ChessPieceType t1 = board.getChessPieceType(offsetFrom);
                 ChessPieceType t2 = board.getChessPieceType(offsetTo);
 
-                boolean captured = false;
-                if (Color.chessPieceColor(t2) == Color.BLACK) {
-                    board.decreesCount(t2);
-                    captured = true;
-                }
-
                 board.on(offsetTo, t1);
                 board.off(offsetFrom, t1);
                 board.off(offsetTo, t2);
@@ -187,10 +181,6 @@ public class Player extends PlayerBase {
 
                 board.moveChessPiece(offsetTo, offsetFrom, t1);
                 board.addChessPieceFromBoard(offsetTo, t2);
-
-                if (captured) {
-                    board.increaseCount(t2);
-                }
 
                 if (currentEval > maxEval) {
                     maxEval = currentEval;
@@ -217,12 +207,6 @@ public class Player extends PlayerBase {
             ChessPieceType t1 = board.getChessPieceType(offsetFrom);
             ChessPieceType t2 = board.getChessPieceType(offsetTo);
 
-            boolean captured = false;
-            if (Color.chessPieceColor(t2) == Color.WHITE) {
-                board.decreesCount(t2);
-                captured = true;
-            }
-
             board.on(offsetTo, t1);
             board.off(offsetFrom, t1);
             board.off(offsetTo, t2);
@@ -232,10 +216,6 @@ public class Player extends PlayerBase {
 
             Wrapper wrapper = minimax(board, depth - 1, true, start);
             int currentEval = wrapper.getEval();
-
-            if (captured) {
-                board.increaseCount(t2);
-            }
 
             // undo move
             board.off(offsetTo, t1);
@@ -253,7 +233,6 @@ public class Player extends PlayerBase {
             } else {
                 movesPool.delete(move);
             }
-
             wrappersPool.delete(wrapper);
         }
 
@@ -280,7 +259,7 @@ public class Player extends PlayerBase {
     }
 
     public void movesBitmapVersion(final int offset, final ChessPieceType chessPieceType, final boolean isWhite, ArrayList<Move> result) {
-        int[] moveOffset = null;
+        byte[] moveOffset = null;
         byte[] boundX = null;
         boolean loopOnce = false;
 
@@ -384,7 +363,7 @@ public class Player extends PlayerBase {
     }
 
     public boolean isSafeFromEnemy(final int offset, int offsetTo, final ChessPieceType chessPieceType, final boolean isWhite) {
-        int[] moveOffset = null;
+        byte[] moveOffset = null;
         byte[] boundX = null;
         boolean loopOnce = false;
 
