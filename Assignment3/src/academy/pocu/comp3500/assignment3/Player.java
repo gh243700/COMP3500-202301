@@ -23,6 +23,8 @@ public class Player extends PlayerBase {
     private final static byte[] KNIGHT_MOVE_BOUND_X = {-2, 2, -1, 1, 2, -2, 1, -1};
     private int depth;
 
+    private MovesPool movesPool = MovesPool.getInstance();
+
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
         depth = 5;
@@ -100,7 +102,6 @@ public class Player extends PlayerBase {
 
             for (Move move : moves) {
                 // make move
-
                 char t1 = board[move.fromY][move.fromX];
                 char t2 = board[move.toY][move.toX];
 
@@ -116,6 +117,12 @@ public class Player extends PlayerBase {
                 if (maximizingPlayer ? currentEval > maxEval : currentEval < maxEval) {
                     maxEval = currentEval;
                     bestMove = move;
+                } else if (isTopDepth) {
+                    movesPool.delete(move);
+                }
+
+                if (!isTopDepth) {
+                    movesPool.delete(move);
                 }
             }
 
@@ -190,7 +197,7 @@ public class Player extends PlayerBase {
                 if (isWhite && c1Color == Color.WHITE || !isWhite && c1Color == Color.BLACK) {
                     break;
                 }
-                Move move = new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
+                Move move = movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
 
                 moves.add(move);
 
@@ -210,7 +217,7 @@ public class Player extends PlayerBase {
                 break;
             }
 
-            moves.add(new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8));
+            moves.add(movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8));
         }
     }
 
@@ -229,7 +236,7 @@ public class Player extends PlayerBase {
                 continue;
             }
 
-            Move move = new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
+            Move move = movesPool.alloc(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
             moves.add(move);
 
             if (c1 != ChessPieceType.NONE) {
