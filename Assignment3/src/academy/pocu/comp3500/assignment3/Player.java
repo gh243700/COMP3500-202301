@@ -3,7 +3,6 @@ package academy.pocu.comp3500.assignment3;
 import academy.pocu.comp3500.assignment3.chess.Move;
 import academy.pocu.comp3500.assignment3.chess.PlayerBase;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Player extends PlayerBase {
@@ -20,11 +19,10 @@ public class Player extends PlayerBase {
     private final static byte[] KNIGHT_MOVE_OFFSET = {6, 10, 15, 17, -6, -10, -15, -17};
     private final static byte[] KNIGHT_MOVE_BOUND_X = {-2, 2, -1, 1, 2, -2, 1, -1};
     private int depth;
-    private MovesPool movesPool = MovesPool.getInstance();
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 5;
+        depth = 6;
     }
 
     @Override
@@ -51,7 +49,7 @@ public class Player extends PlayerBase {
         tempEvaluation = minimax(board, depth, isWhite(), start, finalResult);
         tempMove = finalResult[0];
 
-        if (isWhite() ? bestEvaluation <= tempEvaluation : bestEvaluation >= tempEvaluation) {
+        if (isWhite() ? bestEvaluation < tempEvaluation : bestEvaluation > tempEvaluation) {
             bestMove = tempMove;
         }
 
@@ -63,6 +61,7 @@ public class Player extends PlayerBase {
         } else {
             ++depth;
         }
+
 
         return bestMove;
     }
