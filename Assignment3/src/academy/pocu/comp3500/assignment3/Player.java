@@ -83,13 +83,18 @@ public class Player extends PlayerBase {
 
         boolean noResult = false;
         for (int i = 0; i < 64; ++i) {
-            ChessPieceType chessPieceType = getChessPieceType(board[i / 8][i % 8]);
+            int k = (isWhite()) ? i : 64 - 1 - i;
+            ChessPieceType chessPieceType = getChessPieceType(board[k / 8][k % 8]);
 
             if (maximizingPlayer && Color.chessPieceColor(chessPieceType) == Color.BLACK || !maximizingPlayer && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
                 continue;
             }
 
-            noResult = movesBitmapVersion(board, i, chessPieceType, depth, maximizingPlayer, start, finalResult, maxEval);
+            noResult = movesBitmapVersion(board, k, chessPieceType, depth, maximizingPlayer, start, finalResult, maxEval);
+        }
+
+        if (noResult) {
+            return evaluate(board);
         }
 
         int eval = evaluate(board);
