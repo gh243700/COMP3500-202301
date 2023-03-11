@@ -33,7 +33,7 @@ public class Player extends PlayerBase {
 
         this.depth = 2;
         Move[] finalResult = new Move[1];
-        int bestEvaluation = minimax(board, depth, isWhite(), start, finalResult, -1, - 1);
+        int bestEvaluation = minimax(board, depth, true, isWhite(), start, finalResult);
         Move bestMove = finalResult[0];
 
         //this.depth = 2;
@@ -46,10 +46,10 @@ public class Player extends PlayerBase {
         //}
 
         this.depth = bak;
-        int tempEvaluation = minimax(board, depth, isWhite(), start, finalResult, -1, -1);
+        int tempEvaluation = minimax(board, depth, true, isWhite(), start, finalResult);
         Move tempMove = finalResult[0];
 
-        if (isWhite() ? bestEvaluation <= tempEvaluation : bestEvaluation >= tempEvaluation) {
+        if (bestEvaluation <= tempEvaluation) {
             bestMove = tempMove;
         }
 
@@ -71,9 +71,9 @@ public class Player extends PlayerBase {
         return getNextMove(board);
     }
 
-    public int minimax(char[][] board, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int a, int b) {
+    public int minimax(char[][] board, int depth, boolean maximizingPlayer, boolean isWhite, long start, Move[] finalResult) {
         long end = System.nanoTime();
-        long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
+        long duration = 1;//TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
         if (depth == 0 || duration >= getMaxMoveTimeMilliseconds() * 8 / 10 || GameOver(board)) {
             return evaluate(board);
@@ -83,14 +83,14 @@ public class Player extends PlayerBase {
 
         boolean noResult = false;
         for (int i = 0; i < 64; ++i) {
-            int k = (isWhite()) ? i : 64 - 1 - i;
+            int k = i;
             ChessPieceType chessPieceType = getChessPieceType(board[k / 8][k % 8]);
 
-            if (maximizingPlayer && Color.chessPieceColor(chessPieceType) == Color.BLACK || !maximizingPlayer && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
+            if (isWhite && Color.chessPieceColor(chessPieceType) == Color.BLACK || !isWhite && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
                 continue;
             }
 
-            noResult = movesBitmapVersion(board, k, chessPieceType, depth, maximizingPlayer, start, finalResult, maxEval, a, b);
+            noResult = movesBitmapVersion(board, k, chessPieceType, depth, maximizingPlayer, isWhite, start, finalResult, maxEval);
         }
 
         if (noResult) {
@@ -105,7 +105,7 @@ public class Player extends PlayerBase {
         return maxEval[0];
     }
 
-    public boolean movesBitmapVersion(char[][] board, final int offset, final ChessPieceType chessPieceType, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval, int a, int b) {
+    public boolean movesBitmapVersion(char[][] board, final int offset, final ChessPieceType chessPieceType, int depth, boolean maximizingPlayer, boolean isWhite, long start, Move[] finalResult, int[] maxEval) {
 
         boolean isTopDepth = this.depth == depth;
         byte[] moveOffset = null;
@@ -140,8 +140,8 @@ public class Player extends PlayerBase {
                 break;
             case BLACK_PAWN:
             case WHITE_PAWN:
-                boolean noMove = pawnMovesBitmapVersion(board, offset, depth, maximizingPlayer, start, finalResult, maxEval, a, b);
-                boolean noAttack = pawnAttacksBitmapVersion(board, offset, depth, maximizingPlayer, start, finalResult, maxEval, a, b);
+                boolean noMove = pawnMovesBitmapVersion(board, offset, depth, maximizingPlayer, isWhite, start, finalResult, maxEval);
+                boolean noAttack = pawnAttacksBitmapVersion(board, offset, depth, maximizingPlayer, isWhite, start, finalResult, maxEval);
                 return noMove || noAttack;
             default:
                 assert (false);
@@ -162,15 +162,8 @@ public class Player extends PlayerBase {
                 ChessPieceType c1 = getChessPieceType(board, offsetAfterMove);
                 Color c1Color = Color.chessPieceColor(c1);
 
-                if (maximizingPlayer && c1Color == Color.WHITE || !maximizingPlayer && c1Color == Color.BLACK) {
+                if (isWhite && c1Color == Color.WHITE || !isWhite && c1Color == Color.BLACK) {
                     break;
-                }
-
-                if (maximizingPlayer ? a == offsetAfterMove : b == offsetAfterMove) {
-                    if (loopOnce) {
-                        break;
-                    }
-                    continue;
                 }
 
                 Move move = null;
@@ -188,7 +181,7 @@ public class Player extends PlayerBase {
                 board[offset / 8][offset % 8] = 0;
                 board[offsetAfterMove / 8][offsetAfterMove % 8] = t1;
 
-                int currentEval = minimax(board, depth - 1, maximizingPlayer ? false : true, start, finalResult, (maximizingPlayer) ? offsetAfterMove : a, (maximizingPlayer) ? b : offsetAfterMove);
+                int currentEval = minimax(board, depth - 1, !maximizingPlayer, !isWhite, start, finalResult);
 
                 // undo move
                 board[offset / 8][offset % 8] = t1;
@@ -210,15 +203,15 @@ public class Player extends PlayerBase {
         return hasNoResult;
     }
 
-    private boolean pawnMovesBitmapVersion(char[][] board, final int offset, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval, int a, int b) {
+    private boolean pawnMovesBitmapVersion(char[][] board, final int offset, int depth, boolean maximizingPlayer, boolean isWhite, long start, Move[] finalResult, int[] maxEval) {
         boolean isTopDepth = this.depth == depth;
 
         boolean hasNoResult = true;
         for (int i = 0; i < PAWN_MOVE_OFFSET.length; ++i) {
-            int offsetAfterMove = offset + (maximizingPlayer ? -1 : 1) * PAWN_MOVE_OFFSET[i];
+            int offsetAfterMove = offset + (isWhite ? -1 : 1) * PAWN_MOVE_OFFSET[i];
             int y = offset / 8;
 
-            if ((i == 1 && y != (maximizingPlayer ? 6 : 1)) || offsetAfterMove < 0 || offsetAfterMove >= 64 || Color.chessPieceColor(getChessPieceType(board, offsetAfterMove)) != Color.NONE) {
+            if ((i == 1 && y != (isWhite ? 6 : 1)) || offsetAfterMove < 0 || offsetAfterMove >= 64 || Color.chessPieceColor(getChessPieceType(board, offsetAfterMove)) != Color.NONE) {
                 break;
             }
 
@@ -235,7 +228,7 @@ public class Player extends PlayerBase {
             board[offset / 8][offset % 8] = 0;
             board[offsetAfterMove / 8][offsetAfterMove % 8] = t1;
 
-            int currentEval = minimax(board, depth - 1, maximizingPlayer ? false : true, start, finalResult, a, b);
+            int currentEval = minimax(board, depth - 1, !maximizingPlayer, !isWhite, start, finalResult);
 
             // undo move
             board[offset / 8][offset % 8] = t1;
@@ -253,21 +246,21 @@ public class Player extends PlayerBase {
         return hasNoResult;
     }
 
-    private boolean pawnAttacksBitmapVersion(char[][] board, final int offset, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval, int a, int b) {
+    private boolean pawnAttacksBitmapVersion(char[][] board, final int offset, int depth, boolean maximizingPlayer, boolean isWhite,long start, Move[] finalResult, int[] maxEval) {
         boolean isTopDepth = this.depth == depth;
         boolean hasNoResult = true;
 
         for (int i = 0; i < PAWN_ATTACK_OFFSET.length; ++i) {
             int x = 8 * (7 - offset % 8) + offset / 8;
-            x += (maximizingPlayer ? -1 : 1) * PAWN_ATTACK_BOUND_X[i] * 8;
-            int offsetAfterMove = offset + (maximizingPlayer ? -1 : 1) * PAWN_ATTACK_OFFSET[i];
+            x += (isWhite ? -1 : 1) * PAWN_ATTACK_BOUND_X[i] * 8;
+            int offsetAfterMove = offset + (isWhite ? -1 : 1) * PAWN_ATTACK_OFFSET[i];
 
             if (offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
                 continue;
             }
 
             ChessPieceType c1 = getChessPieceType(board, offsetAfterMove);
-            if (Color.chessPieceColor(c1) != ((maximizingPlayer) ? Color.BLACK : Color.WHITE)) {
+            if (Color.chessPieceColor(c1) != ((isWhite) ? Color.BLACK : Color.WHITE)) {
                 continue;
             }
 
@@ -284,7 +277,7 @@ public class Player extends PlayerBase {
             board[offset / 8][offset % 8] = 0;
             board[offsetAfterMove / 8][offsetAfterMove % 8] = t1;
 
-            int currentEval = minimax(board, depth - 1, maximizingPlayer ? false : true, start, finalResult, a, b);
+            int currentEval = minimax(board, depth - 1, !maximizingPlayer, !isWhite, start, finalResult);
 
             // undo move
             board[offset / 8][offset % 8] = t1;
@@ -335,7 +328,7 @@ public class Player extends PlayerBase {
             }
         }
 
-        return whiteScore - blackScore;
+        return isWhite() ? whiteScore - blackScore : blackScore - whiteScore;
     }
 
     public ChessPieceType getChessPieceType(char c) {
