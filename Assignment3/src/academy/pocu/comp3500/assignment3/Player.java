@@ -3,6 +3,7 @@ package academy.pocu.comp3500.assignment3;
 import academy.pocu.comp3500.assignment3.chess.Move;
 import academy.pocu.comp3500.assignment3.chess.PlayerBase;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Player extends PlayerBase {
@@ -20,6 +21,27 @@ public class Player extends PlayerBase {
     private final static byte[] KNIGHT_MOVE_BOUND_X = {-2, 2, -1, 1, 2, -2, 1, -1};
     private int depth;
 
+    ArrayList<ChessPiece> whitePiecesIndex = new ArrayList<>();
+    ArrayList<ChessPiece> blackPiecesIndex = new ArrayList<>();
+
+    public void init(char[][] board) {
+
+        whitePiecesIndex.clear();
+        blackPiecesIndex.clear();
+        for (int i = 0; i < 64; ++i) {
+            char c = board[i / 8][i % 8];
+            if (c == 0) {
+                continue;
+            }
+
+            if (Character.isLowerCase(c)) {
+                whitePiecesIndex.add(new ChessPiece(i));
+            } else {
+                blackPiecesIndex.add(new ChessPiece(i));
+            }
+        }
+    }
+
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
         depth = 4;
@@ -28,6 +50,7 @@ public class Player extends PlayerBase {
     @Override
     public Move getNextMove(char[][] board) {
         long start = System.nanoTime();
+        init(board);
 
         int bak = this.depth;
 
@@ -56,11 +79,11 @@ public class Player extends PlayerBase {
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        //if (duration >= getMaxMoveTimeMilliseconds()) {
-         //   --depth;
-        //} else {
-        //    ++depth;
-        //}
+        if (duration >= getMaxMoveTimeMilliseconds()) {
+            --depth;
+        } else {
+            ++depth;
+        }
 
 
         return bestMove;
@@ -82,14 +105,21 @@ public class Player extends PlayerBase {
         int[] maxEval = {(maximizingPlayer) ? Integer.MIN_VALUE + 1 : Integer.MAX_VALUE};
 
         boolean noResult = false;
-        for (int i = 0; i < 64; ++i) {
-            ChessPieceType chessPieceType = getChessPieceType(board[i / 8][i % 8]);
+        for (int i = 0; i < (maximizingPlayer ? whitePiecesIndex.size() : blackPiecesIndex.size()); ++i) {
+            ChessPiece chessPiece = (maximizingPlayer ? whitePiecesIndex.get(i) : blackPiecesIndex.get(i));
+
+            if (chessPiece.isDisabled()) {
+                continue;
+            }
+
+            int offset = chessPiece.getOffset();
+            ChessPieceType chessPieceType = getChessPieceType(board[offset / 8][offset % 8]);
 
             if (maximizingPlayer && Color.chessPieceColor(chessPieceType) == Color.BLACK || !maximizingPlayer && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
                 continue;
             }
 
-            noResult = movesBitmapVersion(board, i, chessPieceType, depth, maximizingPlayer, start, finalResult, maxEval);
+            noResult = movesBitmapVersion(board, chessPiece, chessPieceType, depth, maximizingPlayer, start, finalResult, maxEval);
         }
 
         if (noResult) {
@@ -99,7 +129,7 @@ public class Player extends PlayerBase {
         return maxEval[0];
     }
 
-    public boolean movesBitmapVersion(char[][] board, final int offset, final ChessPieceType chessPieceType, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval) {
+    public boolean movesBitmapVersion(char[][] board, final ChessPiece movingChessPiece, final ChessPieceType chessPieceType, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval) {
 
         boolean isTopDepth = this.depth == depth;
         byte[] moveOffset = null;
@@ -134,8 +164,8 @@ public class Player extends PlayerBase {
                 break;
             case BLACK_PAWN:
             case WHITE_PAWN:
-                boolean noMove = pawnMovesBitmapVersion(board, offset, depth, maximizingPlayer, start, finalResult, maxEval);
-                boolean noAttack = pawnAttacksBitmapVersion(board, offset, depth, maximizingPlayer, start, finalResult, maxEval);
+                boolean noMove = pawnMovesBitmapVersion(board, movingChessPiece, depth, maximizingPlayer, start, finalResult, maxEval);
+                boolean noAttack = pawnAttacksBitmapVersion(board, movingChessPiece, depth, maximizingPlayer, start, finalResult, maxEval);
                 return noMove || noAttack;
             default:
                 assert (false);
@@ -143,7 +173,7 @@ public class Player extends PlayerBase {
         }
 
         for (int i = 0; i < moveOffset.length; ++i) {
-            int offsetAfterMove = offset;
+            int offsetAfterMove = movingChessPiece.getOffset();
             while (true) {
                 int x = 8 * (7 - offsetAfterMove % 8) + offsetAfterMove / 8;
                 x += -1 * boundX[i] * 8;
@@ -153,6 +183,7 @@ public class Player extends PlayerBase {
                     break;
                 }
 
+                int offset = movingChessPiece.getOffset();
                 ChessPieceType c1 = getChessPieceType(board, offsetAfterMove);
                 Color c1Color = Color.chessPieceColor(c1);
 
@@ -174,11 +205,23 @@ public class Player extends PlayerBase {
                 board[offset / 8][offset % 8] = 0;
                 board[offsetAfterMove / 8][offsetAfterMove % 8] = t1;
 
+                movingChessPiece.setOffset(offsetAfterMove);
+                ChessPiece otherOrNull = getChessPieceOrNull(board, !maximizingPlayer, offsetAfterMove, t2);
+                if (otherOrNull != null) {
+                    otherOrNull.setDisabled(true);
+                }
+
+
                 int currentEval = minimax(board, depth - 1, maximizingPlayer ? false : true, start, finalResult);
 
                 // undo move
                 board[offset / 8][offset % 8] = t1;
                 board[offsetAfterMove / 8][offsetAfterMove % 8] = t2;
+
+                movingChessPiece.setOffset(offset);
+                if (otherOrNull != null) {
+                    otherOrNull.setDisabled(false);
+                }
 
                 if (maximizingPlayer ? currentEval > maxEval[0] : currentEval < maxEval[0]) {
                     maxEval[0] = currentEval;
@@ -196,9 +239,10 @@ public class Player extends PlayerBase {
         return hasNoResult;
     }
 
-    private boolean pawnMovesBitmapVersion(char[][] board, final int offset, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval) {
+    private boolean pawnMovesBitmapVersion(char[][] board, final ChessPiece movingChessPiece, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval) {
         boolean isTopDepth = this.depth == depth;
 
+        int offset = movingChessPiece.getOffset();
         boolean hasNoResult = true;
         for (int i = 0; i < PAWN_MOVE_OFFSET.length; ++i) {
             int offsetAfterMove = offset + (maximizingPlayer ? -1 : 1) * PAWN_MOVE_OFFSET[i];
@@ -220,12 +264,15 @@ public class Player extends PlayerBase {
 
             board[offset / 8][offset % 8] = 0;
             board[offsetAfterMove / 8][offsetAfterMove % 8] = t1;
+            movingChessPiece.setOffset(offsetAfterMove);
 
             int currentEval = minimax(board, depth - 1, maximizingPlayer ? false : true, start, finalResult);
 
             // undo move
             board[offset / 8][offset % 8] = t1;
             board[offsetAfterMove / 8][offsetAfterMove % 8] = t2;
+            movingChessPiece.setOffset(offset);
+
 
             if (maximizingPlayer ? currentEval > maxEval[0] : currentEval < maxEval[0]) {
                 maxEval[0] = currentEval;
@@ -239,9 +286,10 @@ public class Player extends PlayerBase {
         return hasNoResult;
     }
 
-    private boolean pawnAttacksBitmapVersion(char[][] board, final int offset, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval) {
+    private boolean pawnAttacksBitmapVersion(char[][] board, final ChessPiece movingChessPiece, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval) {
         boolean isTopDepth = this.depth == depth;
         boolean hasNoResult = true;
+        int offset = movingChessPiece.getOffset();
 
         for (int i = 0; i < PAWN_ATTACK_OFFSET.length; ++i) {
             int x = 8 * (7 - offset % 8) + offset / 8;
@@ -270,11 +318,23 @@ public class Player extends PlayerBase {
             board[offset / 8][offset % 8] = 0;
             board[offsetAfterMove / 8][offsetAfterMove % 8] = t1;
 
+            movingChessPiece.setOffset(offsetAfterMove);
+            ChessPiece otherOrNull = getChessPieceOrNull(board,!maximizingPlayer, offsetAfterMove, t2);
+            if (otherOrNull != null) {
+                otherOrNull.setDisabled(true);
+                ;
+            }
+
             int currentEval = minimax(board, depth - 1, maximizingPlayer ? false : true, start, finalResult);
 
             // undo move
             board[offset / 8][offset % 8] = t1;
             board[offsetAfterMove / 8][offsetAfterMove % 8] = t2;
+            movingChessPiece.setOffset(offset);
+
+            if (otherOrNull != null) {
+                otherOrNull.setDisabled(false);
+            }
 
             if (maximizingPlayer ? currentEval > maxEval[0] : currentEval < maxEval[0]) {
                 maxEval[0] = currentEval;
@@ -296,13 +356,22 @@ public class Player extends PlayerBase {
         int white = 0;
         int black = 0;
 
-        for (int i = 0; i < 64; ++i) {
-            if (Color.chessPieceColor(getChessPieceType(board, i)) == Color.WHITE) {
-                white++;
+        for (int i = 0; i < whitePiecesIndex.size(); ++i) {
+            ChessPiece chessPiece = whitePiecesIndex.get(i);
+            if (chessPiece.isDisabled()) {
+                continue;
             }
-            if (Color.chessPieceColor(getChessPieceType(board, i)) == Color.BLACK) {
-                black++;
+
+            white++;
+        }
+
+        for (int i = 0; i < blackPiecesIndex.size(); ++i) {
+            ChessPiece chessPiece = blackPiecesIndex.get(i);
+            if (chessPiece.isDisabled()) {
+                continue;
             }
+
+            black++;
         }
 
         return white == 0 || black == 0;
@@ -311,6 +380,8 @@ public class Player extends PlayerBase {
     public int evaluate(char[][] board) {
         int whiteScore = 0;
         int blackScore = 0;
+
+
 
         for (int i = 0; i < 64; ++i) {
             if (Color.chessPieceColor(getChessPieceType(board, i)) == Color.BLACK) {
@@ -321,7 +392,44 @@ public class Player extends PlayerBase {
             }
         }
 
+
+
+/*
+        for (int i = 0; i < whitePiecesIndex.size(); ++i) {
+            ChessPiece chessPiece = whitePiecesIndex.get(i);
+            if (chessPiece.isDisabled()) {
+                continue;
+            }
+
+            whiteScore += VALUES[getChessPieceType(board, chessPiece.getOffset()).ordinal()];
+        }
+        for (int i = 0; i < blackPiecesIndex.size(); ++i) {
+            ChessPiece chessPiece = blackPiecesIndex.get(i);
+            if (chessPiece.isDisabled()) {
+                continue;
+            }
+
+            blackScore += VALUES[getChessPieceType(board, chessPiece.getOffset()).ordinal()];
+        }
+
+ */
+
         return whiteScore - blackScore;
+    }
+
+    public ChessPiece getChessPieceOrNull(char[][] board, boolean isWhite, int offset, char c) {
+        ChessPiece result = null;
+
+
+        for (int i = 0; i < (isWhite ? whitePiecesIndex.size() : blackPiecesIndex.size()); ++i) {
+            ChessPiece chessPiece = (isWhite ? whitePiecesIndex.get(i) : blackPiecesIndex.get(i));
+            if (chessPiece.getOffset() == offset && board[offset / 8][offset % 8] == c) {
+                result = chessPiece;
+                break;
+            }
+        }
+
+        return result;
     }
 
     public ChessPieceType getChessPieceType(char c) {
