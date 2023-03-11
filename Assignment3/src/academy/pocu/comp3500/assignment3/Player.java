@@ -83,7 +83,7 @@ public class Player extends PlayerBase {
 
         boolean noResult = false;
         for (int i = 0; i < 64; ++i) {
-            int index = isWhite() ? i : 64 - 1 - i;
+            int index = maximizingPlayer ? i : 64 - 1 - i;
             ChessPieceType chessPieceType = getChessPieceType(board[index / 8][index % 8]);
 
             if (maximizingPlayer && Color.chessPieceColor(chessPieceType) == Color.BLACK || !maximizingPlayer && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
