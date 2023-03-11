@@ -113,9 +113,9 @@ public class Player extends PlayerBase {
         int[] maxEval = {(maximizingPlayer) ? Integer.MIN_VALUE + 1 : Integer.MAX_VALUE};
 
         boolean noResult = false;
-        int count = 0;
+        //int count = 0;
         for (int i = 0; i < 64; ++i) {
-            int index = isWhite ? 64 - 1 - i : i;
+            int index = isWhite ? i : 64 - 1 - i;
             ChessPieceType chessPieceType = getChessPieceType(board[index / 8][index % 8]);
 
             if (isWhite && Color.chessPieceColor(chessPieceType) == Color.BLACK || !isWhite && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
@@ -123,7 +123,7 @@ public class Player extends PlayerBase {
             }
 
             noResult = movesBitmapVersion(board, index, chessPieceType, depth, maximizingPlayer, isWhite, start, finalResult, maxEval, values);
-            ++count;
+            //++count;
         }
 
         if (noResult) {
