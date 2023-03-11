@@ -22,7 +22,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 4;
+        depth = 5;
     }
 
     @Override
@@ -90,10 +90,6 @@ public class Player extends PlayerBase {
             }
 
             noResult = movesBitmapVersion(board, i, chessPieceType, depth, maximizingPlayer, start, finalResult, maxEval);
-        }
-
-        if (noResult) {
-            return evaluate(board);
         }
 
         return maxEval[0];
