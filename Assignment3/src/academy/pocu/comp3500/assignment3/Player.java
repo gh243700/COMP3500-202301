@@ -92,6 +92,11 @@ public class Player extends PlayerBase {
             noResult = movesBitmapVersion(board, i, chessPieceType, depth, maximizingPlayer, start, finalResult, maxEval);
         }
 
+        int eval = evaluate(board);
+        if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
+            maxEval[0] = eval;
+        }
+
         return maxEval[0];
     }
 
