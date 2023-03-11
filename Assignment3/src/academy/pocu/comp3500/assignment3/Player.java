@@ -29,12 +29,11 @@ public class Player extends PlayerBase {
     public Move getNextMove(char[][] board) {
         long start = System.nanoTime();
 
-        int bak = this.depth;
-
-        this.depth = 2;
+        //int bak = this.depth;
+        //this.depth = 2;
         Move[] finalResult = new Move[1];
-        int bestEvaluation = minimax(board, depth, isWhite(), start, finalResult);
-        Move bestMove = finalResult[0];
+        //int bestEvaluation = minimax(board, depth, isWhite(), start, finalResult);
+        //Move bestMove = finalResult[0];
 
         //this.depth = 2;
         //int tempEvaluation = minimax(board, depth, isWhite(), start, finalResult);
@@ -45,13 +44,13 @@ public class Player extends PlayerBase {
         //    bestMove = tempMove;
         //}
 
-        this.depth = bak;
-        int tempEvaluation = minimax(board, depth, isWhite(), start, finalResult);
-        Move tempMove = finalResult[0];
+        //this.depth = bak;
+        int bestEvaluation = minimax(board, depth, isWhite(), start, finalResult);
+        Move bestMove = finalResult[0];
 
-        if (isWhite() ? bestEvaluation < tempEvaluation : bestEvaluation > tempEvaluation) {
-            bestMove = tempMove;
-        }
+        //if (isWhite() ? bestEvaluation < tempEvaluation : bestEvaluation > tempEvaluation) {
+        //    bestMove = tempMove;
+        //}
 
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
@@ -95,6 +94,11 @@ public class Player extends PlayerBase {
 
         if (noResult) {
             return evaluate(board);
+        }
+
+        int eval = evaluate(board);
+        if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
+            maxEval[0] = eval;
         }
 
         return maxEval[0];
