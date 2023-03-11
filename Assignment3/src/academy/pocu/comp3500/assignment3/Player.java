@@ -36,7 +36,7 @@ public class Player extends PlayerBase {
         int bestEvaluation = minimax(board, depth, isWhite(), start, finalResult);
         Move bestMove = finalResult[0];
 
-        this.depth = 2;
+        this.depth = bak;
         int tempEvaluation = minimax(board, depth, isWhite(), start, finalResult);
         Move tempMove = finalResult[0];
 
@@ -56,11 +56,11 @@ public class Player extends PlayerBase {
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        //if (duration >= getMaxMoveTimeMilliseconds()) {
-         //   --depth;
-        //} else {
-        //    ++depth;
-        //}
+        if (duration >= getMaxMoveTimeMilliseconds()) {
+            --depth;
+        } else {
+            ++depth;
+        }
 
 
         return bestMove;
