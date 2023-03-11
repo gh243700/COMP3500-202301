@@ -36,7 +36,7 @@ public class Player extends PlayerBase {
         int bestEvaluation = minimax(board, depth, isWhite(), start, finalResult);
         Move bestMove = finalResult[0];
 
-        this.depth = bak;
+        this.depth = 2;
         int tempEvaluation = minimax(board, depth, isWhite(), start, finalResult);
         Move tempMove = finalResult[0];
 
