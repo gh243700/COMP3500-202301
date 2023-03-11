@@ -31,23 +31,23 @@ public class Player extends PlayerBase {
 
         int bak = this.depth;
 
-        this.depth = 1;
+        this.depth = 2;
         Move[] finalResult = new Move[1];
         int bestEvaluation = minimax(board, depth, isWhite(), start, finalResult);
         Move bestMove = finalResult[0];
 
-        this.depth = 2;
-        int tempEvaluation = minimax(board, depth, isWhite(), start, finalResult);
-        Move tempMove = finalResult[0];
+        //this.depth = 2;
+        //int tempEvaluation = minimax(board, depth, isWhite(), start, finalResult);
+        //Move tempMove = finalResult[0];
 
-        if (isWhite() ? bestEvaluation <= tempEvaluation : bestEvaluation >= tempEvaluation) {
-            bestEvaluation = tempEvaluation;
-            bestMove = tempMove;
-        }
+        //if (isWhite() ? bestEvaluation <= tempEvaluation : bestEvaluation >= tempEvaluation) {
+        //    bestEvaluation = tempEvaluation;
+        //    bestMove = tempMove;
+        //}
 
         this.depth = bak;
-        tempEvaluation = minimax(board, depth, isWhite(), start, finalResult);
-        tempMove = finalResult[0];
+        int tempEvaluation = minimax(board, depth, isWhite(), start, finalResult);
+        Move tempMove = finalResult[0];
 
         if (isWhite() ? bestEvaluation < tempEvaluation : bestEvaluation > tempEvaluation) {
             bestMove = tempMove;
