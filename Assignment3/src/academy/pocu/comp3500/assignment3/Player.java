@@ -23,15 +23,15 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 7;
+        depth = 5;
     }
 
     @Override
     public Move getNextMove(char[][] board) {
         long start = System.nanoTime();
 
-        int bak = this.depth;
-        this.depth = 1;
+        //int bak = this.depth;
+
         Move[] finalResult = new Move[1];
         int bestEvaluation = minimax(board, depth, true, isWhite(), start, finalResult);
         Move bestMove = finalResult[0];
@@ -306,18 +306,23 @@ public class Player extends PlayerBase {
         int white = 0;
         int black = 0;
 
-
-
         for (int i = 0; i < 64; ++i) {
             if (black > 0 && white > 0) {
                 break;
             }
+
+
             if (getChessPieceType(board, i) == ChessPieceType.WHITE_KING) {
+                white++;
+            } else if (Color.chessPieceColor(getChessPieceType(board, i)) == Color.WHITE) {
                 white++;
             }
             if (getChessPieceType(board, i) == ChessPieceType.BLACK_KING) {
                 black++;
+            } else if (Color.chessPieceColor(getChessPieceType(board, i)) == Color.BLACK){
+                black++;
             }
+
         }
 
         return white == 0 || black == 0;
