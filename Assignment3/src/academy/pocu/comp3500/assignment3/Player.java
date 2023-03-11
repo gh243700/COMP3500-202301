@@ -57,7 +57,7 @@ public class Player extends PlayerBase {
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
         if (duration >= getMaxMoveTimeMilliseconds()) {
-            --depth;
+            //--depth;
         } else {
             ++depth;
         }
@@ -83,13 +83,18 @@ public class Player extends PlayerBase {
 
         boolean noResult = false;
         for (int i = 0; i < 64; ++i) {
-            ChessPieceType chessPieceType = getChessPieceType(board[i / 8][i % 8]);
+            int index = isWhite() ? i : 64 - 1 - i;
+            ChessPieceType chessPieceType = getChessPieceType(board[index / 8][index % 8]);
 
             if (maximizingPlayer && Color.chessPieceColor(chessPieceType) == Color.BLACK || !maximizingPlayer && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
                 continue;
             }
 
-            noResult = movesBitmapVersion(board, i, chessPieceType, depth, maximizingPlayer, start, finalResult, maxEval);
+            noResult = movesBitmapVersion(board, index, chessPieceType, depth, maximizingPlayer, start, finalResult, maxEval);
+        }
+
+        if (noResult) {
+            return evaluate(board);
         }
 
         return maxEval[0];
@@ -132,7 +137,7 @@ public class Player extends PlayerBase {
             case WHITE_PAWN:
                 boolean noMove = pawnMovesBitmapVersion(board, offset, depth, maximizingPlayer, start, finalResult, maxEval);
                 boolean noAttack = pawnAttacksBitmapVersion(board, offset, depth, maximizingPlayer, start, finalResult, maxEval);
-                return noMove || noAttack;
+                return noMove && noAttack;
             default:
                 assert (false);
                 break;
