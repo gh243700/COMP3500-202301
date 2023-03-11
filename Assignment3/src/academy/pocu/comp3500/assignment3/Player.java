@@ -73,7 +73,7 @@ public class Player extends PlayerBase {
 
     public int minimax(char[][] board, int depth, boolean maximizingPlayer, boolean isWhite, long start, Move[] finalResult) {
         long end = System.nanoTime();
-        long duration = 1;//TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
+        long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
         if (depth == 0 || duration >= getMaxMoveTimeMilliseconds() * 8 / 10 || GameOver(board)) {
             return evaluate(board);
