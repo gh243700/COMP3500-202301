@@ -62,21 +62,13 @@ public class Player extends PlayerBase {
         int[] values = init(board);
 
         int bak = this.depth;
-        this.depth = 1;
+        this.depth = 2;
         int bestEvaluation = minimax(board, depth, true, isWhite(), start, finalResult, values);
         Move bestMove = finalResult[0];
 
-        this.depth = 2;
+        this.depth = bak;
         int tempEval = minimax(board, depth, true, isWhite(), start, finalResult, values);
         Move tempMove = finalResult[0];
-
-        if (tempEval >= bestEvaluation) {
-            bestMove = tempMove;
-        }
-
-        this.depth = bak;
-        tempEval = minimax(board, depth, true, isWhite(), start, finalResult, values);
-        tempMove = finalResult[0];
 
         if (tempEval > bestEvaluation) {
             bestMove = tempMove;
@@ -130,10 +122,10 @@ public class Player extends PlayerBase {
             return evaluate(values);
         }
 
-        //int eval = evaluate(values);
-        //if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
-        //    maxEval[0] = eval;
-        //}
+        int eval = evaluate(values);
+        if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
+            maxEval[0] = eval;
+        }
 
         return maxEval[0];
     }
