@@ -86,6 +86,7 @@ public class Player extends PlayerBase {
 
         if (duration >= getMaxMoveTimeMilliseconds() * 8 / 10) {
             isTimeOut = true;
+            return evaluate(board);
         }
 
         if (depth == 0 || GameOver(board)) {
