@@ -30,26 +30,28 @@ public class Player extends PlayerBase {
     public Move getNextMove(char[][] board) {
         long start = System.nanoTime();
 
+        int bak = this.depth;
+        this.depth = 1;
         Move[] finalResult = new Move[1];
         int bestEvaluation = minimax(board, depth, true, isWhite(), start, finalResult);
         Move bestMove = finalResult[0];
 
-        //this.depth = 2;
-        //int tempEvaluation = minimax(board, depth, isWhite(), start, finalResult);
-        //Move tempMove = finalResult[0];
+        this.depth = 2;
+        int tempEvaluation = minimax(board, depth, true, isWhite(), start, finalResult);
+        Move tempMove = finalResult[0];
 
-        //if (isWhite() ? bestEvaluation <= tempEvaluation : bestEvaluation >= tempEvaluation) {
-        //    bestEvaluation = tempEvaluation;
-        //    bestMove = tempMove;
-        //}
+        if (bestEvaluation <= tempEvaluation) {
+            bestEvaluation = tempEvaluation;
+            bestMove = tempMove;
+        }
 
-        //this.depth = bak;
-        //int tempEvaluation = minimax(board, depth, true, isWhite(), start, finalResult);
-        //Move tempMove = finalResult[0];
+        this.depth = bak;
+        tempEvaluation = minimax(board, depth, true, isWhite(), start, finalResult);
+        tempMove = finalResult[0];
 
-        //if (bestEvaluation <= tempEvaluation) {
-        //    bestMove = tempMove;
-        //}
+        if (bestEvaluation < tempEvaluation) {
+            bestMove = tempMove;
+        }
 
         if (isTimeOut) {
             --depth;
@@ -84,7 +86,7 @@ public class Player extends PlayerBase {
 
         boolean noResult = false;
         for (int i = 0; i < 64; ++i) {
-            int k = isWhite ? i : 64 - 1 - i;
+            int k = isWhite ? 64 - 1 - i : i;
             ChessPieceType chessPieceType = getChessPieceType(board[k / 8][k % 8]);
 
             if (isWhite && Color.chessPieceColor(chessPieceType) == Color.BLACK || !isWhite && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
@@ -98,10 +100,10 @@ public class Player extends PlayerBase {
             return evaluate(board);
         }
 
-        int eval = evaluate(board);
-        if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
-            maxEval[0] = eval;
-        }
+        //int eval = evaluate(board);
+        //if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
+        //    maxEval[0] = eval;
+        //}
 
         return maxEval[0];
     }
