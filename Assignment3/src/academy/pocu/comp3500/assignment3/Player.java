@@ -30,7 +30,7 @@ public class Player extends PlayerBase {
     public Move getNextMove(char[][] board) {
         long start = System.nanoTime();
 
-        //int bak = this.depth;
+        int bak = this.depth;
 
         Move[] finalResult = new Move[1];
         int bestEvaluation = minimax(board, depth, true, isWhite(), start, finalResult);
