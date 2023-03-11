@@ -122,6 +122,10 @@ public class Player extends PlayerBase {
                 continue;
             }
 
+            //if (count >= (isWhite ? values[2] : values[3])) {
+            //    break;
+            //}
+
             noResult = movesBitmapVersion(board, index, chessPieceType, depth, maximizingPlayer, isWhite, start, finalResult, maxEval, values);
             ++count;
         }
