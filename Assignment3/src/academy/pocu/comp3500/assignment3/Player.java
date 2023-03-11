@@ -49,7 +49,7 @@ public class Player extends PlayerBase {
         tempEvaluation = minimax(board, depth, isWhite(), start, finalResult);
         tempMove = finalResult[0];
 
-        if (isWhite() ? bestEvaluation <= tempEvaluation : bestEvaluation >= tempEvaluation) {
+        if (isWhite() ? bestEvaluation < tempEvaluation : bestEvaluation > tempEvaluation) {
             bestMove = tempMove;
         }
 
