@@ -19,7 +19,6 @@ public class Player extends PlayerBase {
     private final static byte[] KNIGHT_MOVE_OFFSET = {6, 10, 15, 17, -6, -10, -15, -17};
     private final static byte[] KNIGHT_MOVE_BOUND_X = {-2, 2, -1, 1, 2, -2, 1, -1};
     private int depth;
-    private boolean isTimeOut = false;
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
@@ -74,12 +73,13 @@ public class Player extends PlayerBase {
             bestMove = tempMove;
         }
 
+        long end = System.nanoTime();
+        long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        if (isTimeOut) {
-            --depth;
-            isTimeOut = false;
-        } else {
+        if (duration < getMaxMoveTimeMilliseconds() + this.depth * 1 / 10) {
             ++depth;
+        } else {
+            --depth;
         }
 
         return bestMove;
@@ -94,12 +94,7 @@ public class Player extends PlayerBase {
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        if (duration >= getMaxMoveTimeMilliseconds() * 9 / 10) {
-            isTimeOut = true;
-            return evaluate(values);
-        }
-
-        if (depth == 0  || GameOver(values)) {
+        if (depth == 0 || duration >= getMaxMoveTimeMilliseconds() * 9 / 10 || GameOver(values)) {
             return evaluate(values);
         }
 
