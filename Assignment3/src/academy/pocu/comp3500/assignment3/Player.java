@@ -22,7 +22,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 6;
+        depth = 10;
     }
 
     @Override
@@ -56,11 +56,11 @@ public class Player extends PlayerBase {
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        if (duration >= getMaxMoveTimeMilliseconds()) {
-            --depth;
-        } else {
-            ++depth;
-        }
+        //if (duration >= getMaxMoveTimeMilliseconds()) {
+         //   --depth;
+        //} else {
+        //    ++depth;
+        //}
 
 
         return bestMove;
