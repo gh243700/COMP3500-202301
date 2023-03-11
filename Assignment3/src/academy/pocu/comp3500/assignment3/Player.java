@@ -83,7 +83,7 @@ public class Player extends PlayerBase {
 
         boolean noResult = false;
         for (int i = 0; i < 64; ++i) {
-            int k = i;
+            int k = isWhite ? i : 64 - 1 - i;
             ChessPieceType chessPieceType = getChessPieceType(board[k / 8][k % 8]);
 
             if (isWhite && Color.chessPieceColor(chessPieceType) == Color.BLACK || !isWhite && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
@@ -246,7 +246,7 @@ public class Player extends PlayerBase {
         return hasNoResult;
     }
 
-    private boolean pawnAttacksBitmapVersion(char[][] board, final int offset, int depth, boolean maximizingPlayer, boolean isWhite,long start, Move[] finalResult, int[] maxEval) {
+    private boolean pawnAttacksBitmapVersion(char[][] board, final int offset, int depth, boolean maximizingPlayer, boolean isWhite, long start, Move[] finalResult, int[] maxEval) {
         boolean isTopDepth = this.depth == depth;
         boolean hasNoResult = true;
 
