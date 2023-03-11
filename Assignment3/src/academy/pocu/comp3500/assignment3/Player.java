@@ -19,6 +19,7 @@ public class Player extends PlayerBase {
     private final static byte[] KNIGHT_MOVE_OFFSET = {6, 10, 15, 17, -6, -10, -15, -17};
     private final static byte[] KNIGHT_MOVE_BOUND_X = {-2, 2, -1, 1, 2, -2, 1, -1};
     private int depth;
+    private boolean isTimeOut = false;
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
@@ -56,8 +57,9 @@ public class Player extends PlayerBase {
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        if (duration >= getMaxMoveTimeMilliseconds()) {
+        if (isTimeOut) {
             --depth;
+            isTimeOut = false;
         } else {
             ++depth;
         }
@@ -75,7 +77,12 @@ public class Player extends PlayerBase {
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
-        if (depth == 0 || duration >= getMaxMoveTimeMilliseconds() * 8 / 10 || GameOver(board)) {
+        if (duration >= getMaxMoveTimeMilliseconds() * 8 / 10) {
+            isTimeOut = true;
+            return evaluate(board);
+        }
+
+        if (depth == 0 || GameOver(board)) {
             return evaluate(board);
         }
 
