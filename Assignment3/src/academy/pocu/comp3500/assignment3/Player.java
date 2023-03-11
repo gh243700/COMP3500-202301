@@ -284,7 +284,6 @@ public class Player extends PlayerBase {
                     finalResult[0] = move;
                 }
             }
-
         }
 
         return hasNoResult;
@@ -319,7 +318,7 @@ public class Player extends PlayerBase {
             char t2 = board[offsetAfterMove / 8][offsetAfterMove % 8];
 
             if (t2 != 0) {
-                if (maximizingPlayer) {
+                if (isWhite) {
                     values[1] -= VALUES[Color.chessPieceColor(getChessPieceType(t2)).ordinal()];
                     --values[3];
                 } else {
@@ -338,7 +337,7 @@ public class Player extends PlayerBase {
             board[offsetAfterMove / 8][offsetAfterMove % 8] = t2;
 
             if (t2 != 0) {
-                if (maximizingPlayer) {
+                if (isWhite) {
                     values[1] += VALUES[Color.chessPieceColor(getChessPieceType(t2)).ordinal()];
                     ++values[3];
                 } else {
