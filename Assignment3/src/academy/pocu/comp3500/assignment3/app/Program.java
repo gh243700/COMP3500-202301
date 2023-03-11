@@ -56,16 +56,16 @@ public class Program {
         {
             // player dodges
             char[][] board = {
-                    {0, 0, 0, 0, 'K', 0, 0, 0},
+                    {0, 0, 0, 0, 'k', 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 'R', 0, 0, 0, 0, 0, 0},
+                    {0, 'r', 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 'R', 0},
-                    {'k', 0, 0, 0, 0, 'Q', 0, 0},
+                    {0, 0, 0, 0, 0, 0, 'r', 0},
+                    {'K', 0, 0, 0, 0, 'q', 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 0},
             };
-            Player player = new Player(true, 10000);
+            Player player = new Player(false, 10000);
 
             Move move = player.getNextMove(board);
 
