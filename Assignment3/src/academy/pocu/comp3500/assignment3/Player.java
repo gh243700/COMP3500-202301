@@ -298,8 +298,13 @@ public class Player extends PlayerBase {
         int black = 0;
 
         for (int i = 0; i < 64; ++i) {
+            if (white > 0 && black > 0) {
+                return false;
+            }
+
             if (Color.chessPieceColor(getChessPieceType(board, i)) == Color.WHITE) {
                 white++;
+
             }
             if (Color.chessPieceColor(getChessPieceType(board, i)) == Color.BLACK) {
                 black++;
