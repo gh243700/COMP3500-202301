@@ -33,7 +33,7 @@ public class Player extends PlayerBase {
 
         this.depth = 2;
         Move[] finalResult = new Move[1];
-        int bestEvaluation = minimax(board, depth, isWhite(), start, finalResult);
+        int bestEvaluation = minimax(board, depth, isWhite(), start, finalResult, -1, - 1);
         Move bestMove = finalResult[0];
 
         //this.depth = 2;
@@ -46,10 +46,10 @@ public class Player extends PlayerBase {
         //}
 
         this.depth = bak;
-        int tempEvaluation = minimax(board, depth, isWhite(), start, finalResult);
+        int tempEvaluation = minimax(board, depth, isWhite(), start, finalResult, -1, -1);
         Move tempMove = finalResult[0];
 
-        if (isWhite() ? bestEvaluation < tempEvaluation : bestEvaluation > tempEvaluation) {
+        if (isWhite() ? bestEvaluation <= tempEvaluation : bestEvaluation >= tempEvaluation) {
             bestMove = tempMove;
         }
 
@@ -71,7 +71,7 @@ public class Player extends PlayerBase {
         return getNextMove(board);
     }
 
-    public int minimax(char[][] board, int depth, boolean maximizingPlayer, long start, Move[] finalResult) {
+    public int minimax(char[][] board, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int a, int b) {
         long end = System.nanoTime();
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
@@ -90,22 +90,22 @@ public class Player extends PlayerBase {
                 continue;
             }
 
-            noResult = movesBitmapVersion(board, k, chessPieceType, depth, maximizingPlayer, start, finalResult, maxEval);
+            noResult = movesBitmapVersion(board, k, chessPieceType, depth, maximizingPlayer, start, finalResult, maxEval, a, b);
         }
 
         if (noResult) {
             return evaluate(board);
         }
 
-        int eval = evaluate(board);
-        if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
-            maxEval[0] = eval;
-        }
+        //int eval = evaluate(board);
+        //if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
+        //    maxEval[0] = eval;
+        //}
 
         return maxEval[0];
     }
 
-    public boolean movesBitmapVersion(char[][] board, final int offset, final ChessPieceType chessPieceType, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval) {
+    public boolean movesBitmapVersion(char[][] board, final int offset, final ChessPieceType chessPieceType, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval, int a, int b) {
 
         boolean isTopDepth = this.depth == depth;
         byte[] moveOffset = null;
@@ -140,8 +140,8 @@ public class Player extends PlayerBase {
                 break;
             case BLACK_PAWN:
             case WHITE_PAWN:
-                boolean noMove = pawnMovesBitmapVersion(board, offset, depth, maximizingPlayer, start, finalResult, maxEval);
-                boolean noAttack = pawnAttacksBitmapVersion(board, offset, depth, maximizingPlayer, start, finalResult, maxEval);
+                boolean noMove = pawnMovesBitmapVersion(board, offset, depth, maximizingPlayer, start, finalResult, maxEval, a, b);
+                boolean noAttack = pawnAttacksBitmapVersion(board, offset, depth, maximizingPlayer, start, finalResult, maxEval, a, b);
                 return noMove || noAttack;
             default:
                 assert (false);
@@ -166,9 +166,17 @@ public class Player extends PlayerBase {
                     break;
                 }
 
-                Move move = null;
+                if (maximizingPlayer ? a == offsetAfterMove : b == offsetAfterMove) {
+                    if (loopOnce) {
+                        break;
+                    }
+                    continue;
+                }
 
+                Move move = null;
                 hasNoResult = false;
+
+
                 if (isTopDepth) {
                     move = new Move(offset % 8, offset / 8, offsetAfterMove % 8, offsetAfterMove / 8);
                 }
@@ -180,7 +188,7 @@ public class Player extends PlayerBase {
                 board[offset / 8][offset % 8] = 0;
                 board[offsetAfterMove / 8][offsetAfterMove % 8] = t1;
 
-                int currentEval = minimax(board, depth - 1, maximizingPlayer ? false : true, start, finalResult);
+                int currentEval = minimax(board, depth - 1, maximizingPlayer ? false : true, start, finalResult, (maximizingPlayer) ? offsetAfterMove : a, (maximizingPlayer) ? b : offsetAfterMove);
 
                 // undo move
                 board[offset / 8][offset % 8] = t1;
@@ -202,7 +210,7 @@ public class Player extends PlayerBase {
         return hasNoResult;
     }
 
-    private boolean pawnMovesBitmapVersion(char[][] board, final int offset, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval) {
+    private boolean pawnMovesBitmapVersion(char[][] board, final int offset, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval, int a, int b) {
         boolean isTopDepth = this.depth == depth;
 
         boolean hasNoResult = true;
@@ -227,7 +235,7 @@ public class Player extends PlayerBase {
             board[offset / 8][offset % 8] = 0;
             board[offsetAfterMove / 8][offsetAfterMove % 8] = t1;
 
-            int currentEval = minimax(board, depth - 1, maximizingPlayer ? false : true, start, finalResult);
+            int currentEval = minimax(board, depth - 1, maximizingPlayer ? false : true, start, finalResult, a, b);
 
             // undo move
             board[offset / 8][offset % 8] = t1;
@@ -245,7 +253,7 @@ public class Player extends PlayerBase {
         return hasNoResult;
     }
 
-    private boolean pawnAttacksBitmapVersion(char[][] board, final int offset, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval) {
+    private boolean pawnAttacksBitmapVersion(char[][] board, final int offset, int depth, boolean maximizingPlayer, long start, Move[] finalResult, int[] maxEval, int a, int b) {
         boolean isTopDepth = this.depth == depth;
         boolean hasNoResult = true;
 
@@ -276,7 +284,7 @@ public class Player extends PlayerBase {
             board[offset / 8][offset % 8] = 0;
             board[offsetAfterMove / 8][offsetAfterMove % 8] = t1;
 
-            int currentEval = minimax(board, depth - 1, maximizingPlayer ? false : true, start, finalResult);
+            int currentEval = minimax(board, depth - 1, maximizingPlayer ? false : true, start, finalResult, a, b);
 
             // undo move
             board[offset / 8][offset % 8] = t1;
