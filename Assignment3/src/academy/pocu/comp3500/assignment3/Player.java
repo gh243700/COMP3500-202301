@@ -23,7 +23,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 5;
+        depth = 7;
     }
 
     @Override
@@ -306,11 +306,16 @@ public class Player extends PlayerBase {
         int white = 0;
         int black = 0;
 
+
+
         for (int i = 0; i < 64; ++i) {
-            if (Color.chessPieceColor(getChessPieceType(board, i)) == Color.WHITE) {
+            if (black > 0 && white > 0) {
+                break;
+            }
+            if (getChessPieceType(board, i) == ChessPieceType.WHITE_KING) {
                 white++;
             }
-            if (Color.chessPieceColor(getChessPieceType(board, i)) == Color.BLACK) {
+            if (getChessPieceType(board, i) == ChessPieceType.BLACK_KING) {
                 black++;
             }
         }
