@@ -40,6 +40,7 @@ public class Player extends PlayerBase {
 
         if (isTimeOut) {
             --this.depth;
+            isTimeOut = false;
         } else {
             ++this.depth;
         }
