@@ -54,19 +54,15 @@ public class Player extends PlayerBase {
         return values;
     }
 
-    public boolean isProtectingOwnPiece(char[][] board, Move move) {
+    public boolean isProtectingOwnPiece(char[][] board, int offset) {
 
         // make move
-        char t1 = board[move.fromY][move.fromX];
-        char t2 = board[move.toY][move.toX];
 
-        board[move.fromY][move.fromX] = 0;
-        board[move.toY][move.toX] = t1;
+        //board[move.fromY][move.fromX] = 0;
+        //board[move.toY][move.toX] = t1;
 
-        boolean isSafe = isSafe(board, move.toY * 8 + move.toX, isWhite() ? false : true);
+        boolean isSafe = isSafe(board, offset, isWhite() ? false : true);
 
-        board[move.fromY][move.fromX] = t1;
-        board[move.toY][move.toX] = t2;
 
         return isSafe;
     }
@@ -79,19 +75,24 @@ public class Player extends PlayerBase {
 
         for (int i = 0; i < 2; ++i) {
             Move move = (i == 0) ? m1 : m2;
+            char c1 = board[move.fromY][move.fromX];
+            char c2 = board[move.toY][move.toX];
+
             ChessPieceType chessPieceType = getChessPieceType(board, move.fromY * 8 + move.fromX);
             int evalSelf = VALUES[chessPieceType.ordinal()];
-            if (isProtectingOwnPiece(board, move)) {
-                bestMove = move;
-            } else {
-                ChessPieceType other = getChessPieceType(board, move.toY * 8 + move.toX);
-                if (other == ChessPieceType.NONE) {
-                    continue;
+            if (isProtectingOwnPiece(board, move.fromY * 8 + move.fromX) == false) {
+                board[move.fromY][move.fromX] = 0;
+                board[move.toY][move.toX] = c1;
+                if (isProtectingOwnPiece(board, move.toY * 8 + move.toX)) {
+                    if (bestEval < evalSelf) {
+                        bestMove = move;
+                        bestEval = evalSelf;
+                    }
                 }
-
-                int eval = VALUES[other.ordinal()];
-                bestMove = move;
-                bestEval = eval;
+                board[move.fromY][move.fromX] = c1;
+                board[move.toY][move.toX] = c2;
+            } else {
+                
             }
         }
 
@@ -108,7 +109,6 @@ public class Player extends PlayerBase {
 
         int bestEvaluation = minimax(board, depth, true, isWhite(), start, finalResult, values, (char) 0);
         Move bestMove = finalResult[0];
-
 
         //if (isTimeOut) {
         //    --depth;
