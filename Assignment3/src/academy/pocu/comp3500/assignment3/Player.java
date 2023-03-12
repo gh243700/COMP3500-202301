@@ -290,6 +290,10 @@ public class Player extends PlayerBase {
                 if (isTopDepth) {
                     finalResult[0] = move;
                 }
+            } else if (maxEval[0] == currentEval) {
+                if (isTopDepth) {
+                    finalResult[0] = prioritizeProtectingOwnPiece(board, finalResult[0], move);
+                }
             }
 
         }
@@ -338,6 +342,10 @@ public class Player extends PlayerBase {
                 maxEval[0] = currentEval;
                 if (isTopDepth) {
                     finalResult[0] = move;
+                }
+            } else if (maxEval[0] == currentEval) {
+                if (isTopDepth) {
+                    finalResult[0] = prioritizeProtectingOwnPiece(board, finalResult[0], move);
                 }
             }
 
