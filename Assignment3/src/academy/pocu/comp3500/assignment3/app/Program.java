@@ -22,7 +22,6 @@ public class Program {
 
     public static void test2() {
 
-/*
         {
             // getNextMove returns a valid move when there is only one piece in board
             char[] symbols = {'k', 'n', 'b', 'r', 'q', 'p'};
@@ -51,8 +50,6 @@ public class Program {
                 }
             }
         }
-
- */
 
 
         {
@@ -248,7 +245,7 @@ public class Program {
             final boolean IS_WHITE_KEYBOARD_PLAYER = false; // true 라면 하얀색 플레이어의 수를 콘솔에 입력해야 함
             final boolean IS_BLACK_KEYBOARD_PLAYER = false; // true 라면 검은색 플레이어의 수를 콘솔에 입력해야 함
 
-            final int MAX_MOVE_TIME_MILLISECONDS = 3000; // Player 가 턴마다 수를 결정하는 데에 주어진 시간
+            final int MAX_MOVE_TIME_MILLISECONDS = 1000; // Player 가 턴마다 수를 결정하는 데에 주어진 시간
             final long AUTO_PLAY_TURN_DURATION_IN_MILLISECONDS = 1000; // Autoplay 중 턴마다 일시중지 되는 기간
 
             PlayerBase whitePlayer;
