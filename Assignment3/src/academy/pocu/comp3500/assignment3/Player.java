@@ -279,10 +279,10 @@ public class Player extends PlayerBase {
                 if (t2 != 0) {
                     if (isWhite) {
                         values[1] -= VALUES[getChessPieceType(t2).ordinal()];
-                        ++values[3];
+                        --values[3];
                     } else {
                         values[0] -= VALUES[getChessPieceType(t2).ordinal()];
-                        ++values[2];
+                        --values[2];
                     }
                 }
 
