@@ -91,8 +91,9 @@ public class Player extends PlayerBase {
                 }
                 board[move.fromY][move.fromX] = c1;
                 board[move.toY][move.toX] = c2;
-            } else {
-                
+            } else if(board[move.toY][move.toX] != 0 && Integer.MAX_VALUE != bestEval){
+                bestMove = move;
+                bestEval = VALUES[getChessPieceType(board[move.toY][move.toX]).ordinal()];
             }
         }
 
