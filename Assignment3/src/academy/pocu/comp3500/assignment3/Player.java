@@ -77,19 +77,12 @@ public class Player extends PlayerBase {
         Move bestMove = m1;
         int bestEval = Integer.MIN_VALUE;
 
-        if (m1 == null) {
-            return m2;
-        }
-
         for (int i = 0; i < 2; ++i) {
             Move move = (i == 0) ? m1 : m2;
             ChessPieceType chessPieceType = getChessPieceType(board, move.fromY * 8 + move.fromX);
             int evalSelf = VALUES[chessPieceType.ordinal()];
             if (isProtectingOwnPiece(board, move)) {
-                if (evalSelf > bestEval) {
-                    bestMove = move;
-                    bestEval = evalSelf;
-                }
+                bestMove = move;
             } else {
                 ChessPieceType other = getChessPieceType(board, move.toY * 8 + move.toX);
                 if (other == ChessPieceType.NONE) {
@@ -172,9 +165,10 @@ public class Player extends PlayerBase {
             return evaluate(values);
         }
 
-        if (maxEval[0] == Integer.MIN_VALUE  + 1 || maxEval[0] == Integer.MAX_VALUE) {
-            System.out.println();
-        }
+        int eval = evaluate(values);
+        //if (maximizingPlayer ? eval > maxEval[0] : eval < maxEval[0]) {
+        //    maxEval[0] = eval;
+        //}
 
         return maxEval[0];
     }
