@@ -147,25 +147,20 @@ public class Player extends PlayerBase {
 
     public int minimax(char[][] board, int depth, boolean maximizingPlayer, boolean isWhite, long start, Move[] finalResult, int[] values, char t2) {
         long end = System.nanoTime();
-        long duration = 1;//TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
+        long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
         if (start != -1 && duration >= getMaxMoveTimeMilliseconds()) {
             isTimeOut = true;
             return evaluate(values);
         }
 
-        if (GameOver(values, t2)) {
-
-            return evaluate(values);
-        }
-
-        if (depth == 0) {
+        if (depth == 0 || GameOver(values, t2)) {
             return evaluate(values);
         }
 
         int[] maxEval = {(maximizingPlayer) ? Integer.MIN_VALUE + 1 : Integer.MAX_VALUE};
 
-        boolean noResult = true;
+        boolean noResult = false;
         int count = 0;
         for (int i = 0; i < 64; ++i) {
             int index = isWhite ? i : 64 - 1 - i;
@@ -176,15 +171,7 @@ public class Player extends PlayerBase {
             }
 
 
-            boolean temp = movesBitmapVersion(board, index, chessPieceType, depth, maximizingPlayer, isWhite, start, finalResult, maxEval, values);
-            if (temp == false) {
-                noResult = false;
-            }
-
-            if (this.depth == depth) {
-                System.out.println(maxEval[0]);
-            }
-
+            noResult = movesBitmapVersion(board, index, chessPieceType, depth, maximizingPlayer, isWhite, start, finalResult, maxEval, values);
             ++count;
         }
 
