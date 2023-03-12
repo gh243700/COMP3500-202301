@@ -22,8 +22,6 @@ public class Program {
 
     public static void test2() {
 
-        /*
-
 
         {
             // getNextMove returns a valid move when there is only one piece in board
@@ -53,7 +51,7 @@ public class Program {
                 }
             }
         }
- */
+
 
         {
             // player dodges
