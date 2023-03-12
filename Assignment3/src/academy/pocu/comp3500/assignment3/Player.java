@@ -90,10 +90,8 @@ public class Player extends PlayerBase {
                 }
 
                 int eval = VALUES[other.ordinal()];
-                if (evalSelf < eval) {
-                    bestMove = move;
-                    bestEval = eval;
-                }
+                bestMove = move;
+                bestEval = eval;
             }
         }
 
