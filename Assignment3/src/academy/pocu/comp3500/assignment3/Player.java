@@ -61,27 +61,27 @@ public class Player extends PlayerBase {
         Move[] finalResult = new Move[1];
         int[] values = init(board);
 
-        int bak = this.depth;
-        this.depth = 1;
+        //int bak = this.depth;
+        //this.depth = 1;
         int bestEvaluation = minimax(board, depth, true, isWhite(), start, finalResult, values, (char)0);
         Move bestMove = finalResult[0];
 
 
-        this.depth = 2;
-        int tempEval = minimax(board, depth, true, isWhite(), start, finalResult, values, (char)0);
-        Move tempMove = finalResult[0];
+        //this.depth = 2;
+        //int tempEval = minimax(board, depth, true, isWhite(), start, finalResult, values, (char)0);
+        //Move tempMove = finalResult[0];
 
-        if (tempEval >= bestEvaluation) {
-            bestMove = tempMove;
-        }
+        //if (tempEval >= bestEvaluation) {
+        //    bestMove = tempMove;
+        //}
 
-        this.depth = bak;
-        tempEval = minimax(board, depth, true, isWhite(), start, finalResult, values, (char)0);
-        tempMove = finalResult[0];
+        //this.depth = bak;
+        //tempEval = minimax(board, depth, true, isWhite(), start, finalResult, values, (char)0);
+        //tempMove = finalResult[0];
 
-        if (tempEval >= bestEvaluation) {
-            bestMove = tempMove;
-        }
+        //if (tempEval >= bestEvaluation) {
+        //    bestMove = tempMove;
+        //}
 
 
         if (isTimeOut) {
