@@ -56,48 +56,75 @@ public class Player extends PlayerBase {
 
     public boolean isProtectingOwnPiece(char[][] board, int offset) {
 
-        // make move
-
-        //board[move.fromY][move.fromX] = 0;
-        //board[move.toY][move.toX] = t1;
-
         boolean isSafe = isSafe(board, offset, isWhite() ? false : true);
-
 
         return isSafe;
     }
 
     // 평가값이 같은 경우 자신의 말을 보호하는 움직임을 우선순위로 결정하는 함수
-    public Move prioritizeProtectingOwnPiece(char[][] board, Move m1, Move m2) {
+    public Move prioritizeProtectingOwnPiece(char[][] board, Move m1, Move m2, int[] values) {
 
-        Move bestMove = m1;
-        int bestEval = Integer.MIN_VALUE;
+        char t1 = board[m1.fromY][m1.fromX];
+        char t2 = board[m1.toY][m1.toX];
 
-        for (int i = 0; i < 2; ++i) {
-            Move move = (i == 0) ? m1 : m2;
-            char c1 = board[move.fromY][move.fromX];
-            char c2 = board[move.toY][move.toX];
-
-            ChessPieceType chessPieceType = getChessPieceType(board, move.fromY * 8 + move.fromX);
-            int evalSelf = VALUES[chessPieceType.ordinal()];
-            if (isProtectingOwnPiece(board, move.fromY * 8 + move.fromX) == false) {
-                board[move.fromY][move.fromX] = 0;
-                board[move.toY][move.toX] = c1;
-                if (isProtectingOwnPiece(board, move.toY * 8 + move.toX)) {
-                    if (bestEval < evalSelf) {
-                        bestMove = move;
-                        bestEval = evalSelf;
-                    }
-                }
-                board[move.fromY][move.fromX] = c1;
-                board[move.toY][move.toX] = c2;
-            } else if(board[move.toY][move.toX] != 0 && Integer.MAX_VALUE != bestEval){
-                bestMove = move;
-                bestEval = VALUES[getChessPieceType(board[move.toY][move.toX]).ordinal()];
+        board[m1.fromY][m1.fromX] = 0;
+        board[m1.toY][m1.toX] = t1;
+        if (t2 != 0) {
+            if (isWhite()) {
+                values[1] -= VALUES[getChessPieceType(t2).ordinal()];
+                --values[3];
+            } else {
+                values[0] -= VALUES[getChessPieceType(t2).ordinal()];
+                --values[2];
             }
         }
 
-        return bestMove;
+        int eval1 = minimax(board, 1, false, (isWhite() ? false : true), Long.MAX_VALUE, new Move[1], values, (char) 0);
+
+        board[m1.fromY][m1.fromX] = t1;
+        board[m1.toY][m1.toX] = t2;
+        if (t2 != 0) {
+            if (isWhite()) {
+                values[1] += VALUES[getChessPieceType(t2).ordinal()];
+                ++values[3];
+            } else {
+                values[0] += VALUES[getChessPieceType(t2).ordinal()];
+                ++values[2];
+            }
+        }
+
+
+        t1 = board[m2.fromY][m2.fromX];
+        t2 = board[m2.toY][m2.toX];
+
+        board[m2.fromY][m2.fromX] = 0;
+        board[m2.toY][m2.toX] = t1;
+        if (t2 != 0) {
+            if (isWhite()) {
+                values[1] -= VALUES[getChessPieceType(t2).ordinal()];
+                --values[3];
+            } else {
+                values[0] -= VALUES[getChessPieceType(t2).ordinal()];
+                --values[2];
+            }
+        }
+
+
+        int eval2 = minimax(board, 1, false, (isWhite() ? false : true), Long.MAX_VALUE, new Move[1], values, (char) 0);
+
+        board[m2.fromY][m2.fromX] = t1;
+        board[m2.toY][m2.toX] = t2;
+        if (t2 != 0) {
+            if (isWhite()) {
+                values[1] += VALUES[getChessPieceType(t2).ordinal()];
+                ++values[3];
+            } else {
+                values[0] += VALUES[getChessPieceType(t2).ordinal()];
+                ++values[2];
+            }
+        }
+
+        return (eval1 > eval2) ? m1 : m2;
     }
 
 
@@ -241,21 +268,24 @@ public class Player extends PlayerBase {
                 }
 
                 // make move
+
+
                 char t1 = board[offset / 8][offset % 8];
                 char t2 = board[offsetAfterMove / 8][offsetAfterMove % 8];
+
+                board[offset / 8][offset % 8] = 0;
+                board[offsetAfterMove / 8][offsetAfterMove % 8] = t1;
 
                 if (t2 != 0) {
                     if (isWhite) {
                         values[1] -= VALUES[getChessPieceType(t2).ordinal()];
-                        --values[3];
+                        ++values[3];
                     } else {
                         values[0] -= VALUES[getChessPieceType(t2).ordinal()];
-                        --values[2];
+                        ++values[2];
                     }
                 }
 
-                board[offset / 8][offset % 8] = 0;
-                board[offsetAfterMove / 8][offsetAfterMove % 8] = t1;
 
                 int currentEval = minimax(board, depth - 1, !maximizingPlayer, !isWhite, start, finalResult, values, t2);
 
@@ -280,7 +310,7 @@ public class Player extends PlayerBase {
                     }
                 } else if (maxEval[0] == currentEval) {
                     if (isTopDepth) {
-                        finalResult[0] = prioritizeProtectingOwnPiece(board, finalResult[0], move);
+                        finalResult[0] = prioritizeProtectingOwnPiece(board, finalResult[0], move, values);
                     }
                 }
 
@@ -329,12 +359,12 @@ public class Player extends PlayerBase {
                 if (isTopDepth) {
                     finalResult[0] = move;
                 }
-            }else if (maxEval[0] == currentEval) {
+            } else if (maxEval[0] == currentEval) {
                 if (isTopDepth) {
                     if (finalResult[0] == null) {
                         System.out.println();
                     }
-                    finalResult[0] = prioritizeProtectingOwnPiece(board, finalResult[0], move);
+                    finalResult[0] = prioritizeProtectingOwnPiece(board, finalResult[0], move, values);
                 }
             }
         }
@@ -406,7 +436,7 @@ public class Player extends PlayerBase {
                 }
             } else if (maxEval[0] == currentEval) {
                 if (isTopDepth) {
-                    finalResult[0] = prioritizeProtectingOwnPiece(board, finalResult[0], move);
+                    finalResult[0] = prioritizeProtectingOwnPiece(board, finalResult[0], move, values);
                 }
             }
 

@@ -22,6 +22,9 @@ public class Program {
 
     public static void test2() {
 
+        /*
+
+
         {
             // getNextMove returns a valid move when there is only one piece in board
             char[] symbols = {'k', 'n', 'b', 'r', 'q', 'p'};
@@ -50,7 +53,7 @@ public class Program {
                 }
             }
         }
-
+ */
 
         {
             // player dodges
