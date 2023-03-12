@@ -348,9 +348,6 @@ public class Player extends PlayerBase {
                 }
             } else if (maxEval[0] == currentEval) {
                 if (isTopDepth) {
-                    if (finalResult[0] == null) {
-                        System.out.println();
-                    }
                     finalResult[0] = prioritizeProtectingOwnPiece(board, finalResult[0], move, values);
                 }
             }
