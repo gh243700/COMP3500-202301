@@ -3,6 +3,7 @@ package academy.pocu.comp3500.assignment3;
 import academy.pocu.comp3500.assignment3.chess.Move;
 import academy.pocu.comp3500.assignment3.chess.PlayerBase;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Player extends PlayerBase {
@@ -23,7 +24,7 @@ public class Player extends PlayerBase {
 
     public Player(boolean isWhite, int maxMoveTimeMilliseconds) {
         super(isWhite, maxMoveTimeMilliseconds);
-        depth = 5;
+        depth = 3;
     }
 
     @Override
@@ -81,67 +82,30 @@ public class Player extends PlayerBase {
 
     public Move prioritizeProtectingOwnPiece(char[][] board, Move m1, Move m2, int[] values) {
 
-        char t1 = board[m1.fromY][m1.fromX];
-        char t2 = board[m1.toY][m1.toX];
+        ArrayList<Move> priority = new ArrayList<>();
+        ArrayList<Move> nonPriory = new ArrayList<>();
 
-        board[m1.fromY][m1.fromX] = 0;
-        board[m1.toY][m1.toX] = t1;
-        if (t2 != 0) {
-            if (isWhite()) {
-                values[1] -= VALUES[getChessPieceType(t2).ordinal()];
-                --values[3];
+        for (int i = 0; i < 2; ++i) {
+            Move move = (i == 0) ? m1 : m2;
+            if (isSafe(board, move.fromX + move.fromY * 8, !isWhite()) == false) {
+                if (isSafe(board, move.toX + move.toY * 8, !isWhite())) {
+                    ChessPieceType chessPieceType = getChessPieceType(board, move.fromX + move.fromY * 8);
+                    if (chessPieceType == ChessPieceType.BLACK_KING || chessPieceType == ChessPieceType.WHITE_KING) {
+                        return move;
+                    }
+
+                    priority.add(move);
+                } else {
+                    nonPriory.add(move);
+                }
             } else {
-                values[0] -= VALUES[getChessPieceType(t2).ordinal()];
-                --values[2];
+                nonPriory.add(move);
             }
         }
 
-        int eval1 = minimax(board, 1, false, (isWhite() ? false : true), -1, new Move[1], values, (char) 0);
+        priority.addAll(nonPriory);
 
-        board[m1.fromY][m1.fromX] = t1;
-        board[m1.toY][m1.toX] = t2;
-        if (t2 != 0) {
-            if (isWhite()) {
-                values[1] += VALUES[getChessPieceType(t2).ordinal()];
-                ++values[3];
-            } else {
-                values[0] += VALUES[getChessPieceType(t2).ordinal()];
-                ++values[2];
-            }
-        }
-
-
-        t1 = board[m2.fromY][m2.fromX];
-        t2 = board[m2.toY][m2.toX];
-
-        board[m2.fromY][m2.fromX] = 0;
-        board[m2.toY][m2.toX] = t1;
-        if (t2 != 0) {
-            if (isWhite()) {
-                values[1] -= VALUES[getChessPieceType(t2).ordinal()];
-                --values[3];
-            } else {
-                values[0] -= VALUES[getChessPieceType(t2).ordinal()];
-                --values[2];
-            }
-        }
-
-
-        int eval2 = minimax(board, 1, false, (isWhite() ? false : true), -1, new Move[1], values, (char) 0);
-
-        board[m2.fromY][m2.fromX] = t1;
-        board[m2.toY][m2.toX] = t2;
-        if (t2 != 0) {
-            if (isWhite()) {
-                values[1] += VALUES[getChessPieceType(t2).ordinal()];
-                ++values[3];
-            } else {
-                values[0] += VALUES[getChessPieceType(t2).ordinal()];
-                ++values[2];
-            }
-        }
-
-        return (eval1 >= eval2) ? m1 : m2;
+        return priority.get(0);
     }
 
 
@@ -179,10 +143,10 @@ public class Player extends PlayerBase {
             return evaluate(values);
         }
 
-        int eval = evaluate(values);
-        if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
-            maxEval[0] = eval;
-        }
+        //int eval = evaluate(values);
+        //if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
+        //    maxEval[0] = eval;
+        //}
 
         return maxEval[0];
     }
@@ -512,4 +476,119 @@ public class Player extends PlayerBase {
         }
     }
 
+    public boolean isSafe(char[][] board, int targetOffset, boolean isWhite) {
+
+        for (int i = 0; i < 64; ++i) {
+            ChessPieceType chessPieceType = getChessPieceType(board[i / 8][i % 8]);
+
+            if (isWhite && Color.chessPieceColor(chessPieceType) == Color.BLACK || !isWhite && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
+                continue;
+            }
+
+            boolean isSafe = isSafeHelper(board, i, targetOffset, chessPieceType, isWhite);
+            if (isSafe == false) {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    public boolean isSafeHelper(char[][] board, final int offset, final int targetOffset,
+                                final ChessPieceType chessPieceType, boolean isWhite) {
+        byte[] moveOffset = null;
+        byte[] boundX = null;
+        boolean loopOnce = false;
+        boolean isPawn = false;
+
+        switch (chessPieceType) {
+            case BLACK_KING:
+            case WHITE_KING:
+                loopOnce = true;
+            case BLACK_QUEEN:
+            case WHITE_QUEEN:
+                moveOffset = KING_QUEEN_MOVE_OFFSET;
+                boundX = KING_QUEEN_MOVE_BOUND_X;
+                break;
+            case BLACK_ROOK:
+            case WHITE_ROOK:
+                moveOffset = ROOK_MOVE_OFFSET;
+                boundX = ROOK_MOVE_BOUND_X;
+                break;
+            case BLACK_BISHOP:
+            case WHITE_BISHOP:
+                moveOffset = BISHOP_MOVE_OFFSET;
+                boundX = BISHOP_MOVE_BOUND_X;
+                break;
+            case BLACK_KNIGHT:
+            case WHITE_KNIGHT:
+                loopOnce = true;
+                moveOffset = KNIGHT_MOVE_OFFSET;
+                boundX = KNIGHT_MOVE_BOUND_X;
+                break;
+            case BLACK_PAWN:
+            case WHITE_PAWN:
+                isPawn = true;
+                break;
+            default:
+                assert (false);
+                break;
+        }
+
+        if (!isPawn) {
+            for (int i = 0; i < moveOffset.length; ++i) {
+                int offsetAfterMove = offset;
+                while (true) {
+                    int x = 8 * (7 - offsetAfterMove % 8) + offsetAfterMove / 8;
+                    x += -1 * boundX[i] * 8;
+                    offsetAfterMove += moveOffset[i];
+
+                    if (offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
+                        break;
+                    }
+
+                    ChessPieceType c1 = getChessPieceType(board, offsetAfterMove);
+                    Color c1Color = Color.chessPieceColor(c1);
+
+                    if (isWhite && c1Color == Color.WHITE || !isWhite && c1Color == Color.BLACK) {
+                        break;
+                    }
+
+                    if (offsetAfterMove == targetOffset) {
+                        return false;
+                    }
+
+
+                    if (c1Color != Color.NONE || loopOnce) {
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < PAWN_ATTACK_OFFSET.length; ++i) {
+                int x = 8 * (7 - offset % 8) + offset / 8;
+                x += (!isWhite() ? -1 : 1) * PAWN_ATTACK_BOUND_X[i] * 8;
+                int offsetAfterMove = offset + (isWhite ? -1 : 1) * PAWN_ATTACK_OFFSET[i];
+
+                if (offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
+                    continue;
+                }
+
+                ChessPieceType c1 = getChessPieceType(board, offsetAfterMove);
+                if (Color.chessPieceColor(c1) != (isWhite ? Color.BLACK : Color.WHITE)) {
+                    continue;
+                }
+
+                if (offsetAfterMove == targetOffset) {
+                    return false;
+                }
+
+                if (c1 != ChessPieceType.NONE) {
+                    break;
+                }
+            }
+        }
+        return true;
+    }
 }
