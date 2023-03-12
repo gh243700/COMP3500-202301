@@ -30,36 +30,85 @@ public class Player extends PlayerBase {
     public Move getNextMove(char[][] board) {
         long start = System.nanoTime();
 
-        int bak = this.depth;
-        this.depth = 1;
+        //int bak = this.depth;
+        //this.depth = 1;
         Move[] finalResult = new Move[1];
-        int bestEvaluation = minimax(board, depth, true, isWhite(), start, finalResult, (char)0);
+        int bestEvaluation = minimax(board, depth, true, isWhite(), start, finalResult, (char) 0);
         Move bestMove = finalResult[0];
 
-        this.depth = 2;
-        int tempEvaluation = minimax(board, depth, true, isWhite(), start, finalResult,(char)0);
-        Move tempMove = finalResult[0];
+        //this.depth = 2;
+        //int tempEvaluation = minimax(board, depth, true, isWhite(), start, finalResult,(char)0);
+        //Move tempMove = finalResult[0];
 
-        if (bestEvaluation <= tempEvaluation) {
-            bestEvaluation = tempEvaluation;
-            bestMove = tempMove;
+        //if (bestEvaluation <= tempEvaluation) {
+        //    bestEvaluation = tempEvaluation;
+        //    bestMove = tempMove;
+        //}
+
+        //this.depth = bak;
+        //tempEvaluation = minimax(board, depth, true, isWhite(), start, finalResult, (char)0);
+        //tempMove = finalResult[0];
+
+        //if (bestEvaluation < tempEvaluation) {
+        //    bestMove = tempMove;
+        //}
+
+        //if (isTimeOut) {
+        //    --depth;
+        //    isTimeOut = false;
+        //} else {
+        //    ++depth;
+        //}
+
+
+        return bestMove;
+    }
+
+    public boolean isProtectingOwnPiece(char[][] board, Move move) {
+
+        // make move
+        char t1 = board[move.fromY][move.fromX];
+        char t2 = board[move.toY][move.toX];
+
+        board[move.fromY][move.fromX] = 0;
+        board[move.toY][move.toX] = t1;
+
+        boolean isSafe = isSafe(board, move.toY * 8 + move.toX);
+
+        board[move.fromY][move.fromX] = t1;
+        board[move.toY][move.toX] = t2;
+
+        return isSafe;
+    }
+
+    // 평가값이 같은 경우 자신의 말을 보호하는 움직임을 우선순위로 결정하는 함수
+    public Move prioritizeProtectingOwnPiece(char[][] board, Move m1, Move m2) {
+
+        Move bestMove = m1;
+        int bestEval = Integer.MIN_VALUE;
+
+        for (int i = 0; i < 2; ++i) {
+            Move move = (i == 0) ? m1 : m2;
+            ChessPieceType chessPieceType = getChessPieceType(board, move.fromY * 8 + move.fromX);
+            int evalSelf = VALUES[chessPieceType.ordinal()];
+            if (isProtectingOwnPiece(board, move)) {
+                if (evalSelf > bestEval) {
+                    bestMove = move;
+                    bestEval = evalSelf;
+                }
+            } else {
+                ChessPieceType other = getChessPieceType(board, move.toY * 8 + move.toX);
+                if (other == ChessPieceType.NONE) {
+                    continue;
+                }
+
+                int eval = VALUES[other.ordinal()];
+                if (evalSelf < eval && eval > bestEval) {
+                    bestMove = move;
+                    bestEval = eval;
+                }
+            }
         }
-
-        this.depth = bak;
-        tempEvaluation = minimax(board, depth, true, isWhite(), start, finalResult, (char)0);
-        tempMove = finalResult[0];
-
-        if (bestEvaluation < tempEvaluation) {
-            bestMove = tempMove;
-        }
-
-        if (isTimeOut) {
-            --depth;
-            isTimeOut = false;
-        } else {
-            ++depth;
-        }
-
 
         return bestMove;
     }
@@ -98,11 +147,6 @@ public class Player extends PlayerBase {
 
         if (noResult) {
             return evaluate(board);
-        }
-
-        int eval = evaluate(board);
-        if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
-            maxEval[0] = eval;
         }
 
         return maxEval[0];
@@ -194,6 +238,10 @@ public class Player extends PlayerBase {
                     maxEval[0] = currentEval;
                     if (isTopDepth) {
                         finalResult[0] = move;
+                    }
+                } else if (maxEval[0] == currentEval) {
+                    if (isTopDepth) {
+                        finalResult[0] = prioritizeProtectingOwnPiece(board, finalResult[0], move);
                     }
                 }
 
@@ -337,6 +385,123 @@ public class Player extends PlayerBase {
 
         return isWhite() ? whiteScore - blackScore : blackScore - whiteScore;
     }
+
+    public boolean isSafe(char[][] board, int targetOffset) {
+
+        for (int i = 0; i < 64; ++i) {
+            ChessPieceType chessPieceType = getChessPieceType(board[i / 8][i % 8]);
+
+            if (!isWhite() && Color.chessPieceColor(chessPieceType) == Color.BLACK || isWhite() && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
+                continue;
+            }
+
+            boolean isSafe = isSafeHelper(board, i, targetOffset, chessPieceType);
+            if (isSafe == false) {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    public boolean isSafeHelper(char[][] board, final int offset, final int targetOffset, final ChessPieceType chessPieceType) {
+        byte[] moveOffset = null;
+        byte[] boundX = null;
+        boolean loopOnce = false;
+        boolean isPawn = false;
+
+        switch (chessPieceType) {
+            case BLACK_KING:
+            case WHITE_KING:
+                loopOnce = true;
+            case BLACK_QUEEN:
+            case WHITE_QUEEN:
+                moveOffset = KING_QUEEN_MOVE_OFFSET;
+                boundX = KING_QUEEN_MOVE_BOUND_X;
+                break;
+            case BLACK_ROOK:
+            case WHITE_ROOK:
+                moveOffset = ROOK_MOVE_OFFSET;
+                boundX = ROOK_MOVE_BOUND_X;
+                break;
+            case BLACK_BISHOP:
+            case WHITE_BISHOP:
+                moveOffset = BISHOP_MOVE_OFFSET;
+                boundX = BISHOP_MOVE_BOUND_X;
+                break;
+            case BLACK_KNIGHT:
+            case WHITE_KNIGHT:
+                loopOnce = true;
+                moveOffset = KNIGHT_MOVE_OFFSET;
+                boundX = KNIGHT_MOVE_BOUND_X;
+                break;
+            case BLACK_PAWN:
+            case WHITE_PAWN:
+                isPawn = true;
+                break;
+            default:
+                assert (false);
+                break;
+        }
+
+        if (!isPawn) {
+            for (int i = 0; i < moveOffset.length; ++i) {
+                int offsetAfterMove = offset;
+                while (true) {
+                    int x = 8 * (7 - offsetAfterMove % 8) + offsetAfterMove / 8;
+                    x += -1 * boundX[i] * 8;
+                    offsetAfterMove += moveOffset[i];
+
+                    if (offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
+                        break;
+                    }
+
+                    ChessPieceType c1 = getChessPieceType(board, offsetAfterMove);
+                    Color c1Color = Color.chessPieceColor(c1);
+
+                    if (!isWhite() && c1Color == Color.WHITE || isWhite() && c1Color == Color.BLACK) {
+                        break;
+                    }
+
+                    if (offsetAfterMove == targetOffset) {
+                        return false;
+                    }
+
+                    if (c1Color != Color.NONE || loopOnce) {
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < PAWN_ATTACK_OFFSET.length; ++i) {
+                int x = 8 * (7 - offset % 8) + offset / 8;
+                x += (!isWhite() ? -1 : 1) * PAWN_ATTACK_BOUND_X[i] * 8;
+                int offsetAfterMove = offset + (!isWhite() ? -1 : 1) * PAWN_ATTACK_OFFSET[i];
+
+                if (offsetAfterMove < 0 || offsetAfterMove >= 64 || x < 0 || x >= 64) {
+                    continue;
+                }
+
+                ChessPieceType c1 = getChessPieceType(board, offsetAfterMove);
+                if (Color.chessPieceColor(c1) != ((!isWhite()) ? Color.BLACK : Color.WHITE)) {
+                    continue;
+                }
+
+                if (offsetAfterMove == targetOffset) {
+                    return false;
+                }
+
+                if (c1 != ChessPieceType.NONE) {
+                    break;
+                }
+            }
+        }
+
+
+        return true;
+    }
+
 
     public ChessPieceType getChessPieceType(char c) {
 
