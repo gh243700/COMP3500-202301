@@ -124,7 +124,7 @@ public class Player extends PlayerBase {
             }
         }
 
-        return (eval1 > eval2) ? m1 : m2;
+        return (eval1 >= eval2) ? m1 : m2;
     }
 
 
