@@ -79,11 +79,9 @@ public class Player extends PlayerBase {
         tempEval = minimax(board, depth, true, isWhite(), start, finalResult, values, (char)0);
         tempMove = finalResult[0];
 
-        if (tempEval > bestEvaluation) {
+        if (tempEval >= bestEvaluation) {
             bestMove = tempMove;
         }
-
-
 
 
         if (isTimeOut) {
@@ -119,7 +117,7 @@ public class Player extends PlayerBase {
         boolean noResult = false;
         int count = 0;
         for (int i = 0; i < 64; ++i) {
-            int index = isWhite ? 64 - 1 - i : i;
+            int index = isWhite ? i : 64 - 1 - i;
             ChessPieceType chessPieceType = getChessPieceType(board[index / 8][index % 8]);
 
             if (isWhite && Color.chessPieceColor(chessPieceType) == Color.BLACK || !isWhite && Color.chessPieceColor(chessPieceType) == Color.WHITE || chessPieceType == ChessPieceType.NONE) {
@@ -138,10 +136,10 @@ public class Player extends PlayerBase {
             return evaluate(values);
         }
 
-        //int eval = evaluate(values);
-        //if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
-        //    maxEval[0] = eval;
-        //}
+        int eval = evaluate(values);
+        if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
+            maxEval[0] = eval;
+        }
 
         return maxEval[0];
     }
