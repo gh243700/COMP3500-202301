@@ -37,7 +37,7 @@ public class Player extends PlayerBase {
         Move bestMove = finalResult[0];
 
         this.depth = 2;
-        int tempEvaluation = minimax(board, depth, true, isWhite(), start, finalResult, (char)0);
+        int tempEvaluation = minimax(board, depth, true, isWhite(), start, finalResult,(char)0);
         Move tempMove = finalResult[0];
 
         if (bestEvaluation <= tempEvaluation) {
@@ -48,6 +48,7 @@ public class Player extends PlayerBase {
         this.depth = bak;
         tempEvaluation = minimax(board, depth, true, isWhite(), start, finalResult, (char)0);
         tempMove = finalResult[0];
+
         if (bestEvaluation < tempEvaluation) {
             bestMove = tempMove;
         }
@@ -99,10 +100,10 @@ public class Player extends PlayerBase {
             return evaluate(board);
         }
 
-        //int eval = evaluate(board);
-        //if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
-        //    maxEval[0] = eval;
-        //}
+        int eval = evaluate(board);
+        if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
+            maxEval[0] = eval;
+        }
 
         return maxEval[0];
     }
@@ -309,20 +310,13 @@ public class Player extends PlayerBase {
             return true;
         }
 
-
         for (int i = 0; i < 64; ++i) {
-            if (black > 0 && white > 0) {
-                break;
-            }
-
             if (Color.chessPieceColor(getChessPieceType(board, i)) == Color.WHITE) {
                 white++;
             }
-
             if (Color.chessPieceColor(getChessPieceType(board, i)) == Color.BLACK) {
                 black++;
             }
-
         }
 
         return white == 0 || black == 0;
