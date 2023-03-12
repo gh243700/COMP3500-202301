@@ -104,7 +104,7 @@ public class Player extends PlayerBase {
         long duration = TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS);
 
         if (duration >= getMaxMoveTimeMilliseconds() * 9 / 10) {
-            //isTimeOut = true;
+            isTimeOut = true;
             return evaluate(values);
         }
 
