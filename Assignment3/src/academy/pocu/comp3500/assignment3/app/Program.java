@@ -294,8 +294,39 @@ public class Program {
 
     public static void main(String[] args) {
         //test();
-        test2();
-        test();
+
+        char[][] board = new char[8][8];
+        board[2][1] = 'N';
+        board[2][2] = 'R';
+        board[2][3] = 'K';
+        board[2][4] = 'Q';
+        board[2][5] = 'B';
+        board[3][2] = 'p';
+        board[3][3] = 'P';
+        board[3][4] = 'P';
+        board[4][2] = 'p';
+        board[4][4] = 'p';
+        board[5][1] = 'n';
+        board[5][2] = 'r';
+        board[5][3] = 'k';
+        board[5][4] = 'q';
+        board[5][5] = 'b';
+
+
+        Player player = new Player(false, 1000);
+
+       Move move =  player.getNextMove(board);
+        System.out.println();
+        assert (move.fromY == 2 && move.fromX == 3);
+
+
+
+
+
+
+
+        //test2();
+        //test();
     }
 
     public static void pause(long milliseconds) {
