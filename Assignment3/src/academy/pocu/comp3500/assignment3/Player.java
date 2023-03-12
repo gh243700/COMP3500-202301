@@ -160,7 +160,7 @@ public class Player extends PlayerBase {
 
         int[] maxEval = {(maximizingPlayer) ? Integer.MIN_VALUE + 1 : Integer.MAX_VALUE};
 
-        boolean noResult = false;
+        boolean noResult = true;
         int count = 0;
         for (int i = 0; i < 64; ++i) {
             int index = isWhite ? i : 64 - 1 - i;
@@ -171,7 +171,11 @@ public class Player extends PlayerBase {
             }
 
 
-            noResult = movesBitmapVersion(board, index, chessPieceType, depth, maximizingPlayer, isWhite, start, finalResult, maxEval, values);
+            boolean temp = movesBitmapVersion(board, index, chessPieceType, depth, maximizingPlayer, isWhite, start, finalResult, maxEval, values);
+            if (!temp) {
+                noResult = false;
+            }
+
             ++count;
         }
 
