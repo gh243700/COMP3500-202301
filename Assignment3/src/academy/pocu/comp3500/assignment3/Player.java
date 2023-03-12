@@ -179,6 +179,11 @@ public class Player extends PlayerBase {
             return evaluate(values);
         }
 
+        int eval = evaluate(values);
+        if ((maximizingPlayer) ? maxEval[0] < eval : maxEval[0] > eval) {
+            maxEval[0] = eval;
+        }
+
         return maxEval[0];
     }
 
