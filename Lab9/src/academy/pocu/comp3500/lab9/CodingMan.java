@@ -20,6 +20,7 @@ public class CodingMan {
         VideoClip temp = clips[0];
         int index = 1;
         int count = 0;
+
         while (index < clips.length) {
             if (startTime >= time) {
                 break;
@@ -30,10 +31,20 @@ public class CodingMan {
                 if (temp.getStartTime() > startTime) {
                     return -1;
                 }
-
+                System.out.println(temp.getStartTime() + "  :  " + temp.getEndTime());
                 startTime = temp.getEndTime();
                 temp = videoClip;
                 ++count;
+                if (index == clips.length - 1) {
+                    if (startTime >= time) {
+                        break;
+                    }
+                    if (temp.getStartTime() <= startTime) {
+                        startTime = temp.getEndTime();
+                        ++count;
+                    }
+                }
+
             } else if (videoClip.getStartTime() <= startTime) {
                 if (temp.getEndTime() < videoClip.getEndTime()) {
                     temp = videoClip;

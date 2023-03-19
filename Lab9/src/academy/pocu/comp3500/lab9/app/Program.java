@@ -230,6 +230,20 @@ public class Program {
         }
 
 
+        {
+            {
+                VideoClip[] clips = new VideoClip[]{
+                        new VideoClip(0, 15),
+                        new VideoClip(15, 20),
+                        new VideoClip(20, 35)
+                };
+
+                int count = CodingMan.findMinClipsCount(clips, 35); // 1
+                assert (count == 3);
+            }
+        }
+
+
 
         System.out.println("--------");
     }
