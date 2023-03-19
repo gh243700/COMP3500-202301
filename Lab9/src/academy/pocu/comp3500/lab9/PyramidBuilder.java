@@ -19,9 +19,23 @@ public class PyramidBuilder {
 
             if (iLevelWidth >= iLevelMinWidth && iLevelCount > iLevelMinCount) {
                 ++levelHeight;
-                iLevelMinWidth = iLevelWidth;
                 iLevelMinCount = iLevelCount;
                 iLevelWidth = 0;
+                iLevelCount = 0;
+                ++index;
+                break;
+            }
+
+            ++index;
+        }
+
+
+        while (index < widths.length) {
+            ++iLevelCount;
+
+            if (iLevelCount > iLevelMinCount) {
+                ++levelHeight;
+                iLevelMinCount = iLevelCount;
                 iLevelCount = 0;
             }
 

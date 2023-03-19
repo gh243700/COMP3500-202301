@@ -36,7 +36,6 @@ public class Program {
 
             assert (count == 4);
         }
-
         {
             int pyramidHeight = PyramidBuilder.findMaxHeight(new int[]{25}, 2);
             assert (pyramidHeight == 0);
