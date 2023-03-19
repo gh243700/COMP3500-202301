@@ -258,7 +258,109 @@ public class Program {
             }
         }
 
+        {
+            VideoClip[] clips = new VideoClip[]{
+                    new VideoClip(0, 7),
+                    new VideoClip(7, 15),
+                    new VideoClip(15, 20),
+                    new VideoClip(20, 25),
+                    new VideoClip(25, 35)
+            };
+            int airTime = 35;
 
+            int count = CodingMan.findMinClipsCount(clips, airTime);
+
+            assert (count == 5);
+
+            clips = new VideoClip[]{
+                    new VideoClip(0, 7),
+                    new VideoClip(4, 8),
+                    new VideoClip(5, 15),
+                    new VideoClip(13, 16),
+                    new VideoClip(15, 34),
+                    new VideoClip(20, 35),
+                    new VideoClip(23, 37),
+                    new VideoClip(35, 60),
+                    new VideoClip(38, 62)
+            };
+            airTime = 61;
+
+            count = CodingMan.findMinClipsCount(clips, airTime);
+
+            assert (count == 6);
+
+            clips = new VideoClip[]{
+                    new VideoClip(0, 3),
+                    new VideoClip(2, 4),
+                    new VideoClip(3, 5),
+                    new VideoClip(5, 12),
+                    new VideoClip(10, 17)
+            };
+            airTime = 13;
+
+            count = CodingMan.findMinClipsCount(clips, airTime);
+
+            assert (count == 4);
+
+            clips = new VideoClip[]{
+                    new VideoClip(0, 3),
+                    new VideoClip(2, 5),
+                    new VideoClip(4, 8),
+                    new VideoClip(1, 3),
+                    new VideoClip(2, 3),
+            };
+            airTime = 7;
+
+            count = CodingMan.findMinClipsCount(clips, airTime);
+
+            assert (count == 3);
+
+            clips = new VideoClip[]{
+                    new VideoClip(0, 3),
+                    new VideoClip(0, 3),
+                    new VideoClip(0, 4),
+                    new VideoClip(1, 4),
+                    new VideoClip(2, 3),
+            };
+            airTime = 4;
+
+            count = CodingMan.findMinClipsCount(clips, airTime);
+
+            assert (count == 1);
+        }
+
+        test7();
+        test8();
+        test9();
         System.out.println("--------");
     }
+
+    public static void test9() {
+        VideoClip[] clips1 = new VideoClip[]{
+                new VideoClip(0, 7),
+                new VideoClip(7, 15),
+                new VideoClip(1, 8),
+        };
+        int count1 = CodingMan.findMinClipsCount(clips1, 15);
+        assert (count1 == 2);
+    }
+
+    public static void test8() {
+        VideoClip[] clips1 = new VideoClip[]{
+                new VideoClip(0, 7),
+                new VideoClip(8, 15),
+                new VideoClip(15, 20),
+                new VideoClip(20, 25),
+                new VideoClip(25, 35)
+        };
+        int count1 = CodingMan.findMinClipsCount(clips1, 35);
+        assert (count1 == -1);
+    }
+
+    public static void test7() {
+        VideoClip[] clips1 = new VideoClip[]{};
+        int count1 = CodingMan.findMinClipsCount(clips1, 35);
+        assert (count1 == -1);
+    }
+
 }

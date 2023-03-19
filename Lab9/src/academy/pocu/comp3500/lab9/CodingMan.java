@@ -31,10 +31,15 @@ public class CodingMan {
                 if (temp.getStartTime() > startTime) {
                     return -1;
                 }
-                System.out.println(temp.getStartTime() + "  :  " + temp.getEndTime());
-                startTime = temp.getEndTime();
+
+                if (temp.getEndTime() < videoClip.getStartTime() || videoClip.getStartTime() > startTime) {
+                    System.out.println(temp.getStartTime() + "  :  " + temp.getEndTime());
+                    startTime = temp.getEndTime();
+                    ++count;
+                }
+
                 temp = videoClip;
-                ++count;
+
                 if (index == clips.length - 1) {
                     if (startTime >= time) {
                         break;
