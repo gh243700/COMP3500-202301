@@ -336,13 +336,26 @@ public class Program {
     }
 
     public static void test9() {
-        VideoClip[] clips1 = new VideoClip[]{
-                new VideoClip(0, 7),
-                new VideoClip(7, 15),
-                new VideoClip(1, 8),
-        };
-        int count1 = CodingMan.findMinClipsCount(clips1, 15);
-        assert (count1 == 2);
+        {
+            VideoClip[] clips1 = new VideoClip[]{
+                    new VideoClip(0, 7),
+                    new VideoClip(7, 15),
+                    new VideoClip(1, 8),
+            };
+            int count1 = CodingMan.findMinClipsCount(clips1, 15);
+            assert (count1 == 2);
+        }
+        {
+            VideoClip[] clips1 = new VideoClip[]{
+                    new VideoClip(0, 5),
+                    new VideoClip(3, 6),
+                    new VideoClip(6, 9),
+                    new VideoClip(6, 15),
+                    new VideoClip(4, 9),
+            };
+            int count1 = CodingMan.findMinClipsCount(clips1, 15);
+            assert (count1 == 3);
+        }
     }
 
     public static void test8() {

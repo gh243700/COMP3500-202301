@@ -25,20 +25,21 @@ public class CodingMan {
             if (startTime >= time) {
                 break;
             }
-            VideoClip videoClip = clips[index];
+            VideoClip vc = clips[index];
 
-            if (videoClip.getStartTime() > startTime || index == clips.length - 1) {
+            if (vc.getStartTime() > startTime || index == clips.length - 1) {
                 if (temp.getStartTime() > startTime) {
                     return -1;
                 }
 
-                if (temp.getEndTime() < videoClip.getStartTime() || videoClip.getStartTime() > startTime) {
+                if (!(vc.getEndTime() >= temp.getEndTime() && temp.getEndTime() >= vc.getStartTime() && vc.getStartTime() <= startTime)) {
                     System.out.println(temp.getStartTime() + "  :  " + temp.getEndTime());
                     startTime = temp.getEndTime();
+
                     ++count;
                 }
 
-                temp = videoClip;
+                temp = vc;
 
                 if (index == clips.length - 1) {
                     if (startTime >= time) {
@@ -50,9 +51,9 @@ public class CodingMan {
                     }
                 }
 
-            } else if (videoClip.getStartTime() <= startTime) {
-                if (temp.getEndTime() < videoClip.getEndTime()) {
-                    temp = videoClip;
+            } else if (vc.getStartTime() <= startTime) {
+                if (temp.getEndTime() < vc.getEndTime()) {
+                    temp = vc;
                 }
             }
 
