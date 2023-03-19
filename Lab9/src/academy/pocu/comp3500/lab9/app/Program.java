@@ -12,9 +12,6 @@ public class Program {
         // write your code here
 
         {
-            int pyramidHeight = PyramidBuilder.findMaxHeight(new int[]{2, 2, 2, 2, 3, 3}, 1);
-            assert (pyramidHeight == 2);
-
             VideoClip[] clips = new VideoClip[]{
                     new VideoClip(0, 7),
                     new VideoClip(0, 15),
@@ -38,6 +35,25 @@ public class Program {
             int count = CodingMan.findMinClipsCount(clips, airTime);
 
             assert (count == 4);
+        }
+
+        {
+            int pyramidHeight = PyramidBuilder.findMaxHeight(new int[]{25}, 2);
+            assert (pyramidHeight == 0);
+            pyramidHeight = PyramidBuilder.findMaxHeight(new int[]{1, 1, 1, 1, 1, 1}, 2);
+            assert (pyramidHeight == 1);
+            pyramidHeight = PyramidBuilder.findMaxHeight(new int[]{3, 3}, 2);
+            assert (pyramidHeight == 1);
+            pyramidHeight = PyramidBuilder.findMaxHeight(new int[]{3, 3, 3, 3}, 2);
+            assert (pyramidHeight == 1);
+            pyramidHeight = PyramidBuilder.findMaxHeight(new int[]{3, 3, 3, 3, 3}, 2);
+            assert (pyramidHeight == 2);
+
+        }
+
+        {
+            int pyramidHeight = PyramidBuilder.findMaxHeight(new int[]{2, 2, 2, 2, 3, 3}, 1);
+            assert (pyramidHeight == 2);
 
         }
 
@@ -88,23 +104,6 @@ public class Program {
             assert (profit == 70);
             profit = ProfitCalculator.findMaxProfit(tasks, new int[]{40, 15, 5}); // 75
             assert (profit == 75);
-        }
-
-        {
-            VideoClip[] clips = new VideoClip[]{
-                    new VideoClip(0, 15),
-                    new VideoClip(10, 20),
-                    new VideoClip(30, 35)
-            };
-
-            int count = CodingMan.findMinClipsCount(clips, 10); // 1
-            assert (count == 1);
-            count = CodingMan.findMinClipsCount(clips, 20); // 2
-            assert (count == 2);
-            count = CodingMan.findMinClipsCount(clips, 25); // -1
-            assert (count == -1);
-            count = CodingMan.findMinClipsCount(clips, 35); // -1
-            assert (count == -1);
         }
         {
             {
@@ -208,6 +207,25 @@ public class Program {
                 count = CodingMan.findMinClipsCount(clips, airTime);
 
                 assert (count == 4);
+            }
+        }
+
+        {
+            {
+                VideoClip[] clips = new VideoClip[]{
+                        new VideoClip(0, 15),
+                        new VideoClip(10, 20),
+                        new VideoClip(30, 35)
+                };
+
+                int count = CodingMan.findMinClipsCount(clips, 10); // 1
+                assert (count == 1);
+                count = CodingMan.findMinClipsCount(clips, 20); // 2
+                assert (count == 2);
+                count = CodingMan.findMinClipsCount(clips, 25); // -1
+                assert (count == -1);
+                count = CodingMan.findMinClipsCount(clips, 35); // -1
+                assert (count == -1);
             }
         }
 
