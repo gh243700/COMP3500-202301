@@ -27,7 +27,7 @@ public class CodingMan {
             }
             VideoClip videoClip = clips[index];
 
-            if (videoClip.getStartTime() > startTime) {
+            if (videoClip.getStartTime() > startTime || index == clips.length - 1) {
                 if (temp.getStartTime() > startTime) {
                     return -1;
                 }
