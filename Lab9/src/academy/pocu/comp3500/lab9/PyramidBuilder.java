@@ -20,7 +20,6 @@ public class PyramidBuilder {
             if (iLevelWidth >= iLevelMinWidth && iLevelCount > iLevelMinCount) {
                 ++levelHeight;
                 iLevelMinCount = iLevelCount;
-                iLevelWidth = 0;
                 iLevelCount = 0;
                 ++index;
                 break;
@@ -44,6 +43,7 @@ public class PyramidBuilder {
 
         return levelHeight;
     }
+
     public static void sortAsc(final int[] widths) {
         for (int i = 0; i < widths.length; ++i) {
             int min = widths[i];
